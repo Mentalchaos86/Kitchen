@@ -1,43 +1,32 @@
-# HomeHub – Scenes & Polish
+# HomeHub – Personal Header
 
-This build combines the first two requested priorities:
+This update turns the center header into a live daily briefing.
 
-1. Polish the existing widgets.
-2. Add dashboard Scenes.
+## New features
 
-## Scene controls
+- Time-based greeting using the configured profile name
+- Scene-aware greeting for Work and Vacation modes
+- Current date and number of events today
+- Today's Focus chosen from the live Google Calendar feed
+- Priority for active events, travel, competitions, gym and birthdays
+- Falls back to the next calendar event when today is clear
+- Refreshes when the calendar updates, when scenes change and once per minute
 
-A small control bar appears below the header:
+## Profile
 
-- Auto
-- Morning
-- Work
-- Evening
-- Vacation
+The name is configured in `config.js`:
 
-The selected scene is saved in the browser.
-
-### Auto mode
-
-- Morning: 05:00–10:59
-- Work: 11:00–16:59
-- Evening: 17:00 onward
-
-Vacation is selected manually.
-
-## Widget improvements
-
-- Today events are larger and easier to read from across the kitchen.
-- Weather now includes humidity, rain chance, wind, sunrise and sunset.
-- The three-day forecast includes rain probability.
-- News cards now include a short article preview.
-- A Last Updated indicator shows that live data is refreshing.
+```js
+profile: {
+  name: "Mark"
+},
+```
 
 ## Installation
 
-No Google Apps Script change is required for this build.
+No Google Apps Script change is required.
 
-Upload and replace these five files in GitHub:
+Upload and replace:
 
 - index.html
 - styles.css
@@ -45,4 +34,4 @@ Upload and replace these five files in GitHub:
 - config.js
 - README.md
 
-After GitHub Pages deploys, refresh with Ctrl+F5 or fully reopen the TV browser.
+Wait for GitHub Pages to deploy, then refresh with Ctrl+F5 or fully reopen the Chromecast browser.

@@ -2,6 +2,10 @@ window.DASHBOARD_CONFIG = {
   title: "HOME HUB",
   subtitle: "Kitchen command centre",
 
+  profile: {
+    name: "Mark"
+  },
+
   // Paste the URL found inside the Google Calendar embed code.
   calendarEmbedUrl: "https://calendar.google.com/calendar/embed?src=mvtruijen%40gmail.com&ctz=Europe%2FAmsterdam",
 

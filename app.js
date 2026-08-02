@@ -41,6 +41,7 @@
 
   const sceneStorageKey = "homehub-scene-choice-v1";
   let lastDataRefresh = null;
+  let latestAgendaData = { today: [], next: null };
 
   function automaticScene() {
     const hour = new Date().getHours();
@@ -82,6 +83,7 @@
       selected === "auto" ? `AUTO · ${labels[active]}` : labels[active];
 
     if (persist) localStorage.setItem(sceneStorageKey, selected);
+    updatePersonalHeader();
   }
 
   function setupScenes() {
@@ -106,6 +108,117 @@
     const element = document.createElement("div");
     element.innerHTML = value;
     return (element.textContent || element.innerText || "").replace(/\s+/g, " ").trim();
+  }
+
+
+  function greetingForHour(hour) {
+    if (hour < 5) return { icon: "🌙", text: "Good night" };
+    if (hour < 12) return { icon: "☀️", text: "Good morning" };
+    if (hour < 18) return { icon: "👋", text: "Good afternoon" };
+    return { icon: "🌙", text: "Good evening" };
+  }
+
+  function eventIsActive(event, now = new Date()) {
+    if (!event) return false;
+    return now >= new Date(event.start) && now <= new Date(event.end);
+  }
+
+  function eventFocusText(event) {
+    if (!event) return "Enjoy your day";
+    const title = event.title || "Next appointment";
+    if (event.allDay) return title;
+
+    const start = new Date(event.start);
+    const time = new Intl.DateTimeFormat("en-GB", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false
+    }).format(start);
+    return `${title} at ${time}`;
+  }
+
+  function classifyFocusEvent(events) {
+    const now = new Date();
+    const active = events.find(event => eventIsActive(event, now));
+    if (active) return { event: active, prefix: "Happening now" };
+
+    const priorityPatterns = [
+      /flight|airport|tokyo|travel|hotel|trip/i,
+      /hyrox|showdown|throwdown|competition|wedstrijd/i,
+      /gym|crossfit|training|workout|wod/i,
+      /birthday|jarig|verjaardag/i
+    ];
+
+    for (const pattern of priorityPatterns) {
+      const match = events.find(event => pattern.test(event.title || ""));
+      if (match) return { event: match, prefix: "" };
+    }
+
+    return events.length ? { event: events[0], prefix: "" } : null;
+  }
+
+  function updatePersonalHeader() {
+    const title = $("dashboardTitle");
+    const subtitle = $("dashboardSubtitle");
+    const focus = $("dailyFocusValue");
+    if (!title || !subtitle || !focus) return;
+
+    const now = new Date();
+    const name = cfg.profile?.name || "";
+    const scene = document.body.dataset.scene || automaticScene();
+    const todayEvents = latestAgendaData.today || [];
+    const nextEvent = latestAgendaData.next || null;
+    const greeting = greetingForHour(now.getHours());
+
+    let heading = `${greeting.icon} ${greeting.text}${name ? `, ${name}` : ""}`;
+    if (scene === "vacation") {
+      heading = `✈️ Welcome to vacation mode${name ? `, ${name}` : ""}`;
+    } else if (scene === "work") {
+      heading = `💼 ${greeting.text}${name ? `, ${name}` : ""}`;
+    }
+
+    const dateText = new Intl.DateTimeFormat("en-GB", {
+      weekday: "long",
+      day: "numeric",
+      month: "long"
+    }).format(now);
+
+    let statusText;
+    if (todayEvents.length === 0) {
+      statusText = `${dateText} · No appointments today`;
+    } else if (todayEvents.length === 1) {
+      statusText = `${dateText} · 1 event today`;
+    } else {
+      statusText = `${dateText} · ${todayEvents.length} events today`;
+    }
+
+    const focusChoice = classifyFocusEvent(todayEvents);
+    let focusText;
+
+    if (focusChoice?.event) {
+      focusText = focusChoice.prefix
+        ? `${focusChoice.prefix}: ${eventFocusText(focusChoice.event)}`
+        : eventFocusText(focusChoice.event);
+    } else if (nextEvent) {
+      const start = new Date(nextEvent.start);
+      const tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+      const nextDay = new Date(start.getFullYear(), start.getMonth(), start.getDate());
+      const when = nextDay.getTime() === tomorrow.getTime()
+        ? "Tomorrow"
+        : new Intl.DateTimeFormat("en-GB", {
+            weekday: "short",
+            day: "numeric",
+            month: "short"
+          }).format(start);
+      focusText = `${nextEvent.title || "Next event"} · ${when}`;
+    } else {
+      focusText = scene === "evening" ? "Time to unwind" : "Enjoy your clear day";
+    }
+
+    title.textContent = heading;
+    subtitle.textContent = statusText;
+    focus.textContent = focusText;
+    document.title = `${cfg.title || "Home Hub"} · ${greeting.text}`;
   }
 
   function loadJsonp(url, params = {}, timeoutMs = 12000) {
@@ -174,6 +287,11 @@
   }
 
   function renderTodayAgenda(data) {
+    latestAgendaData = {
+      today: data.today || [],
+      next: data.next || null
+    };
+    updatePersonalHeader();
     const root = $("todayAgenda");
     const todayEvents = (data.today || []).slice(0, cfg.agenda?.maxTodayEvents || 5);
     const nextEvent = data.next || null;
@@ -244,9 +362,7 @@
   }
 
   function setupBrand() {
-    $("dashboardTitle").textContent = cfg.title || "HOME HUB";
-    $("dashboardSubtitle").textContent = cfg.subtitle || "";
-    document.title = cfg.title || "Home Hub";
+    updatePersonalHeader();
   }
 
   function updateCountdown() {
@@ -632,6 +748,7 @@
   loadBitcoin();
 
   setInterval(updateClock,1000);
+  setInterval(updatePersonalHeader,60000);
   setInterval(() => { updateDisplayMode(); if (storedSceneChoice() === "auto") applyScene("auto"); },60000);
   setInterval(() => { loadTodayAgenda(); loadCustomCalendar(); }, 5 * 60000);
   setInterval(updateCountdown,60000);

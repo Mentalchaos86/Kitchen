@@ -1006,3 +1006,74 @@ body[data-scene="vacation"] .weather-panel,
 body[data-scene="vacation"] .today-panel {
   box-shadow: 0 0 0 1px rgba(38,198,218,0.11), var(--shadow);
 }
+
+
+/* Personal living header */
+.personal-header {
+  justify-content: flex-start;
+  min-width: 0;
+}
+
+.personal-header-copy {
+  min-width: 0;
+  width: 100%;
+}
+
+.personal-header .brand-title {
+  font-size: clamp(19px, 1.28vw, 27px);
+  letter-spacing: -0.025em;
+  line-height: 1.05;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.personal-header .brand-subtitle {
+  margin-top: 0.25rem;
+  font-size: clamp(10px, 0.66vw, 14px);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.daily-focus {
+  margin-top: 0.42rem;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-width: 0;
+}
+
+.daily-focus-label {
+  flex: 0 0 auto;
+  padding: 0.18rem 0.38rem;
+  border-radius: 999px;
+  color: #ffc38f;
+  background: rgba(255,122,0,0.10);
+  border: 1px solid rgba(255,122,0,0.18);
+  font-size: clamp(7px, 0.42vw, 9px);
+  font-weight: 900;
+  letter-spacing: 0.08em;
+}
+
+.daily-focus-value {
+  min-width: 0;
+  color: #e7e7e7;
+  font-size: clamp(10px, 0.64vw, 14px);
+  font-weight: 750;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+body[data-scene="evening"] .daily-focus-label {
+  color: #d8c0ff;
+  background: rgba(182,133,255,0.10);
+  border-color: rgba(182,133,255,0.20);
+}
+
+body[data-scene="vacation"] .daily-focus-label {
+  color: #8deaf5;
+  background: rgba(38,198,218,0.10);
+  border-color: rgba(38,198,218,0.20);
+}
