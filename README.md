@@ -78,3 +78,10 @@ No additional API configuration is required for this version.
 This build removes an obsolete shopping-list startup call that prevented the
 clock, countdown, weather, RSS and Bitcoin widgets from loading after the
 shopping panel was replaced by Today.
+
+
+## Cache-fix build
+
+This build uses versioned asset URLs (`?v=20260802-2`) so GitHub Pages and the TV
+browser are forced to download the corrected JavaScript instead of using an
+older cached `app.js`.
