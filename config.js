@@ -5,6 +5,15 @@ window.DASHBOARD_CONFIG = {
   // Paste the URL found inside the Google Calendar embed code.
   calendarEmbedUrl: "https://calendar.google.com/calendar/embed?src=mvtruijen%40gmail.com&ctz=Europe%2FAmsterdam",
 
+  // Deploy google-apps-script/Code.gs as a Google Apps Script web app,
+  // then paste its /exec URL here.
+  agendaApiUrl: "https://script.google.com/macros/s/AKfycbxExzsIgC1OaXmRpXsfJ50ZcLyFRhnCW9H6_j82LBco0F9LchqFhWxB100ohPmAgnU_/exec",
+
+  agenda: {
+    maxTodayEvents: 5,
+    lookAheadDays: 14
+  },
+
   // The dashboard automatically chooses the current event or nearest future event.
   // End dates use 23:59 so the event remains active for the complete final day.
   events: [

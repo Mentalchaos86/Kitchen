@@ -493,3 +493,110 @@ body.night-mode {
   .topbar { grid-template-columns: 1fr 1fr 1fr; }
   .brand { display: none; }
 }
+
+
+.today-panel {
+  min-height: 0;
+}
+
+.today-agenda {
+  height: calc(100% - 52px);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  padding: 0.64vw 0.92vw 0.82vw;
+}
+
+.today-events {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.today-event {
+  display: grid;
+  grid-template-columns: 64px 1fr;
+  align-items: center;
+  gap: 0.62rem;
+  padding: 0.48rem 0;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.today-event-time {
+  color: #ffc38f;
+  font-size: clamp(11px, 0.67vw, 14px);
+  font-weight: 850;
+  letter-spacing: 0.02em;
+}
+
+.today-event-title {
+  min-width: 0;
+  font-size: clamp(13px, 0.82vw, 17px);
+  font-weight: 800;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.today-event-location {
+  margin-top: 0.12rem;
+  color: var(--muted);
+  font-size: clamp(9px, 0.56vw, 12px);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.today-empty {
+  flex: 1;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding: 0.6rem;
+}
+
+.today-empty-icon {
+  font-size: clamp(28px, 2vw, 40px);
+}
+
+.today-empty-title {
+  margin-top: 0.35rem;
+  font-size: clamp(15px, 0.95vw, 20px);
+  font-weight: 850;
+}
+
+.today-empty-copy {
+  margin-top: 0.22rem;
+  color: var(--muted);
+  font-size: clamp(10px, 0.62vw, 13px);
+}
+
+.next-agenda-event {
+  margin-top: 0.55rem;
+  padding: 0.58rem 0.72rem;
+  border: 1px solid rgba(255,122,0,0.20);
+  border-radius: 15px;
+  background: linear-gradient(135deg, rgba(255,122,0,0.10), rgba(255,122,0,0.025));
+}
+
+.next-agenda-label {
+  color: #ffc38f;
+  font-size: clamp(9px, 0.54vw, 11px);
+  font-weight: 850;
+  letter-spacing: 0.11em;
+}
+
+.next-agenda-title {
+  margin-top: 0.22rem;
+  font-size: clamp(12px, 0.76vw, 16px);
+  font-weight: 850;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.next-agenda-time {
+  margin-top: 0.14rem;
+  color: var(--muted);
+  font-size: clamp(9px, 0.56vw, 12px);
+}

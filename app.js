@@ -37,6 +37,134 @@
     document.body.classList.toggle("day-mode", !isNight);
   }
 
+
+  function loadJsonp(url, timeoutMs = 12000) {
+    return new Promise((resolve, reject) => {
+      const callbackName = `homeHubAgenda_${Date.now()}_${Math.floor(Math.random() * 10000)}`;
+      const script = document.createElement("script");
+      const separator = url.includes("?") ? "&" : "?";
+      const timeout = setTimeout(() => {
+        cleanup();
+        reject(new Error("Agenda request timed out"));
+      }, timeoutMs);
+
+      function cleanup() {
+        clearTimeout(timeout);
+        delete window[callbackName];
+        script.remove();
+      }
+
+      window[callbackName] = data => {
+        cleanup();
+        resolve(data);
+      };
+
+      script.onerror = () => {
+        cleanup();
+        reject(new Error("Agenda script could not load"));
+      };
+
+      script.src = `${url}${separator}callback=${encodeURIComponent(callbackName)}&days=${encodeURIComponent(cfg.agenda?.lookAheadDays || 14)}`;
+      document.head.appendChild(script);
+    });
+  }
+
+  function agendaTime(event) {
+    if (event.allDay) return "ALL DAY";
+    const start = new Date(event.start);
+    return new Intl.DateTimeFormat("en-GB", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false
+    }).format(start);
+  }
+
+  function nextEventWhen(event) {
+    const start = new Date(event.start);
+    const today = new Date();
+    const startDay = new Date(start.getFullYear(), start.getMonth(), start.getDate());
+    const todayDay = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    const days = Math.round((startDay - todayDay) / 86400000);
+
+    let dayText;
+    if (days === 0) dayText = "Today";
+    else if (days === 1) dayText = "Tomorrow";
+    else dayText = new Intl.DateTimeFormat("en-GB", {
+      weekday: "short",
+      day: "numeric",
+      month: "short"
+    }).format(start);
+
+    return event.allDay ? `${dayText} · All day` : `${dayText} · ${agendaTime(event)}`;
+  }
+
+  function renderTodayAgenda(data) {
+    const root = $("todayAgenda");
+    const todayEvents = (data.today || []).slice(0, cfg.agenda?.maxTodayEvents || 5);
+    const nextEvent = data.next || null;
+
+    let content = "";
+
+    if (todayEvents.length) {
+      content += `<div class="today-events">`;
+      content += todayEvents.map(event => `
+        <div class="today-event">
+          <div class="today-event-time">${agendaTime(event)}</div>
+          <div>
+            <div class="today-event-title">${escapeHtml(event.title || "Untitled event")}</div>
+            ${event.location ? `<div class="today-event-location">📍 ${escapeHtml(event.location)}</div>` : ""}
+          </div>
+        </div>
+      `).join("");
+      content += `</div>`;
+    } else {
+      content += `
+        <div class="today-empty">
+          <div>
+            <div class="today-empty-icon">✓</div>
+            <div class="today-empty-title">No events today</div>
+            <div class="today-empty-copy">Your calendar is clear.</div>
+          </div>
+        </div>`;
+    }
+
+    if (nextEvent) {
+      content += `
+        <div class="next-agenda-event">
+          <div class="next-agenda-label">NEXT</div>
+          <div class="next-agenda-title">${escapeHtml(nextEvent.title || "Untitled event")}</div>
+          <div class="next-agenda-time">${nextEventWhen(nextEvent)}</div>
+        </div>`;
+    }
+
+    root.innerHTML = content;
+    $("todayStatus").textContent = "LIVE";
+  }
+
+  async function loadTodayAgenda() {
+    if (!cfg.agendaApiUrl) {
+      $("todayAgenda").innerHTML = `
+        <div class="empty-state">
+          Connect the Google Apps Script URL in <strong>config.js</strong>.
+        </div>`;
+      $("todayStatus").textContent = "SETUP";
+      return;
+    }
+
+    try {
+      const data = await loadJsonp(cfg.agendaApiUrl);
+      if (!data || data.ok === false) throw new Error(data?.error || "Agenda unavailable");
+      renderTodayAgenda(data);
+    } catch (error) {
+      $("todayAgenda").innerHTML = `
+        <div class="empty-state">
+          Today’s agenda could not load.<br>Check the Apps Script deployment.
+        </div>`;
+      $("todayStatus").textContent = "OFFLINE";
+      console.error(error);
+    }
+  }
+
   function setupBrand() {
     $("dashboardTitle").textContent = cfg.title || "HOME HUB";
     $("dashboardSubtitle").textContent = cfg.subtitle || "";
@@ -220,44 +348,12 @@
     }
   }
 
-  const shoppingKey = "kitchen-dashboard-shopping-v2";
-  function getItems() {
-    try {
-      const v = JSON.parse(localStorage.getItem(shoppingKey));
-      if (Array.isArray(v)) return v;
-    } catch {}
-    return (cfg.defaultShoppingItems || []).map(text => ({text,done:false}));
-  }
-  function saveItems(v) { localStorage.setItem(shoppingKey,JSON.stringify(v)); }
-  function renderShopping() {
-    const items = getItems();
-    $("shoppingList").innerHTML = items.length ? items.map((item,i) => `
-      <li class="${item.done ? "done" : ""}">
-        <input type="checkbox" data-index="${i}" ${item.done ? "checked" : ""}>
-        <span>${escapeHtml(item.text)}</span>
-        <button class="delete-item" data-delete="${i}">×</button>
-      </li>`).join("") : `<li class="empty-state">Your list is empty.</li>`;
-    document.querySelectorAll("[data-index]").forEach(el => el.onchange = () => {
-      const v=getItems(); v[+el.dataset.index].done=el.checked; saveItems(v); renderShopping();
-    });
-    document.querySelectorAll("[data-delete]").forEach(el => el.onclick = () => {
-      const v=getItems(); v.splice(+el.dataset.delete,1); saveItems(v); renderShopping();
-    });
-  }
-  function setupShopping() {
-    $("addShoppingItem").onclick = () => {
-      const text = prompt("Add shopping item:");
-      if (!text?.trim()) return;
-      const v=getItems(); v.push({text:text.trim(),done:false}); saveItems(v); renderShopping();
-      showToast("Added to shopping list");
-    };
-    renderShopping();
-  }
+
 
   updateDisplayMode();
   setupBrand();
+  loadTodayAgenda();
   setupCalendar();
-  setupShopping();
   updateClock();
   updateCountdown();
   loadWeather();
@@ -266,6 +362,7 @@
 
   setInterval(updateClock,1000);
   setInterval(updateDisplayMode,60000);
+  setInterval(loadTodayAgenda, 5 * 60000);
   setInterval(updateCountdown,60000);
   setInterval(() => { loadWeather(); loadNews(); }, Math.max(5,cfg.refreshMinutes||15)*60000);
   setInterval(loadBitcoin, Math.max(2,cfg.bitcoin?.refreshMinutes||5)*60000);

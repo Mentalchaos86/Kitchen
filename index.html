@@ -57,12 +57,14 @@
           <div id="forecast" class="forecast"></div>
         </article>
 
-        <article class="panel shopping-panel">
+        <article class="panel today-panel">
           <div class="panel-header">
-            <h2>Shopping</h2>
-            <button id="addShoppingItem" class="icon-button" type="button">+</button>
+            <h2>Today</h2>
+            <span id="todayStatus" class="status-pill">CALENDAR</span>
           </div>
-          <ul id="shoppingList" class="shopping-list"></ul>
+          <div id="todayAgenda" class="today-agenda">
+            <div class="empty-state">Connecting to Google Calendar…</div>
+          </div>
         </article>
       </aside>
 
