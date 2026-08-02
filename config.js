@@ -69,6 +69,14 @@ window.DASHBOARD_CONFIG = {
     refreshMinutes: 5
   },
 
+  scenes: {
+    default: "auto",
+    autoMorningStart: 5,
+    autoWorkStart: 11,
+    autoEveningStart: 17,
+    autoNightStart: 23
+  },
+
   refreshMinutes: 15,
 
   defaultShoppingItems: [

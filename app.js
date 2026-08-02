@@ -38,6 +38,76 @@
   }
 
 
+
+  const sceneStorageKey = "homehub-scene-choice-v1";
+  let lastDataRefresh = null;
+
+  function automaticScene() {
+    const hour = new Date().getHours();
+    const scenes = cfg.scenes || {};
+    const morning = scenes.autoMorningStart ?? 5;
+    const work = scenes.autoWorkStart ?? 11;
+    const evening = scenes.autoEveningStart ?? 17;
+    const night = scenes.autoNightStart ?? 23;
+
+    if (hour >= morning && hour < work) return "morning";
+    if (hour >= work && hour < evening) return "work";
+    if (hour >= evening && hour < night) return "evening";
+    return "evening";
+  }
+
+  function storedSceneChoice() {
+    return localStorage.getItem(sceneStorageKey) || cfg.scenes?.default || "auto";
+  }
+
+  function applyScene(choice, persist = false) {
+    const valid = ["auto", "morning", "work", "evening", "vacation"];
+    const selected = valid.includes(choice) ? choice : "auto";
+    const active = selected === "auto" ? automaticScene() : selected;
+
+    document.body.dataset.scene = active;
+    document.body.dataset.sceneChoice = selected;
+
+    document.querySelectorAll("[data-scene-choice]").forEach(button => {
+      button.classList.toggle("active", button.dataset.sceneChoice === selected);
+    });
+
+    const labels = {
+      morning: "MORNING SCENE",
+      work: "WORK SCENE",
+      evening: "EVENING SCENE",
+      vacation: "VACATION SCENE"
+    };
+    $("activeSceneLabel").textContent =
+      selected === "auto" ? `AUTO · ${labels[active]}` : labels[active];
+
+    if (persist) localStorage.setItem(sceneStorageKey, selected);
+  }
+
+  function setupScenes() {
+    document.querySelectorAll("[data-scene-choice]").forEach(button => {
+      button.addEventListener("click", () => {
+        applyScene(button.dataset.sceneChoice, true);
+      });
+    });
+    applyScene(storedSceneChoice());
+  }
+
+  function markUpdated() {
+    lastDataRefresh = new Date();
+    $("lastUpdated").textContent = `Updated ${new Intl.DateTimeFormat("en-GB", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false
+    }).format(lastDataRefresh)}`;
+  }
+
+  function stripHtml(value = "") {
+    const element = document.createElement("div");
+    element.innerHTML = value;
+    return (element.textContent || element.innerText || "").replace(/\s+/g, " ").trim();
+  }
+
   function loadJsonp(url, params = {}, timeoutMs = 12000) {
     return new Promise((resolve, reject) => {
       const callbackName = `homeHubAgenda_${Date.now()}_${Math.floor(Math.random() * 10000)}`;
@@ -111,6 +181,7 @@
     let content = "";
 
     if (todayEvents.length) {
+      content += `<div class="today-summary">${todayEvents.length} event${todayEvents.length === 1 ? "" : "s"} today</div>`;
       content += `<div class="today-events">`;
       content += todayEvents.map(event => `
         <div class="today-event" style="--event-color: ${escapeHtml(event.color || "#ff7a00")}">
@@ -145,6 +216,7 @@
 
     root.innerHTML = content;
     $("todayStatus").textContent = "LIVE";
+    markUpdated();
   }
 
   async function loadTodayAgenda() {
@@ -354,6 +426,7 @@
       if (token !== calendarRequestToken) return;
       if (!data || data.ok === false) throw new Error(data?.error || "Calendar unavailable");
       renderCustomCalendar(data.events || []);
+      markUpdated();
     } catch (error) {
       if (token !== calendarRequestToken) return;
       $("calendarGrid").innerHTML = `
@@ -399,31 +472,64 @@
     $("weatherLocation").textContent = (w.locationName || "Local").toUpperCase();
     const url = new URL("https://api.open-meteo.com/v1/forecast");
     url.search = new URLSearchParams({
-      latitude:w.latitude, longitude:w.longitude,
-      current:"temperature_2m,apparent_temperature,weather_code",
-      daily:"weather_code,temperature_2m_max,temperature_2m_min",
-      timezone:w.timezone || "auto", forecast_days:"3"
+      latitude: w.latitude,
+      longitude: w.longitude,
+      current: "temperature_2m,apparent_temperature,weather_code,relative_humidity_2m,precipitation,wind_speed_10m",
+      daily: "weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,precipitation_probability_max",
+      timezone: w.timezone || "auto",
+      forecast_days: "3"
     });
+
     try {
       const res = await fetch(url);
       if (!res.ok) throw new Error("Weather unavailable");
       const data = await res.json();
       const [label, icon] = weatherText(data.current.weather_code);
+
       $("weatherNow").innerHTML = `
         <div class="weather-temp">${Math.round(data.current.temperature_2m)}°</div>
         <div class="weather-copy">${icon} ${label}<br>Feels like ${Math.round(data.current.apparent_temperature)}°</div>`;
-      $("forecast").innerHTML = data.daily.time.map((d,i) => {
-        const day = new Intl.DateTimeFormat("en-GB",{weekday:"short"}).format(new Date(`${d}T12:00:00`));
+
+      const sunrise = new Intl.DateTimeFormat("en-GB", {
+        hour: "2-digit", minute: "2-digit", hour12: false
+      }).format(new Date(data.daily.sunrise[0]));
+      const sunset = new Intl.DateTimeFormat("en-GB", {
+        hour: "2-digit", minute: "2-digit", hour12: false
+      }).format(new Date(data.daily.sunset[0]));
+
+      $("weatherDetails").innerHTML = `
+        <div class="weather-detail-heading">
+          <span class="weather-detail-icon">${icon}</span>
+          <div>
+            <div class="weather-detail-main">${label}</div>
+            <div class="weather-detail-sub">Feels like ${Math.round(data.current.apparent_temperature)}°</div>
+          </div>
+        </div>
+        <div class="weather-metrics">
+          <span>💧 ${Math.round(data.current.relative_humidity_2m)}%</span>
+          <span>🌧 ${Math.round(data.daily.precipitation_probability_max[0] || 0)}%</span>
+          <span>💨 ${Math.round(data.current.wind_speed_10m)} km/h</span>
+          <span>☀ ${sunrise}</span>
+          <span>🌙 ${sunset}</span>
+        </div>`;
+
+      $("forecast").innerHTML = data.daily.time.map((d, i) => {
+        const day = new Intl.DateTimeFormat("en-GB", {weekday: "short"}).format(new Date(`${d}T12:00:00`));
         const [desc, ico] = weatherText(data.daily.weather_code[i]);
         return `<div class="forecast-day" title="${desc}">
-          <strong>${day}</strong><div class="forecast-icon">${ico}</div>
+          <strong>${day}</strong>
+          <div class="forecast-icon">${ico}</div>
           <div class="forecast-temp">${Math.round(data.daily.temperature_2m_max[i])}°
-          <span class="forecast-min">${Math.round(data.daily.temperature_2m_min[i])}°</span></div>
+            <span class="forecast-min">${Math.round(data.daily.temperature_2m_min[i])}°</span>
+          </div>
+          <div class="forecast-rain">🌧 ${Math.round(data.daily.precipitation_probability_max[i] || 0)}%</div>
         </div>`;
       }).join("");
+      markUpdated();
     } catch(e) {
       $("weatherNow").innerHTML = `<div class="weather-copy">Weather unavailable</div>`;
-      $("forecast").innerHTML = `<div class="empty-state">Could not load weather.</div>`;
+      $("weatherDetails").innerHTML = `<div class="empty-state">Weather unavailable.</div>`;
+      $("forecast").innerHTML = "";
       console.error(e);
     }
   }
@@ -442,12 +548,20 @@
       if (data.status && data.status !== "ok") throw new Error(data.message || "RSS error");
       const items = (data.items || []).slice(0,3);
       if (!items.length) throw new Error("No stories");
-      $("newsList").innerHTML = items.map(item => `
+      $("newsList").innerHTML = items.map(item => {
+        const snippet = stripHtml(item.description || item.content || "").slice(0, 125);
+        return `
         <a class="news-item" href="${item.link}" target="_blank" rel="noopener">
-          <div class="news-title">${escapeHtml(item.title)}</div>
+          <div>
+            <div class="news-kicker">LATEST ARTICLE</div>
+            <div class="news-title">${escapeHtml(item.title)}</div>
+            ${snippet ? `<div class="news-snippet">${escapeHtml(snippet)}${snippet.length >= 125 ? "…" : ""}</div>` : ""}
+          </div>
           <div class="news-meta">${formatDate(item.pubDate)} · THAT’S GAMING</div>
-        </a>`).join("");
+        </a>`;
+      }).join("");
       $("newsStatus").textContent = "LIVE";
+      markUpdated();
     } catch(e) {
       $("newsList").innerHTML = `<div class="empty-state">Headlines could not load.</div>`;
       $("newsStatus").textContent = "OFFLINE";
@@ -496,6 +610,7 @@
         hour:"2-digit",minute:"2-digit",hour12:false
       }).format(new Date())}`;
       $("bitcoinStatus").textContent = "LIVE";
+      markUpdated();
     } catch(e) {
       $("bitcoinChange").textContent = "Market data unavailable";
       $("bitcoinStatus").textContent = "OFFLINE";
@@ -506,6 +621,7 @@
 
 
   updateDisplayMode();
+  setupScenes();
   setupBrand();
   loadTodayAgenda();
   setupCalendar();
@@ -516,7 +632,7 @@
   loadBitcoin();
 
   setInterval(updateClock,1000);
-  setInterval(updateDisplayMode,60000);
+  setInterval(() => { updateDisplayMode(); if (storedSceneChoice() === "auto") applyScene("auto"); },60000);
   setInterval(() => { loadTodayAgenda(); loadCustomCalendar(); }, 5 * 60000);
   setInterval(updateCountdown,60000);
   setInterval(() => { loadWeather(); loadNews(); }, Math.max(5,cfg.refreshMinutes||15)*60000);

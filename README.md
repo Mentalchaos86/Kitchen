@@ -1,36 +1,43 @@
-# HomeHub – Custom Calendar
+# HomeHub – Scenes & Polish
 
-This update replaces the white Google Calendar embed with a custom dark HomeHub calendar.
+This build combines the first two requested priorities:
 
-## New calendar features
+1. Polish the existing widgets.
+2. Add dashboard Scenes.
 
-- Fully dark design matching HomeHub
-- Monday-first month layout
-- Previous month, next month and Today controls
-- Google Calendar event colours
-- Times shown inside each day
-- Multi-day and all-day events
-- Automatic refresh every five minutes
-- No Google branding or white iframe
+## Scene controls
 
-## Required one-time Apps Script update
+A small control bar appears below the header:
 
-The calendar needs the API to return all events for the visible six-week range.
+- Auto
+- Morning
+- Work
+- Evening
+- Vacation
 
-1. Open your **HomeHub Calendar** project at script.google.com.
-2. Open `google-apps-script/Code.gs` from this ZIP.
-3. Replace all existing Apps Script code with this file.
-4. Save the project.
-5. Click **Deploy → Manage deployments**.
-6. Edit the existing Web app deployment.
-7. Select **New version**.
-8. Click **Deploy**.
+The selected scene is saved in the browser.
 
-Keep the existing `/exec` URL. It is already configured in HomeHub.
+### Auto mode
 
-## Upload to GitHub
+- Morning: 05:00–10:59
+- Work: 11:00–16:59
+- Evening: 17:00 onward
 
-Upload and replace:
+Vacation is selected manually.
+
+## Widget improvements
+
+- Today events are larger and easier to read from across the kitchen.
+- Weather now includes humidity, rain chance, wind, sunrise and sunset.
+- The three-day forecast includes rain probability.
+- News cards now include a short article preview.
+- A Last Updated indicator shows that live data is refreshing.
+
+## Installation
+
+No Google Apps Script change is required for this build.
+
+Upload and replace these five files in GitHub:
 
 - index.html
 - styles.css
@@ -38,6 +45,4 @@ Upload and replace:
 - config.js
 - README.md
 
-The `google-apps-script` folder is for Apps Script and does not need to be uploaded to GitHub.
-
-After GitHub Pages deploys, use Ctrl+F5 on a computer or fully reopen the Chromecast browser.
+After GitHub Pages deploys, refresh with Ctrl+F5 or fully reopen the TV browser.

@@ -51,11 +51,11 @@ body.night-mode {
   padding: 1.1vw;
   display: flex;
   flex-direction: column;
-  gap: 0.92vw;
+  gap: 0.72vw;
 }
 
 .topbar {
-  min-height: 10.2vh;
+  min-height: 9.2vh;
   display: grid;
   grid-template-columns: 0.95fr 1.12fr 1.18fr 0.95fr;
   align-items: center;
@@ -796,4 +796,213 @@ body.night-mode {
   color: #ffc38f;
   font-size: clamp(8px, 0.48vw, 10px);
   font-weight: 800;
+}
+
+
+/* Scene controls */
+.scene-dock {
+  min-height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+  padding: 0 0.6vw;
+}
+
+.scene-buttons {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.scene-button {
+  height: 27px;
+  padding: 0 0.58rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.035);
+  color: var(--muted);
+  font-size: clamp(8px,0.48vw,11px);
+  font-weight: 850;
+  letter-spacing: 0.07em;
+  cursor: pointer;
+}
+
+.scene-button.active {
+  color: #fff;
+  border-color: rgba(255,122,0,0.35);
+  background: rgba(255,122,0,0.13);
+  box-shadow: 0 0 16px rgba(255,122,0,0.08);
+}
+
+.scene-status {
+  color: var(--muted);
+  font-size: clamp(8px,0.49vw,11px);
+  font-weight: 750;
+  letter-spacing: 0.04em;
+}
+
+.scene-divider {
+  margin: 0 0.35rem;
+  color: var(--accent);
+}
+
+/* Polished Today card */
+.today-summary {
+  color: #ffc38f;
+  font-size: clamp(9px,0.56vw,12px);
+  font-weight: 850;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  padding: 0.15rem 0 0.4rem;
+}
+
+.today-event {
+  grid-template-columns: 6px 72px 1fr;
+  padding: 0.7rem 0;
+}
+
+.today-event-accent {
+  width: 6px;
+  min-height: 46px;
+}
+
+.today-event-time {
+  font-size: clamp(13px,0.8vw,17px);
+}
+
+.today-event-title {
+  font-size: clamp(16px,1.05vw,22px);
+  letter-spacing: -0.02em;
+}
+
+.today-event-location {
+  font-size: clamp(10px,0.62vw,13px);
+}
+
+/* Rich weather */
+.weather-body {
+  height: calc(100% - 52px);
+  display: grid;
+  grid-template-rows: 0.48fr 0.52fr;
+  min-height: 0;
+}
+
+.weather-details {
+  padding: 0.72vw 0.8vw 0.45vw;
+  border-bottom: 1px solid var(--border);
+}
+
+.weather-detail-heading {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.weather-detail-icon {
+  font-size: clamp(28px,2vw,40px);
+}
+
+.weather-detail-main {
+  font-size: clamp(15px,0.95vw,20px);
+  font-weight: 900;
+}
+
+.weather-detail-sub {
+  color: var(--muted);
+  font-size: clamp(10px,0.62vw,13px);
+}
+
+.weather-metrics {
+  display: grid;
+  grid-template-columns: repeat(3,auto);
+  gap: 0.35rem 0.55rem;
+  margin-top: 0.55rem;
+  color: var(--muted);
+  font-size: clamp(8px,0.51vw,11px);
+  font-weight: 700;
+}
+
+.weather-body .forecast {
+  height: auto;
+  padding-top: 0.48vw;
+}
+
+.forecast-rain {
+  margin-top: 0.2rem;
+  color: var(--muted);
+  font-size: clamp(8px,0.48vw,10px);
+}
+
+/* Richer news */
+.news-kicker {
+  color: #ffc38f;
+  font-size: clamp(8px,0.48vw,10px);
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  margin-bottom: 0.35rem;
+}
+
+.news-snippet {
+  margin-top: 0.42rem;
+  color: var(--muted);
+  font-size: clamp(10px,0.61vw,13px);
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Scene personalities */
+body[data-scene="morning"] {
+  --accent: #ff9a3d;
+  --accent-soft: rgba(255,154,61,0.13);
+}
+
+body[data-scene="work"] {
+  --accent: #ff7a00;
+}
+
+body[data-scene="work"] .news-panel {
+  box-shadow: 0 0 0 1px rgba(255,122,0,0.12), var(--shadow);
+}
+
+body[data-scene="work"] .news-kicker {
+  color: #ff9b43;
+}
+
+body[data-scene="evening"] {
+  --accent: #b685ff;
+  --accent-soft: rgba(182,133,255,0.12);
+  --accent-glow: rgba(182,133,255,0.24);
+}
+
+body[data-scene="evening"] .countdown-block {
+  border-color: rgba(182,133,255,0.28);
+  background: linear-gradient(135deg,rgba(182,133,255,0.14),rgba(182,133,255,0.035));
+}
+
+body[data-scene="vacation"] {
+  --accent: #26c6da;
+  --accent-soft: rgba(38,198,218,0.13);
+  --accent-glow: rgba(38,198,218,0.25);
+  background:
+    radial-gradient(circle at 50% -15%, rgba(38,198,218,0.15), transparent 35%),
+    linear-gradient(145deg,#05090a,#0b1113 52%,#060808);
+}
+
+body[data-scene="vacation"] .countdown-block {
+  transform: scale(1.025);
+  border-color: rgba(38,198,218,0.32);
+  background: linear-gradient(135deg,rgba(38,198,218,0.15),rgba(38,198,218,0.035));
+}
+
+body[data-scene="vacation"] .news-panel {
+  opacity: 0.72;
+}
+
+body[data-scene="vacation"] .weather-panel,
+body[data-scene="vacation"] .today-panel {
+  box-shadow: 0 0 0 1px rgba(38,198,218,0.11), var(--shadow);
 }
