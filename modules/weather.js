@@ -47,11 +47,6 @@ export async function loadWeather() {
     const data = await response.json();
     const [label, icon] = weatherText(data.current.weather_code);
 
-    $("weatherNow").innerHTML = `
-      <div class="weather-temp">${Math.round(data.current.temperature_2m)}°</div>
-      <div class="weather-copy">${icon} ${label}<br>
-      Feels like ${Math.round(data.current.apparent_temperature)}°</div>`;
-
     const timeFormatter = new Intl.DateTimeFormat("en-GB", {
       hour: "2-digit",
       minute: "2-digit",
@@ -61,10 +56,13 @@ export async function loadWeather() {
     $("weatherDetails").innerHTML = `
       <div class="weather-detail-heading">
         <span class="weather-detail-icon">${icon}</span>
-        <div>
-          <div class="weather-detail-main">${label}</div>
-          <div class="weather-detail-sub">
-            Feels like ${Math.round(data.current.apparent_temperature)}°
+        <div class="weather-current-copy">
+          <div class="weather-current-temp">${Math.round(data.current.temperature_2m)}°</div>
+          <div>
+            <div class="weather-detail-main">${label}</div>
+            <div class="weather-detail-sub">
+              Feels like ${Math.round(data.current.apparent_temperature)}°
+            </div>
           </div>
         </div>
       </div>
@@ -101,8 +99,6 @@ export async function loadWeather() {
 
     markUpdated();
   } catch (error) {
-    $("weatherNow").innerHTML =
-      `<div class="weather-copy">Weather unavailable</div>`;
     $("weatherDetails").innerHTML =
       `<div class="empty-state">Weather unavailable.</div>`;
     $("forecast").innerHTML = "";

@@ -57,7 +57,7 @@ body.night-mode {
 .topbar {
   min-height: 9.2vh;
   display: grid;
-  grid-template-columns: 0.95fr 1.12fr 1.18fr 0.95fr;
+  grid-template-columns: 0.72fr 1.5fr 1fr;
   align-items: center;
   gap: 0.9vw;
   padding: 0.45vw 0.85vw;
@@ -1076,4 +1076,41 @@ body[data-scene="vacation"] .daily-focus-label {
   color: #8deaf5;
   background: rgba(38,198,218,0.10);
   border-color: rgba(38,198,218,0.20);
+}
+
+
+/* Clean three-part header: Time, Greeting, Countdown */
+.topbar {
+  grid-template-columns: 0.72fr 1.5fr 1fr;
+  gap: 1.25vw;
+}
+
+.topbar .personal-header {
+  justify-content: center;
+}
+
+.topbar .countdown-block {
+  justify-self: stretch;
+  width: 100%;
+}
+
+.weather-current-copy {
+  display: flex;
+  align-items: center;
+  gap: 0.72rem;
+  min-width: 0;
+}
+
+.weather-current-temp {
+  font-size: clamp(30px, 2.15vw, 44px);
+  line-height: 0.95;
+  font-weight: 900;
+  letter-spacing: -0.055em;
+  color: var(--text);
+}
+
+@media (max-width: 1000px) {
+  .topbar {
+    grid-template-columns: 0.75fr 1.35fr 1fr;
+  }
 }

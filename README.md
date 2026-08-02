@@ -54,3 +54,16 @@ Do not upload the `google-apps-script` folder again.
 No Google Apps Script update is required.
 
 After GitHub Pages deploys, refresh with Ctrl+F5 or fully reopen the TV browser.
+
+
+## Clean header update
+
+The top bar now contains exactly:
+
+1. Time and date
+2. Personal greeting and today's focus
+3. Smart countdown
+
+The duplicate weather display has been removed from the top bar. Current
+temperature, condition and feels-like temperature are now displayed prominently
+inside the Weather card.
