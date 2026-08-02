@@ -1,37 +1,54 @@
-# HomeHub – Personal Header
+# HomeHub OS – Modular Foundation
 
-This update turns the center header into a live daily briefing.
+This release refactors the working HomeHub into independent modules without
+changing the visual design or features.
 
-## New features
+## New project structure
 
-- Time-based greeting using the configured profile name
-- Scene-aware greeting for Work and Vacation modes
-- Current date and number of events today
-- Today's Focus chosen from the live Google Calendar feed
-- Priority for active events, travel, competitions, gym and birthdays
-- Falls back to the next calendar event when today is clear
-- Refreshes when the calendar updates, when scenes change and once per minute
-
-## Profile
-
-The name is configured in `config.js`:
-
-```js
-profile: {
-  name: "Mark"
-},
+```text
+HomeHub/
+├── index.html
+├── styles.css
+├── config.js
+├── main.js
+├── core/
+│   ├── config.js
+│   ├── dom.js
+│   ├── state.js
+│   └── status.js
+├── services/
+│   └── calendar-api.js
+├── modules/
+│   ├── clock.js
+│   ├── scenes.js
+│   ├── header.js
+│   ├── countdown.js
+│   ├── calendar.js
+│   ├── today.js
+│   ├── weather.js
+│   ├── news.js
+│   └── bitcoin.js
+└── google-apps-script/
+    └── Code.gs
 ```
+
+## Why this is better
+
+- A failure in Bitcoin no longer prevents Calendar or Weather from starting.
+- Each feature has its own file.
+- Future updates can replace a single module.
+- Shared calendar state is kept in `core/state.js`.
+- API access is separated into `services/`.
+- `main.js` starts every module independently and catches initialization errors.
 
 ## Installation
 
+Upload everything except the `google-apps-script` folder to the root of the
+GitHub repository.
+
+Important: GitHub must preserve the folder structure for `core`, `modules`, and
+`services`.
+
 No Google Apps Script change is required.
 
-Upload and replace:
-
-- index.html
-- styles.css
-- app.js
-- config.js
-- README.md
-
-Wait for GitHub Pages to deploy, then refresh with Ctrl+F5 or fully reopen the Chromecast browser.
+After GitHub Pages deploys, use Ctrl+F5 or fully reopen the Chromecast browser.
