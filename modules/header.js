@@ -2,6 +2,7 @@ import { config } from "../core/config.js";
 import { $ } from "../core/dom.js";
 import { getAgendaState } from "../core/state.js";
 import { automaticScene } from "./scenes.js";
+import { getIntelligenceContext } from "../core/context.js";
 
 function greetingForHour(hour) {
   if (hour < 5) return { icon: "🌙", text: "Good night" };
@@ -83,10 +84,13 @@ export function updatePersonalHeader() {
         ? "1 event today"
         : `${todayEvents.length} events today`;
 
+  const intelligence = getIntelligenceContext();
   const focusChoice = classifyFocusEvent(todayEvents);
   let focusText;
 
-  if (focusChoice?.event) {
+  if (intelligence.focus) {
+    focusText = `${intelligence.focus.icon} ${intelligence.focus.title} · ${intelligence.focus.subtitle}`;
+  } else if (focusChoice?.event) {
     focusText = focusChoice.prefix
       ? `${focusChoice.prefix}: ${eventFocusText(focusChoice.event)}`
       : eventFocusText(focusChoice.event);
@@ -128,6 +132,7 @@ export function initHeader() {
 
   window.addEventListener("homehub:agenda-change", updatePersonalHeader);
   window.addEventListener("homehub:scene-change", updatePersonalHeader);
+  window.addEventListener("homehub:intelligence-change", updatePersonalHeader);
 
   setInterval(updatePersonalHeader, 60000);
 }

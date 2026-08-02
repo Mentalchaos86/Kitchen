@@ -7,6 +7,7 @@ import { initToday } from "./modules/today.js";
 import { initWeather } from "./modules/weather.js";
 import { initNews } from "./modules/news.js";
 import { initBitcoin } from "./modules/bitcoin.js";
+import { initDebug } from "./modules/debug.js";
 
 const modules = [
   ["Clock", initClock],
@@ -17,7 +18,8 @@ const modules = [
   ["Today", initToday],
   ["Weather", initWeather],
   ["News", initNews],
-  ["Bitcoin", initBitcoin]
+  ["Bitcoin", initBitcoin],
+  ["Debug", initDebug]
 ];
 
 for (const [name, initialize] of modules) {

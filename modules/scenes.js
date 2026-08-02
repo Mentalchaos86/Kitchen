@@ -1,5 +1,6 @@
 import { config } from "../core/config.js";
 import { $ } from "../core/dom.js";
+import { getIntelligenceContext } from "../core/context.js";
 
 const storageKey = "homehub-scene-choice-v1";
 
@@ -25,7 +26,10 @@ export function storedSceneChoice() {
 export function applyScene(choice, persist = false) {
   const valid = ["auto", "morning", "work", "evening", "vacation"];
   const selected = valid.includes(choice) ? choice : "auto";
-  const active = selected === "auto" ? automaticScene() : selected;
+  const intelligenceScene = getIntelligenceContext().scene;
+  const active = selected === "auto"
+    ? (intelligenceScene || automaticScene())
+    : selected;
 
   document.body.dataset.scene = active;
   document.body.dataset.sceneChoice = selected;
@@ -62,6 +66,10 @@ export function initScenes() {
   });
 
   applyScene(storedSceneChoice());
+
+  window.addEventListener("homehub:intelligence-change", () => {
+    if (storedSceneChoice() === "auto") applyScene("auto");
+  });
 
   setInterval(() => {
     if (storedSceneChoice() === "auto") applyScene("auto");

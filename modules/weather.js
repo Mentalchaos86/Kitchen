@@ -1,6 +1,7 @@
 import { config } from "../core/config.js";
 import { $ } from "../core/dom.js";
 import { markUpdated } from "../core/status.js";
+import { getIntelligenceContext } from "../core/context.js";
 
 const weatherCodes = {
   0:["Clear","☀️"],1:["Mostly clear","🌤️"],2:["Partly cloudy","⛅"],3:["Cloudy","☁️"],
@@ -14,7 +15,16 @@ const weatherCodes = {
 const weatherText = code => weatherCodes[code] || ["Weather","🌡️"];
 
 export async function loadWeather() {
-  const weather = config.weather;
+  const intelligentLocation = getIntelligenceContext().weather;
+  const weather = intelligentLocation
+    ? {
+        latitude: intelligentLocation.latitude,
+        longitude: intelligentLocation.longitude,
+        locationName: intelligentLocation.city,
+        timezone: intelligentLocation.timezone
+      }
+    : config.weather;
+
   $("weatherLocation").textContent =
     (weather.locationName || "Local").toUpperCase();
 
@@ -102,6 +112,7 @@ export async function loadWeather() {
 
 export function initWeather() {
   loadWeather();
+  window.addEventListener("homehub:intelligence-change", loadWeather);
   setInterval(
     loadWeather,
     Math.max(5, config.refreshMinutes || 15) * 60000

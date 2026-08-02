@@ -2,6 +2,7 @@ import { config } from "../core/config.js";
 import { $, escapeHtml } from "../core/dom.js";
 import { markUpdated } from "../core/status.js";
 import { loadCalendarJsonp } from "../services/calendar-api.js";
+import { analyzeEvents } from "../core/intelligence.js";
 
 let cursor = new Date();
 cursor = new Date(cursor.getFullYear(), cursor.getMonth(), 1);
@@ -137,6 +138,7 @@ export async function loadCalendar() {
     }
 
     render(data.events || []);
+    analyzeEvents(data.events || []);
     markUpdated();
   } catch (error) {
     if (token !== requestToken) return;

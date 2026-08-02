@@ -1,54 +1,56 @@
-# HomeHub OS – Modular Foundation
+# HomeHub OS – Intelligence Engine
 
-This release refactors the working HomeHub into independent modules without
-changing the visual design or features.
+This build adds the first central intelligence layer to the modular HomeHub.
 
-## New project structure
+## New files
 
 ```text
-HomeHub/
-├── index.html
-├── styles.css
-├── config.js
-├── main.js
-├── core/
-│   ├── config.js
-│   ├── dom.js
-│   ├── state.js
-│   └── status.js
-├── services/
-│   └── calendar-api.js
-├── modules/
-│   ├── clock.js
-│   ├── scenes.js
-│   ├── header.js
-│   ├── countdown.js
-│   ├── calendar.js
-│   ├── today.js
-│   ├── weather.js
-│   ├── news.js
-│   └── bitcoin.js
-└── google-apps-script/
-    └── Code.gs
+core/rules.js
+core/context.js
+core/intelligence.js
+modules/debug.js
 ```
 
-## Why this is better
+## What the engine does
 
-- A failure in Bitcoin no longer prevents Calendar or Weather from starting.
-- Each feature has its own file.
-- Future updates can replace a single module.
-- Shared calendar state is kept in `core/state.js`.
-- API access is separated into `services/`.
-- `main.js` starts every module independently and catches initialization errors.
+It classifies Google Calendar events as:
 
-## Installation
+- Travel
+- Competition
+- Gaming event
+- Birthday
+- Gym
+- Work
+- Personal
 
-Upload everything except the `google-apps-script` folder to the root of the
-GitHub repository.
+It uses event title, location and Google Calendar colour hints.
 
-Important: GitHub must preserve the folder structure for `core`, `modules`, and
-`services`.
+## Smart behavior
 
-No Google Apps Script change is required.
+- Today's Focus uses the classified priority.
+- Countdown prefers major milestones such as travel, competitions and Gamescom.
+- Auto Scene can switch to Vacation or Work based on context.
+- Weather switches to a recognized event destination.
+- Tokyo, Cologne/Gamescom, Maastricht and Amsterdam are included initially.
+- Press `D` on a keyboard to open or close the hidden intelligence debug panel.
 
-After GitHub Pages deploys, use Ctrl+F5 or fully reopen the Chromecast browser.
+## Where to upload it
+
+Replace the existing HomeHub repository contents with this build while keeping
+the folder structure:
+
+```text
+index.html
+styles.css
+config.js
+main.js
+core/
+modules/
+services/
+```
+
+Do not upload the `google-apps-script` folder again.
+
+No Google Apps Script update is required.
+
+After GitHub Pages deploys, refresh with Ctrl+F5 or fully reopen the TV browser.

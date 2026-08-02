@@ -2,6 +2,7 @@ import { config } from "../core/config.js";
 import { $, escapeHtml } from "../core/dom.js";
 import { markUpdated } from "../core/status.js";
 import { setAgendaState } from "../core/state.js";
+import { analyzeEvents } from "../core/intelligence.js";
 import { loadCalendarJsonp } from "../services/calendar-api.js";
 
 function agendaTime(event) {
@@ -47,6 +48,7 @@ function nextEventWhen(event) {
 
 function renderTodayAgenda(data) {
   setAgendaState(data);
+  analyzeEvents(data.events || [...(data.today || []), ...(data.next ? [data.next] : [])]);
 
   const root = $("todayAgenda");
   const todayEvents = (data.today || [])

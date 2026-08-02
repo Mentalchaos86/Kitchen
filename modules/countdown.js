@@ -1,7 +1,19 @@
 import { config } from "../core/config.js";
 import { $ } from "../core/dom.js";
+import { getIntelligenceContext } from "../core/context.js";
 
 export function updateCountdown() {
+  const intelligentCountdown = getIntelligenceContext().countdown;
+
+  if (intelligentCountdown) {
+    $("countdownIcon").textContent = intelligentCountdown.icon;
+    $("countdownLabel").textContent = intelligentCountdown.label;
+    $("countdownValue").textContent = intelligentCountdown.active
+      ? "HAPPENING NOW"
+      : `IN ${intelligentCountdown.days} DAY${intelligentCountdown.days === 1 ? "" : "S"}`;
+    return;
+  }
+
   const events = (config.events || [])
     .map(event => ({
       ...event,
@@ -52,5 +64,6 @@ export function updateCountdown() {
 
 export function initCountdown() {
   updateCountdown();
+  window.addEventListener("homehub:intelligence-change", updateCountdown);
   setInterval(updateCountdown, 60000);
 }
