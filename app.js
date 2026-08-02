@@ -29,6 +29,14 @@
     }).format(now);
   }
 
+
+  function updateDisplayMode() {
+    const hour = new Date().getHours();
+    const isNight = hour < 7 || hour >= 20;
+    document.body.classList.toggle("night-mode", isNight);
+    document.body.classList.toggle("day-mode", !isNight);
+  }
+
   function setupBrand() {
     $("dashboardTitle").textContent = cfg.title || "HOME HUB";
     $("dashboardSubtitle").textContent = cfg.subtitle || "";
@@ -246,6 +254,7 @@
     renderShopping();
   }
 
+  updateDisplayMode();
   setupBrand();
   setupCalendar();
   setupShopping();
@@ -256,6 +265,7 @@
   loadBitcoin();
 
   setInterval(updateClock,1000);
+  setInterval(updateDisplayMode,60000);
   setInterval(updateCountdown,60000);
   setInterval(() => { loadWeather(); loadNews(); }, Math.max(5,cfg.refreshMinutes||15)*60000);
   setInterval(loadBitcoin, Math.max(2,cfg.bitcoin?.refreshMinutes||5)*60000);
