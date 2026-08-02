@@ -1,91 +1,43 @@
-# HomeHub Module: Today & Calendar
+# HomeHub – Custom Calendar
 
-This update replaces the shopping list with a live **Today** agenda from Google Calendar.
+This update replaces the white Google Calendar embed with a custom dark HomeHub calendar.
 
-## What it displays
+## New calendar features
 
-- Today’s appointments
-- Start times
-- All-day events
-- Event locations, when available
-- The next upcoming appointment
-- The existing monthly Google Calendar
+- Fully dark design matching HomeHub
+- Monday-first month layout
+- Previous month, next month and Today controls
+- Google Calendar event colours
+- Times shown inside each day
+- Multi-day and all-day events
+- Automatic refresh every five minutes
+- No Google branding or white iframe
 
-## Why Google Apps Script is used
+## Required one-time Apps Script update
 
-The HomeHub is hosted publicly on GitHub Pages. Connecting it directly to a private Google Calendar with browser OAuth would require regular sign-ins and token handling on the Chromecast.
+The calendar needs the API to return all events for the visible six-week range.
 
-The included Google Apps Script runs under your Google account and returns a small read-only agenda feed. Google documents that Apps Script web apps can execute as the script owner, and its Calendar service can retrieve events occurring on a given day.
+1. Open your **HomeHub Calendar** project at script.google.com.
+2. Open `google-apps-script/Code.gs` from this ZIP.
+3. Replace all existing Apps Script code with this file.
+4. Save the project.
+5. Click **Deploy → Manage deployments**.
+6. Edit the existing Web app deployment.
+7. Select **New version**.
+8. Click **Deploy**.
 
-## One-time Google setup
+Keep the existing `/exec` URL. It is already configured in HomeHub.
 
-### 1. Create the script
+## Upload to GitHub
 
-1. Open `https://script.google.com` in your browser.
-2. Click **New project**.
-3. Rename it to `HomeHub Calendar`.
-4. Delete the sample code.
-5. Open `google-apps-script/Code.gs` from this download.
-6. Copy all of it into the Apps Script editor.
-7. Click **Save**.
+Upload and replace:
 
-### 2. Deploy it
+- index.html
+- styles.css
+- app.js
+- config.js
+- README.md
 
-1. Click **Deploy** in the top-right.
-2. Choose **New deployment**.
-3. Click the gear and choose **Web app**.
-4. Set **Execute as** to `Me`.
-5. Set **Who has access** to `Anyone`.
-6. Click **Deploy**.
-7. Google will ask you to authorize Calendar access.
-8. Copy the resulting URL ending in `/exec`.
+The `google-apps-script` folder is for Apps Script and does not need to be uploaded to GitHub.
 
-### 3. Add the URL to HomeHub
-
-Open `config.js` and paste the URL here:
-
-```js
-agendaApiUrl: "https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec",
-```
-
-### 4. Upload HomeHub
-
-Upload these dashboard files to the root of the existing GitHub repository:
-
-- `index.html`
-- `styles.css`
-- `app.js`
-- `config.js`
-- `README.md`
-
-Do not upload the `google-apps-script` folder to GitHub unless you want it stored there. Its `Code.gs` file belongs in Google Apps Script.
-
-## Privacy note
-
-Deploying as **Anyone** means a person who obtains the long Apps Script URL could read the limited event data returned by this script. It returns only event title, time, all-day status and location. It does not return descriptions, guests or notes.
-
-For stronger privacy later, the alternative is full Google OAuth on the Chromecast, but that introduces sign-in and token-expiry friction.
-
-
-## Calendar API connected
-
-The Google Apps Script web-app URL is already included in `config.js`.
-No additional API configuration is required for this version.
-
-
-## Fixed build
-
-This build removes an obsolete shopping-list startup call that prevented the
-clock, countdown, weather, RSS and Bitcoin widgets from loading after the
-shopping panel was replaced by Today.
-
-
-## Cache-fix build
-
-This build uses versioned asset URLs (`?v=20260802-2`) so GitHub Pages and the TV
-browser are forced to download the corrected JavaScript instead of using an
-older cached `app.js`.
-
-
-## Event colours
-The Today panel now uses the Google Calendar event colour as a narrow bar beside each item.
+After GitHub Pages deploys, use Ctrl+F5 on a computer or fully reopen the Chromecast browser.

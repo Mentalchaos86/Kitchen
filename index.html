@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Home Hub</title>
-  <link rel="stylesheet" href="styles.css?v=20260802-colours1">
+  <link rel="stylesheet" href="styles.css?v=20260802-customcalendar1">
 </head>
 <body>
   <main class="dashboard">
@@ -38,13 +38,22 @@
 
     <section class="grid">
       <article class="panel calendar-panel">
-        <div class="panel-header">
-          <h2>Calendar</h2>
-          <span class="status-pill">MONTH</span>
+        <div class="calendar-toolbar">
+          <div>
+            <div class="calendar-eyebrow">CALENDAR</div>
+            <h2 id="calendarMonthLabel">Loading month…</h2>
+          </div>
+          <div class="calendar-actions">
+            <button id="calendarTodayButton" class="calendar-today-button" type="button">Today</button>
+            <button id="calendarPreviousButton" class="calendar-nav-button" type="button" aria-label="Previous month">‹</button>
+            <button id="calendarNextButton" class="calendar-nav-button" type="button" aria-label="Next month">›</button>
+          </div>
         </div>
-        <iframe id="calendarFrame" title="Google Calendar"></iframe>
-        <div id="calendarFallback" class="empty-state hidden">
-          Add your Google Calendar embed URL in <strong>config.js</strong>.
+        <div class="calendar-weekdays" aria-hidden="true">
+          <span>MON</span><span>TUE</span><span>WED</span><span>THU</span><span>FRI</span><span>SAT</span><span>SUN</span>
+        </div>
+        <div id="calendarGrid" class="calendar-grid">
+          <div class="empty-state">Loading calendar…</div>
         </div>
       </article>
 
@@ -113,7 +122,7 @@
 
   <div id="toast" class="toast"></div>
 
-  <script src="config.js?v=20260802-colours1"></script>
-  <script src="app.js?v=20260802-colours1"></script>
+  <script src="config.js?v=20260802-customcalendar1"></script>
+  <script src="app.js?v=20260802-customcalendar1"></script>
 </body>
 </html>

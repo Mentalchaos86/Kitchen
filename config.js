@@ -11,7 +11,12 @@ window.DASHBOARD_CONFIG = {
 
   agenda: {
     maxTodayEvents: 5,
-    lookAheadDays: 14
+    lookAheadDays: 45
+  },
+
+  calendar: {
+    maxEventsPerDay: 3,
+    weekStartsOnMonday: true
   },
 
   // The dashboard automatically chooses the current event or nearest future event.
