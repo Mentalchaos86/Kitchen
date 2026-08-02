@@ -108,9 +108,10 @@
     if (todayEvents.length) {
       content += `<div class="today-events">`;
       content += todayEvents.map(event => `
-        <div class="today-event">
+        <div class="today-event" style="--event-color: ${escapeHtml(event.color || "#ff7a00")}">
+          <div class="today-event-accent"></div>
           <div class="today-event-time">${agendaTime(event)}</div>
-          <div>
+          <div class="today-event-copy">
             <div class="today-event-title">${escapeHtml(event.title || "Untitled event")}</div>
             ${event.location ? `<div class="today-event-location">📍 ${escapeHtml(event.location)}</div>` : ""}
           </div>
@@ -130,7 +131,7 @@
 
     if (nextEvent) {
       content += `
-        <div class="next-agenda-event">
+        <div class="next-agenda-event" style="--event-color: ${escapeHtml(nextEvent.color || "#ff7a00")}">
           <div class="next-agenda-label">NEXT</div>
           <div class="next-agenda-title">${escapeHtml(nextEvent.title || "Untitled event")}</div>
           <div class="next-agenda-time">${nextEventWhen(nextEvent)}</div>

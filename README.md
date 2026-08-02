@@ -85,3 +85,7 @@ shopping panel was replaced by Today.
 This build uses versioned asset URLs (`?v=20260802-2`) so GitHub Pages and the TV
 browser are forced to download the corrected JavaScript instead of using an
 older cached `app.js`.
+
+
+## Event colours
+The Today panel now uses the Google Calendar event colour as a narrow bar beside each item.

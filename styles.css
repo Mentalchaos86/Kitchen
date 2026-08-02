@@ -515,7 +515,7 @@ body.night-mode {
 
 .today-event {
   display: grid;
-  grid-template-columns: 64px 1fr;
+  grid-template-columns: 5px 64px 1fr;
   align-items: center;
   gap: 0.62rem;
   padding: 0.48rem 0;
@@ -599,4 +599,19 @@ body.night-mode {
   margin-top: 0.14rem;
   color: var(--muted);
   font-size: clamp(9px, 0.56vw, 12px);
+}
+
+
+.today-event-accent {
+  align-self: stretch;
+  width: 5px;
+  min-height: 34px;
+  border-radius: 999px;
+  background: var(--event-color, var(--accent));
+}
+.today-event-copy { min-width: 0; }
+.next-agenda-event { position: relative; overflow: hidden; }
+.next-agenda-event::before {
+  content: ""; position: absolute; inset: 0 auto 0 0; width: 5px;
+  background: var(--event-color, var(--accent));
 }

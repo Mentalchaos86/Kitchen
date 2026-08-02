@@ -7,7 +7,7 @@ window.DASHBOARD_CONFIG = {
 
   // Deploy google-apps-script/Code.gs as a Google Apps Script web app,
   // then paste its /exec URL here.
-  agendaApiUrl: "https://script.google.com/macros/s/AKfycbxExzsIgC1OaXmRpXsfJ50ZcLyFRhnCW9H6_j82LBco0F9LchqFhWxB100ohPmAgnU_/exec",
+  agendaApiUrl: "https://script.google.com/macros/s/AKfycbzTh8fGwqTLroyquF4QdJDgZXOoYwkX1a4x-IIvWPxpAKcUJ3DGuJFJO4DR7ggbz8AL/exec",
 
   agenda: {
     maxTodayEvents: 5,
