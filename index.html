@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home Hub</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="dashboard">
+    <header class="topbar">
+      <section class="clock-block">
+        <div id="time" class="time">--:--</div>
+        <div id="date" class="date">Loading date…</div>
+      </section>
+
+      <section id="countdownBlock" class="countdown-block">
+        <div id="countdownIcon" class="countdown-icon">✈️</div>
+        <div>
+          <div id="countdownLabel" class="countdown-label">NEXT TRIP</div>
+          <div id="countdownValue" class="countdown-value">-- DAYS</div>
+        </div>
+      </section>
+
+      <section class="brand">
+        <div class="brand-mark"></div>
+        <div>
+          <div id="dashboardTitle" class="brand-title">HOME HUB</div>
+          <div id="dashboardSubtitle" class="brand-subtitle">Kitchen command centre</div>
+        </div>
+      </section>
+
+      <section id="weatherNow" class="weather-now">
+        <div class="weather-temp">--°</div>
+        <div class="weather-copy">Loading weather…</div>
+      </section>
+    </header>
+
+    <section class="grid">
+      <article class="panel calendar-panel">
+        <div class="panel-header">
+          <h2>Calendar</h2>
+          <span class="status-pill">MONTH</span>
+        </div>
+        <iframe id="calendarFrame" title="Google Calendar"></iframe>
+        <div id="calendarFallback" class="empty-state hidden">
+          Add your Google Calendar embed URL in <strong>config.js</strong>.
+        </div>
+      </article>
+
+      <aside class="side-column">
+        <article class="panel weather-panel">
+          <div class="panel-header">
+            <h2>Weather</h2>
+            <span id="weatherLocation" class="status-pill">LOCAL</span>
+          </div>
+          <div id="forecast" class="forecast"></div>
+        </article>
+
+        <article class="panel shopping-panel">
+          <div class="panel-header">
+            <h2>Shopping</h2>
+            <button id="addShoppingItem" class="icon-button" type="button">+</button>
+          </div>
+          <ul id="shoppingList" class="shopping-list"></ul>
+        </article>
+      </aside>
+
+      <article class="panel news-panel">
+        <div class="panel-header">
+          <h2>Latest from That’s Gaming</h2>
+          <span id="newsStatus" class="status-pill">RSS</span>
+        </div>
+        <div id="newsList" class="news-list">
+          <div class="empty-state">Loading headlines…</div>
+        </div>
+      </article>
+
+      <article class="panel bitcoin-panel">
+        <div class="panel-header">
+          <h2>₿ Bitcoin</h2>
+          <span id="bitcoinStatus" class="status-pill">LIVE</span>
+        </div>
+        <div class="bitcoin-content">
+          <div class="bitcoin-topline">
+            <div>
+              <div id="bitcoinPrice" class="bitcoin-price">€--</div>
+              <div id="bitcoinChange" class="bitcoin-change">Loading market…</div>
+            </div>
+            <div class="bitcoin-period">24H</div>
+          </div>
+          <svg id="bitcoinChart" class="bitcoin-chart" viewBox="0 0 500 130" preserveAspectRatio="none" aria-label="Bitcoin 24-hour price chart">
+            <defs>
+              <linearGradient id="chartFill" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#ff7a00" stop-opacity="0.36"/>
+                <stop offset="100%" stop-color="#ff7a00" stop-opacity="0"/>
+              </linearGradient>
+            </defs>
+            <path id="chartArea" fill="url(#chartFill)"></path>
+            <path id="chartLine" fill="none" stroke="#ff7a00" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path>
+          </svg>
+          <div class="chart-labels">
+            <span id="bitcoinLow">LOW €--</span>
+            <span id="bitcoinUpdated">UPDATED --:--</span>
+            <span id="bitcoinHigh">HIGH €--</span>
+          </div>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <div id="toast" class="toast"></div>
+
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
