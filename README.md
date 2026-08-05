@@ -67,3 +67,27 @@ The top bar now contains exactly:
 The duplicate weather display has been removed from the top bar. Current
 temperature, condition and feels-like temperature are now displayed prominently
 inside the Weather card.
+
+
+## Today and Countdown upgrade
+
+This dashboard-only release improves the two most frequently viewed widgets.
+
+### Today
+
+- Type icons based on HomeHub Intelligence
+- NOW, SOON, UP NEXT, LATER, DONE and ALL DAY states
+- Live "starts in" and "time remaining" messages
+- Finished events become visually quieter
+- More useful empty-day message
+- Better next-event card
+
+### Countdown
+
+- Planning, Coming Up, This Week, Tomorrow and Live phases
+- Progress bar
+- More natural hour/day language
+- Preparation hints based on how close the milestone is
+
+No Android TV APK or Google Apps Script update is required.
+Upload the web files and folders to the existing GitHub Pages repository.

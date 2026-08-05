@@ -1114,3 +1114,153 @@ body[data-scene="vacation"] .daily-focus-label {
     grid-template-columns: 0.75fr 1.35fr 1fr;
   }
 }
+
+
+/* Today + smart countdown upgrade */
+.countdown-block {
+  align-items: center;
+}
+
+.countdown-copy {
+  min-width: 0;
+  width: 100%;
+}
+
+.countdown-topline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.55rem;
+}
+
+.countdown-phase {
+  flex: 0 0 auto;
+  padding: 0.16rem 0.42rem;
+  border-radius: 999px;
+  color: #ffc38f;
+  background: rgba(255,122,0,0.10);
+  border: 1px solid rgba(255,122,0,0.20);
+  font-size: clamp(7px,0.42vw,9px);
+  font-weight: 900;
+  letter-spacing: 0.08em;
+}
+
+.countdown-progress {
+  width: 100%;
+  height: 4px;
+  margin-top: 0.38rem;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.08);
+}
+
+.countdown-progress-fill {
+  width: 0;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg,var(--accent),#ffc38f);
+  box-shadow: 0 0 12px var(--accent-glow);
+  transition: width 0.6s ease;
+}
+
+.countdown-hint {
+  margin-top: 0.28rem;
+  color: var(--muted);
+  font-size: clamp(8px,0.49vw,11px);
+  font-weight: 650;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.today-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.today-summary strong {
+  color: #fff;
+  font-size: clamp(8px,0.49vw,10px);
+  font-weight: 850;
+}
+
+.today-event {
+  grid-template-columns: 6px 74px 1fr;
+  padding: 0.62rem 0;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.today-event-time-column {
+  min-width: 0;
+}
+
+.today-event-badge {
+  display: inline-flex;
+  margin-top: 0.27rem;
+  padding: 0.13rem 0.32rem;
+  border-radius: 999px;
+  color: var(--event-color);
+  background: color-mix(in srgb,var(--event-color) 11%,transparent);
+  border: 1px solid color-mix(in srgb,var(--event-color) 25%,transparent);
+  font-size: clamp(7px,0.41vw,9px);
+  font-weight: 900;
+  letter-spacing: 0.06em;
+}
+
+.today-event-heading {
+  display: flex;
+  align-items: center;
+  gap: 0.42rem;
+  min-width: 0;
+}
+
+.today-event-icon {
+  flex: 0 0 auto;
+  font-size: clamp(15px,0.95vw,20px);
+}
+
+.today-event-status {
+  margin-top: 0.22rem;
+  color: #d7d7d7;
+  font-size: clamp(9px,0.57vw,12px);
+  font-weight: 700;
+}
+
+.today-event-active {
+  border-radius: 12px;
+  background: color-mix(in srgb,var(--event-color) 8%,transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb,var(--event-color) 16%,transparent);
+}
+
+.today-event-finished {
+  opacity: 0.48;
+}
+
+.today-event-finished .today-event-title {
+  text-decoration: line-through;
+  text-decoration-thickness: 1px;
+}
+
+.next-agenda-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.next-agenda-icon {
+  font-size: clamp(15px,0.95vw,20px);
+}
+
+body[data-scene="evening"] .countdown-phase {
+  color: #d8c0ff;
+  background: rgba(182,133,255,0.10);
+  border-color: rgba(182,133,255,0.20);
+}
+
+body[data-scene="vacation"] .countdown-phase {
+  color: #8deaf5;
+  background: rgba(38,198,218,0.10);
+  border-color: rgba(38,198,218,0.20);
+}
