@@ -30,6 +30,40 @@ function eventFocusText(event) {
   return `${title} at ${time}`;
 }
 
+
+function sameLocalDay(dateA, dateB) {
+  return dateA.getFullYear() === dateB.getFullYear() &&
+    dateA.getMonth() === dateB.getMonth() &&
+    dateA.getDate() === dateB.getDate();
+}
+
+function tomorrowPreview(nextEvent, now) {
+  if (!nextEvent || now.getHours() < 18) return null;
+
+  const tomorrow = new Date(
+    now.getFullYear(),
+    now.getMonth(),
+    now.getDate() + 1
+  );
+  const start = new Date(nextEvent.start);
+
+  if (!sameLocalDay(start, tomorrow)) {
+    return "Tomorrow · No appointments";
+  }
+
+  if (nextEvent.allDay) {
+    return `Tomorrow · ${nextEvent.title || "All-day event"}`;
+  }
+
+  const time = new Intl.DateTimeFormat("en-GB", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false
+  }).format(start);
+
+  return `Tomorrow · ${nextEvent.title || "Next event"} at ${time}`;
+}
+
 function classifyFocusEvent(events) {
   const active = events.find(event => eventIsActive(event));
   if (active) return { event: active, prefix: "Happening now" };
@@ -121,8 +155,12 @@ export function updatePersonalHeader() {
     focusText = scene === "evening" ? "Time to unwind" : "Enjoy your clear day";
   }
 
+  const eveningPreview = tomorrowPreview(nextEvent, now);
+
   title.textContent = heading;
-  subtitle.textContent = `${dateText} · ${eventCountText}`;
+  subtitle.textContent = eveningPreview
+    ? `${dateText} · ${eventCountText} · ${eveningPreview}`
+    : `${dateText} · ${eventCountText}`;
   focus.textContent = focusText;
   document.title = `${config.title || "Home Hub"} · ${greeting.text}`;
 }

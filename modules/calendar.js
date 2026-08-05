@@ -97,12 +97,19 @@ function render(events) {
       key === todayKey ? "is-today" : ""
     ].filter(Boolean).join(" ");
 
+    const now = new Date();
+    const upcomingEvents = dayEvents.filter(event => new Date(event.end) > now);
+    const nextUpcomingId = upcomingEvents[0]?.id || null;
+
     cells.push(`
       <div class="${classes}">
-        <div class="calendar-day-number">${date.getDate()}</div>
+        <div class="calendar-day-header">
+          <div class="calendar-day-number">${date.getDate()}</div>
+          ${key === todayKey ? `<div class="calendar-today-label">TODAY</div>` : ""}
+        </div>
         <div class="calendar-day-events">
           ${visible.map(event => `
-            <div class="calendar-event"
+            <div class="calendar-event ${event.id === nextUpcomingId ? "calendar-event-next" : ""}"
                  style="--event-color:${escapeHtml(event.color || "#ff7a00")}"
                  title="${escapeHtml(event.title || "")}">
               <span class="calendar-event-dot"></span>

@@ -1264,3 +1264,58 @@ body[data-scene="vacation"] .countdown-phase {
   background: rgba(38,198,218,0.10);
   border-color: rgba(38,198,218,0.20);
 }
+
+
+/* Stronger calendar today state + evening briefing */
+.calendar-day-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.35rem;
+  margin-bottom: 0.26rem;
+}
+
+.calendar-day-header .calendar-day-number {
+  margin-bottom: 0;
+}
+
+.calendar-today-label {
+  padding: 0.13rem 0.34rem;
+  border-radius: 999px;
+  color: #111;
+  background: var(--accent);
+  font-size: clamp(7px,0.40vw,9px);
+  font-weight: 950;
+  letter-spacing: 0.08em;
+  box-shadow: 0 0 14px var(--accent-glow);
+}
+
+.calendar-day.is-today {
+  position: relative;
+  background:
+    radial-gradient(circle at 50% 0%, color-mix(in srgb,var(--accent) 18%,transparent), transparent 58%),
+    linear-gradient(155deg, color-mix(in srgb,var(--accent) 13%,transparent), rgba(255,255,255,0.012));
+  box-shadow:
+    inset 0 0 0 2px color-mix(in srgb,var(--accent) 42%,transparent),
+    0 0 22px color-mix(in srgb,var(--accent) 12%,transparent);
+}
+
+.calendar-day.is-today::after {
+  content: "";
+  position: absolute;
+  inset: 3px;
+  pointer-events: none;
+  border-radius: 8px;
+  border: 1px solid color-mix(in srgb,var(--accent) 20%,transparent);
+}
+
+.calendar-event-next {
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb,var(--event-color) 36%,transparent),
+    0 0 12px color-mix(in srgb,var(--event-color) 10%,transparent);
+}
+
+.calendar-event-next .calendar-event-text {
+  color: #fff;
+  font-weight: 850;
+}

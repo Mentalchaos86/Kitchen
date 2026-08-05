@@ -91,3 +91,18 @@ This dashboard-only release improves the two most frequently viewed widgets.
 
 No Android TV APK or Google Apps Script update is required.
 Upload the web files and folders to the existing GitHub Pages repository.
+
+
+## Calendar and Daily Briefing upgrade
+
+### Calendar
+- Stronger glow and border around the current date
+- Clear TODAY badge
+- The next upcoming event on a day is visually emphasized
+
+### Evening briefing
+- After 18:00, the greeting line previews tomorrow
+- If tomorrow is clear, it says `Tomorrow · No appointments`
+- Otherwise it shows tomorrow's first event and time
+
+No Android TV APK or Google Apps Script update is required.
