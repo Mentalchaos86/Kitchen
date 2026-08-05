@@ -6,6 +6,12 @@ window.DASHBOARD_CONFIG = {
     name: "Mark"
   },
 
+  intelligenceUi: {
+    missionLabel: "TODAY’S MISSION",
+    upNextLabel: "UP NEXT",
+    useMissionLanguage: true
+  },
+
   // Paste the URL found inside the Google Calendar embed code.
   calendarEmbedUrl: "https://calendar.google.com/calendar/embed?src=mvtruijen%40gmail.com&ctz=Europe%2FAmsterdam",
 
