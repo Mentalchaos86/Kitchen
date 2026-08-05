@@ -106,3 +106,18 @@ Upload the web files and folders to the existing GitHub Pages repository.
 - Otherwise it shows tomorrow's first event and time
 
 No Android TV APK or Google Apps Script update is required.
+
+
+## HomeHub OS v1.3 Focus — Sprint 1
+
+New folder:
+
+```text
+intelligence/
+├── priorities.js
+├── contract.js
+├── context.js
+└── engine.js
+```
+
+No Google Apps Script or Android TV update is required.

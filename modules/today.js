@@ -4,6 +4,7 @@ import { markUpdated } from "../core/status.js";
 import { setAgendaState } from "../core/state.js";
 import { analyzeEvents } from "../core/intelligence.js";
 import { getIntelligenceContext } from "../core/context.js";
+import { buildFocusResult } from "../intelligence/engine.js";
 import { loadCalendarJsonp } from "../services/calendar-api.js";
 
 function agendaTime(event) {
@@ -151,9 +152,13 @@ function eventCard(event) {
 function renderTodayAgenda(data) {
   setAgendaState(data);
 
-  analyzeEvents(
+  const focusEvents =
     data.events ||
-    [...(data.today || []), ...(data.next ? [data.next] : [])]
+    [...(data.today || []), ...(data.next ? [data.next] : [])];
+
+  analyzeEvents(focusEvents);
+  buildFocusResult(
+    getIntelligenceContext().analyzedEvents || focusEvents
   );
 
   const root = $("todayAgenda");

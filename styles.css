@@ -1319,3 +1319,22 @@ body[data-scene="vacation"] .countdown-phase {
   color: #fff;
   font-weight: 850;
 }
+
+
+/* HomeHub OS v1.3 Focus — Sprint 1 */
+.secondary-reminder {
+  margin-top: 0.24rem;
+  min-height: 0.8rem;
+  color: var(--muted);
+  font-size: clamp(8px,0.48vw,10px);
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.daily-focus-value {
+  color: #fff;
+  font-weight: 850;
+}

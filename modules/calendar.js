@@ -3,6 +3,7 @@ import { $, escapeHtml } from "../core/dom.js";
 import { markUpdated } from "../core/status.js";
 import { loadCalendarJsonp } from "../services/calendar-api.js";
 import { analyzeEvents } from "../core/intelligence.js";
+import { buildFocusResult } from "../intelligence/engine.js";
 
 let cursor = new Date();
 cursor = new Date(cursor.getFullYear(), cursor.getMonth(), 1);
@@ -145,7 +146,8 @@ export async function loadCalendar() {
     }
 
     render(data.events || []);
-    analyzeEvents(data.events || []);
+    const intelligence = analyzeEvents(data.events || []);
+    buildFocusResult(intelligence.analyzedEvents || data.events || []);
     markUpdated();
   } catch (error) {
     if (token !== requestToken) return;

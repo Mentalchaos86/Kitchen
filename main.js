@@ -8,11 +8,13 @@ import { initWeather } from "./modules/weather.js";
 import { initNews } from "./modules/news.js";
 import { initBitcoin } from "./modules/bitcoin.js";
 import { initDebug } from "./modules/debug.js";
+import { initFocus } from "./modules/focus.js";
 
 const modules = [
   ["Clock", initClock],
   ["Scenes", initScenes],
   ["Header", initHeader],
+  ["Focus", initFocus],
   ["Countdown", initCountdown],
   ["Calendar", initCalendar],
   ["Today", initToday],
