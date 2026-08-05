@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Home Hub</title>
-  <link rel="stylesheet" href="styles.css?v=20260805-focus-sprint1">
+  <link rel="stylesheet" href="styles.css?v=20260805-focus-experience1">
 </head>
 <body>
   <main class="dashboard">
@@ -19,11 +19,33 @@
         <div class="personal-header-copy">
           <div id="dashboardTitle" class="brand-title">Good evening, Mark</div>
           <div id="dashboardSubtitle" class="brand-subtitle">Loading today’s briefing…</div>
-          <div id="dailyFocus" class="daily-focus">
+          <section id="focusHero" class="focus-hero" aria-live="polite">
+            <div class="focus-hero-main">
+              <div class="focus-hero-orbit" aria-hidden="true">
+                <div id="focusHeroIcon" class="focus-hero-icon">🎯</div>
+                <svg class="focus-progress-ring" viewBox="0 0 100 100">
+                  <circle class="focus-progress-track" cx="50" cy="50" r="44"></circle>
+                  <circle id="focusProgressRing" class="focus-progress-value" cx="50" cy="50" r="44"></circle>
+                </svg>
+              </div>
+              <div class="focus-hero-copy">
+                <div class="focus-hero-topline">
+                  <span class="focus-hero-kicker">TODAY’S FOCUS</span>
+                  <span id="focusHeroState" class="focus-hero-state">READY</span>
+                </div>
+                <div id="focusHeroTitle" class="focus-hero-title">Preparing your day…</div>
+                <div id="focusHeroReason" class="focus-hero-reason"></div>
+                <div id="focusHeroAction" class="focus-hero-action"></div>
+                <div id="focusWhy" class="focus-why"></div>
+              </div>
+            </div>
+            <div id="secondaryCards" class="secondary-cards"></div>
+          </section>
+          <div id="dailyFocus" class="daily-focus legacy-focus" hidden>
             <span class="daily-focus-label">TODAY’S FOCUS</span>
-            <span id="dailyFocusValue" class="daily-focus-value">Preparing your day…</span>
+            <span id="dailyFocusValue" class="daily-focus-value"></span>
           </div>
-          <div id="secondaryReminder" class="secondary-reminder"></div>
+          <div id="secondaryReminder" class="secondary-reminder legacy-focus" hidden></div>
         </div>
       </section>
 
@@ -149,7 +171,7 @@
 
   <div id="toast" class="toast"></div>
 
-  <script src="config.js?v=20260805-focus-sprint1"></script>
-  <script type="module" src="main.js?v=20260805-focus-sprint1"></script>
+  <script src="config.js?v=20260805-focus-experience1"></script>
+  <script type="module" src="main.js?v=20260805-focus-experience1"></script>
 </body>
 </html>

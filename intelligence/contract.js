@@ -23,6 +23,9 @@ export function normalizeFocus(item) {
     start: item.start || null,
     end: item.end || null,
     allDay: Boolean(item.allDay),
-    location: item.location || ""
+    location: item.location || "",
+    state: item.state || "ready",
+    why: Array.isArray(item.why) ? item.why : [],
+    progress: Number(item.progress || 0)
   };
 }

@@ -1,42 +1,10 @@
 import { $ } from "../core/dom.js";
 import { getFocusResult } from "../intelligence/context.js";
-
-function render() {
-  const result = getFocusResult();
-  const focus = $("dailyFocusValue");
-  const secondary = $("secondaryReminder");
-
-  if (!focus) return;
-
-  if (result.focus) {
-    focus.textContent = [
-      `${result.focus.icon} ${result.focus.title}`,
-      result.focus.reason,
-      result.focus.action
-    ].filter(Boolean).join(" · ");
-
-    if (secondary) {
-      secondary.textContent = result.secondary.length
-        ? "ALSO REMEMBER  " + result.secondary
-            .map(item => `${item.icon} ${item.title} · ${item.reason}`)
-            .join("   •   ")
-        : "";
-    }
-    return;
-  }
-
-  if (result.celebrations.length) {
-    const item = result.celebrations[0];
-    focus.textContent = `${item.icon} ${item.title} · ${item.message}`;
-    if (secondary) secondary.textContent = "";
-    return;
-  }
-
-  focus.textContent = "Enjoy your clear day";
-  if (secondary) secondary.textContent = "";
-}
-
-export function initFocus() {
-  render();
-  window.addEventListener("homehub:focus-change", render);
-}
+const C = 276.46;
+function meta(f){ const m={active:["LIVE","is-live"],soon:["STARTS SOON","is-soon"],today:["TODAY","is-today"],tomorrow:["TOMORROW","is-tomorrow"],future:["COMING UP","is-future"],completed:["COMPLETED","is-completed"],ready:["READY","is-ready"]}; const x=m[f?.state]||m.ready; return {label:x[0],className:x[1]}; }
+function ring(v=0){ const e=$("focusProgressRing"); if(!e)return; const n=Math.max(0,Math.min(100,v)); e.style.strokeDasharray=`${C}`; e.style.strokeDashoffset=`${C-(n/100)*C}`; }
+function why(f){ const e=$("focusWhy"); if(!e)return; const a=(f?.why||[]).slice(0,3); e.innerHTML=a.length?`<div class="focus-why-label">WHY THIS</div><div class="focus-why-items">${a.map(x=>`<span class="focus-why-item">${x}</span>`).join("")}</div>`:""; }
+function secondary(a=[]){ const e=$("secondaryCards"); if(!e)return; if(!a.length){e.innerHTML="";e.classList.add("is-empty");return;} e.classList.remove("is-empty"); e.innerHTML=a.slice(0,2).map(x=>`<div class="secondary-card"><div class="secondary-card-icon">${x.icon}</div><div class="secondary-card-copy"><div class="secondary-card-label">ALSO REMEMBER</div><div class="secondary-card-title">${x.title}</div><div class="secondary-card-reason">${x.reason}</div></div></div>`).join(""); }
+function state(m){ const h=$("focusHero"); if(!h)return; h.className=`focus-hero ${m.className} focus-hero-enter`; setTimeout(()=>h.classList.remove("focus-hero-enter"),520); }
+function render(){ const r=getFocusResult(); if(!r.focus){ const c=r.celebrations?.[0]; const m={label:c?"NICE WORK":"CLEAR DAY",className:c?"is-completed":"is-ready"}; state(m); $("focusHeroIcon").textContent=c?.icon||"☀️"; $("focusHeroState").textContent=m.label; $("focusHeroTitle").textContent=c?.title||"Your day is open"; $("focusHeroReason").textContent=c?.message||"No urgent appointments need your attention."; $("focusHeroAction").textContent=c?"":"Use the space for something that matters."; $("focusWhy").innerHTML=""; ring(100); secondary([]); return; } const f=r.focus,m=meta(f); state(m); $("focusHeroIcon").textContent=f.icon; $("focusHeroState").textContent=m.label; $("focusHeroTitle").textContent=f.title; $("focusHeroReason").textContent=f.reason; $("focusHeroAction").textContent=f.action||""; ring(f.progress||0); why(f); secondary(r.secondary); }
+export function initFocus(){ render(); window.addEventListener("homehub:focus-change",render); }

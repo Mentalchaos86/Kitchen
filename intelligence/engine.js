@@ -90,18 +90,34 @@ function score(event, now) {
   const timing = timingFor(event, now);
   const type = typeFor(event);
 
+  const baseScore = PRIORITIES[type] ?? PRIORITIES.personal;
+  const allDayBonus = event.allDay ? SCORE_RULES.allDay : 0;
+  const score = baseScore + timing.bonus + allDayBonus;
+  const why = [
+    `Priority ${baseScore}`,
+    timing.reason,
+    timing.bonus > 0 ? `Urgency +${timing.bonus}` : "",
+    allDayBonus ? `All-day +${allDayBonus}` : ""
+  ].filter(Boolean);
+
   return {
-    ...event,
-    type,
-    icon: iconFor(event),
-    state: timing.state,
-    reason: timing.reason,
-    action: timing.action,
-    score:
-      (PRIORITIES[type] ?? PRIORITIES.personal) +
-      timing.bonus +
-      (event.allDay ? SCORE_RULES.allDay : 0)
+    ...event, type, icon: iconFor(event), state: timing.state,
+    reason: timing.reason, action: timing.action, score, why
   };
+}
+
+function progressFor(event, now) {
+  const start = new Date(event.start);
+  const end = new Date(event.end || event.start);
+  if (event.state === "completed") return 100;
+  if (event.state === "active") {
+    const total = Math.max(1, end - start);
+    return Math.max(5, Math.min(100, Math.round(((now - start) / total) * 100)));
+  }
+  const horizon = 7 * 86400000;
+  const distance = Math.max(0, start - now);
+  if (distance >= horizon) return 12;
+  return Math.max(12, Math.min(96, Math.round(96 - (distance / horizon) * 84)));
 }
 
 export function buildFocusResult(events = []) {
@@ -115,6 +131,11 @@ export function buildFocusResult(events = []) {
 
   const focus = scored.find(event => event.state !== "completed") || null;
   result.focus = normalizeFocus(focus);
+  if (result.focus && focus) {
+    result.focus.state = focus.state;
+    result.focus.why = focus.why || [];
+    result.focus.progress = progressFor(focus, now);
+  }
 
   result.secondary = scored
     .filter(event => event !== focus && event.state !== "completed")

@@ -1,26 +1,21 @@
-# HomeHub OS v1.3.0 — Focus
+# HomeHub OS v1.3.1 — Focus Experience
 
-## Sprint 1: Intelligence Engine
+## Sprint 2
+- Hero Focus Card
+- Dynamic states
+- Circular progress indicator
+- Secondary reminder cards
+- Calm transitions
+- Transparent “Why this” explanation
 
-### New
-- Configurable priority system
-- Event scoring engine
-- Intelligence contract
-- One primary focus
-- Up to two secondary reminders
-- Completed-event encouragement
-- First Focus integration in the existing header
-
-## Update checklist
-
-### GitHub
+## GitHub
 Upload everything except `google-apps-script/`.
 
-### Google Apps Script
+## Google Apps Script
 No changes.
 
-### Android TV
+## Android TV
 No APK update required.
 
-### Rollback
-Restore `HomeHub-Dashboard-Calendar-Briefing.zip`.
+## Rollback
+Restore `HomeHub-OS-v1.3.0-Focus-Sprint1.zip`.
