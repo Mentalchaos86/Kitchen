@@ -14,7 +14,7 @@ export const intelligenceSettings = {
     competition: 75,
     meeting: 20,
     work: 20,
-    gym: 40,
+    gym: 15,
     birthday: 0,
     personal: 15,
     gaming: 15
