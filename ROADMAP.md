@@ -22,3 +22,10 @@
 - Native settings
 - Multiple modes
 - Expanded intelligence
+
+## v1.6 — Learn
+
+- Routine Engine ✅
+- Confidence Engine ✅
+- Deviation detection ✅
+- Health-score foundation ✅

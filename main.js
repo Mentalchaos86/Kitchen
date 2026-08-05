@@ -10,6 +10,7 @@ import { initBitcoin } from "./modules/bitcoin.js";
 import { initDebug } from "./modules/debug.js";
 import { initFocus } from "./modules/focus.js";
 import { initAware } from "./modules/aware.js";
+import { initLearning } from "./modules/learning.js";
 
 const modules = [
   ["Clock", initClock],
@@ -17,6 +18,7 @@ const modules = [
   ["Header", initHeader],
   ["Focus", initFocus],
   ["Aware", initAware],
+  ["Learning", initLearning],
   ["Countdown", initCountdown],
   ["Calendar", initCalendar],
   ["Today", initToday],

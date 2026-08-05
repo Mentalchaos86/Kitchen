@@ -6,6 +6,7 @@ import { analyzeEvents } from "../core/intelligence.js";
 import { getIntelligenceContext } from "../core/context.js";
 import { buildFocusResult } from "../intelligence/engine.js";
 import { updateAwareState } from "../intelligence/aware.js";
+import { updateLearning } from "../intelligence/learning.js";
 import { loadCalendarJsonp } from "../services/calendar-api.js";
 
 function agendaTime(event) {

@@ -145,3 +145,10 @@ No Google Apps Script or Android TV update is required.
 ## HomeHub OS v1.5.0 — Aware
 
 Adds change detection, local memory, Daily Pulse, timeline context and pattern foundations. No Google Apps Script or APK update required.
+
+
+## HomeHub OS v1.6.0 — Learn
+
+This release learns repeated event timing locally and only surfaces meaningful deviations.
+
+No Google Apps Script or Android TV update is required.
