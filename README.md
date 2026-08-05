@@ -140,3 +140,8 @@ Sprint 4 adds:
 - a central settings architecture.
 
 No Google Apps Script or Android TV update is required.
+
+
+## HomeHub OS v1.5.0 — Aware
+
+Adds change detection, local memory, Daily Pulse, timeline context and pattern foundations. No Google Apps Script or APK update required.

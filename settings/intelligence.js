@@ -13,8 +13,8 @@ export const intelligenceSettings = {
     travel: 90,
     competition: 75,
     meeting: 20,
-    work: 40,
-    gym: 15,
+    work: 20,
+    gym: 40,
     birthday: 0,
     personal: 15,
     gaming: 15
