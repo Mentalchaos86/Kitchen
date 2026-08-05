@@ -6,6 +6,8 @@
 - Sprint 3: Mission Experience
 
 ## v1.4 — Aware
+
+- Sprint 4: Time Awareness ✅
 - Weather warnings
 - Travel context
 - Leave-time guidance

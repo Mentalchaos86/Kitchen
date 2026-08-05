@@ -1,14 +1,22 @@
-# HomeHub OS v1.3.2 — Mission Experience
+# HomeHub OS v1.4.0 — Time Awareness
 
-## Sprint 3
+## Sprint 4
 
-### New
-- Clean Mission hero
-- One Up Next reminder
-- Mission Complete state
-- Reduced top-section height
-- Configurable interface wording
-- Full product documentation system
+### Product
+- Live mission timing
+- Leave-in and Leave Now guidance
+- Automatic mission switching
+- Activity queue
+
+### UX
+- Urgency colors
+- Contextual greeting
+- Calm live updates
+
+### Platform
+- Central settings architecture
+- Scheduler
+- New documentation
 
 ## GitHub
 Upload everything except `google-apps-script/`.
@@ -20,4 +28,4 @@ No changes.
 No APK update required.
 
 ## Rollback
-Restore `HomeHub-OS-v1.3.1-Focus-Experience.zip`.
+Restore `HomeHub-OS-v1.3.2-Mission-Experience.zip`.

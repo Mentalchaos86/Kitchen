@@ -1,6 +1,8 @@
 import { PRIORITIES, SCORE_RULES, SECONDARY_LIMIT } from "./priorities.js";
 import { emptyFocusResult, normalizeFocus } from "./contract.js";
 import { setFocusResult } from "./context.js";
+import { buildTimeAwareness } from "./time-awareness.js";
+import { buildActivityQueue } from "./queue.js";
 
 function sameDay(a, b) {
   return a.getFullYear() === b.getFullYear() &&
@@ -136,6 +138,8 @@ export function buildFocusResult(events = []) {
     result.focus.why = focus.why || [];
     result.focus.progress = progressFor(focus, now);
   }
+
+  result.queue = buildActivityQueue(scored, now);
 
   result.secondary = scored
     .filter(event => event !== focus && event.state !== "completed")

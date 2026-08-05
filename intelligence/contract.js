@@ -5,6 +5,7 @@ export function emptyFocusResult() {
     celebrations: [],
     warnings: [],
     changes: [],
+    queue: [],
     generatedAt: new Date().toISOString()
   };
 }
@@ -26,6 +27,9 @@ export function normalizeFocus(item) {
     location: item.location || "",
     state: item.state || "ready",
     why: Array.isArray(item.why) ? item.why : [],
-    progress: Number(item.progress || 0)
+    progress: Number(item.progress || 0),
+    label: item.label || "",
+    leaveAt: item.leaveAt || null,
+    leadMinutes: Number(item.leadMinutes || 0)
   };
 }

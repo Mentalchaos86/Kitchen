@@ -3,6 +3,7 @@ import { $ } from "../core/dom.js";
 import { getAgendaState } from "../core/state.js";
 import { automaticScene } from "./scenes.js";
 import { getIntelligenceContext } from "../core/context.js";
+import { getFocusResult } from "../intelligence/context.js";
 
 function greetingForHour(hour) {
   if (hour < 5) return { icon: "🌙", text: "Good night" };
@@ -171,6 +172,7 @@ export function initHeader() {
   window.addEventListener("homehub:agenda-change", updatePersonalHeader);
   window.addEventListener("homehub:scene-change", updatePersonalHeader);
   window.addEventListener("homehub:intelligence-change", updatePersonalHeader);
+  window.addEventListener("homehub:focus-change", updatePersonalHeader);
 
   setInterval(updatePersonalHeader, 60000);
 }

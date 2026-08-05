@@ -4,6 +4,7 @@ let result = {
   celebrations: [],
   warnings: [],
   changes: [],
+  queue: [],
   generatedAt: null
 };
 

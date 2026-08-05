@@ -126,3 +126,17 @@ No Google Apps Script or Android TV update is required.
 ## HomeHub OS v1.3.2 — Mission Experience
 
 Sprint 3 simplifies the Focus Experience into one mission, one Up Next item, one completion state, less visual height, and no internal scoring explanations on the main screen. A full `docs/` folder now defines the vision, architecture, design language, and release workflow.
+
+
+## HomeHub OS v1.4.0 — Time Awareness
+
+Sprint 4 adds:
+
+- live mission countdowns;
+- leave-time guidance;
+- urgency states;
+- automatic mission transitions;
+- an internal activity queue;
+- a central settings architecture.
+
+No Google Apps Script or Android TV update is required.

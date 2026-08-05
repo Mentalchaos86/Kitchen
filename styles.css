@@ -1359,3 +1359,38 @@ body[data-scene="vacation"] .countdown-phase {
 .focus-hero.is-completed .focus-hero-title::before { content: "✓ "; }
 .focus-hero-kicker { color: #f1f1f1; }
 .mission-up-next .secondary-card-label { color: var(--accent); }
+
+
+/* HomeHub OS v1.4.0 — Time Awareness */
+.focus-hero.is-leave-soon {
+  --accent: #ff9a3d;
+  --accent-glow: rgba(255,154,61,0.30);
+  border-color: rgba(255,154,61,0.30);
+  background:
+    linear-gradient(135deg,rgba(255,154,61,0.12),rgba(255,255,255,0.01)),
+    rgba(9,9,9,0.70);
+}
+
+.focus-hero.is-leave-now {
+  --accent: #ff4d4d;
+  --accent-glow: rgba(255,77,77,0.34);
+  border-color: rgba(255,77,77,0.34);
+  background:
+    linear-gradient(135deg,rgba(255,77,77,0.14),rgba(255,255,255,0.01)),
+    rgba(9,9,9,0.72);
+}
+
+.focus-hero.is-leave-now .focus-hero-state {
+  animation: leave-now-pulse 1.8s ease-in-out infinite;
+}
+
+@keyframes leave-now-pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.04); opacity: 0.82; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .focus-hero.is-leave-now .focus-hero-state {
+    animation: none;
+  }
+}
