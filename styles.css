@@ -1442,3 +1442,79 @@ body[data-scene="vacation"] .countdown-phase {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+
+/* HomeHub OS v1.6.5 — Moments */
+.homehub-moment {
+  margin-top: 0.48rem;
+  padding: 0.72rem 0.78rem;
+  border-radius: 14px;
+  background:
+    linear-gradient(135deg,rgba(255,122,0,0.09),rgba(255,255,255,0.018)),
+    rgba(10,10,10,0.68);
+  border: 1px solid rgba(255,122,0,0.18);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.03),
+    0 10px 24px rgba(0,0,0,0.14);
+  animation: homehub-moment-enter 0.45s ease both;
+}
+
+.homehub-moment-topline {
+  display: flex;
+  align-items: center;
+  gap: 0.38rem;
+}
+
+.homehub-moment-icon {
+  font-size: clamp(15px,0.95vw,20px);
+}
+
+.homehub-moment-label {
+  color: var(--accent);
+  font-size: clamp(7px,0.42vw,9px);
+  font-weight: 950;
+  letter-spacing: 0.11em;
+}
+
+.homehub-moment-title {
+  margin-top: 0.28rem;
+  color: #fff;
+  font-size: clamp(14px,0.92vw,19px);
+  font-weight: 930;
+  letter-spacing: -0.02em;
+}
+
+.homehub-moment-subtitle {
+  margin-top: 0.14rem;
+  color: var(--muted);
+  font-size: clamp(8px,0.50vw,11px);
+  font-weight: 680;
+}
+
+.homehub-moment-ideas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.28rem;
+  margin-top: 0.46rem;
+}
+
+.homehub-moment-idea {
+  padding: 0.20rem 0.38rem;
+  border-radius: 999px;
+  color: #e8e8e8;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.065);
+  font-size: clamp(7px,0.44vw,9px);
+  font-weight: 720;
+}
+
+@keyframes homehub-moment-enter {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

@@ -29,3 +29,9 @@
 - Confidence Engine ✅
 - Deviation detection ✅
 - Health-score foundation ✅
+
+## v1.6.5 — Moments
+
+- Two-hour completed-event retention ✅
+- Contextual free-gap Moments ✅
+- Configurable suggestions ✅

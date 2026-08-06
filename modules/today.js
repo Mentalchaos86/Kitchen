@@ -7,6 +7,7 @@ import { getIntelligenceContext } from "../core/context.js";
 import { buildFocusResult } from "../intelligence/engine.js";
 import { updateAwareState } from "../intelligence/aware.js";
 import { updateLearning } from "../intelligence/learning.js";
+import { visibleTodayEvents, buildMoment } from "../intelligence/moments.js";
 import { loadCalendarJsonp } from "../services/calendar-api.js";
 
 function agendaTime(event) {
@@ -164,9 +165,11 @@ function renderTodayAgenda(data) {
   );
 
   const root = $("todayAgenda");
-  const todayEvents = (data.today || [])
+  const allTodayEvents = data.today || [];
+  const todayEvents = visibleTodayEvents(allTodayEvents)
     .slice(0, config.agenda?.maxTodayEvents || 5);
   const nextEvent = data.next || null;
+  const moment = buildMoment(allTodayEvents);
 
   let content = "";
 
@@ -180,7 +183,7 @@ function renderTodayAgenda(data) {
 
     content += `
       <div class="today-summary">
-        <span>${todayEvents.length} event${todayEvents.length === 1 ? "" : "s"} today</span>
+        <span>${todayEvents.length} relevant event${todayEvents.length === 1 ? "" : "s"}</span>
         ${activeCount ? `<strong>${activeCount} happening now</strong>` : ""}
       </div>`;
 
@@ -197,6 +200,28 @@ function renderTodayAgenda(data) {
             No appointments today. Enjoy the breathing room.
           </div>
         </div>
+      </div>`;
+  }
+
+
+  if (moment) {
+    content += `
+      <div class="homehub-moment">
+        <div class="homehub-moment-topline">
+          <div class="homehub-moment-icon">${moment.icon}</div>
+          <div class="homehub-moment-label">${moment.label}</div>
+        </div>
+
+        <div class="homehub-moment-title">${escapeHtml(moment.title)}</div>
+        <div class="homehub-moment-subtitle">${escapeHtml(moment.subtitle)}</div>
+
+        ${moment.ideas.length
+          ? `<div class="homehub-moment-ideas">
+              ${moment.ideas.map(idea =>
+                `<span class="homehub-moment-idea">${escapeHtml(idea)}</span>`
+              ).join("")}
+            </div>`
+          : ""}
       </div>`;
   }
 

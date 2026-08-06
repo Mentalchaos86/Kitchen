@@ -1,17 +1,25 @@
-# HomeHub OS v1.6.0 — Learn
+# HomeHub OS v1.6.5 — Moments
 
 ## Product
-- Learns recurring event times
-- Surfaces useful deviations
-- Keeps normal routines quiet
 
-## Architecture
-- `intelligence/routine-store.js`
-- `intelligence/routine-engine.js`
-- `intelligence/confidence.js`
-- `intelligence/deviation-engine.js`
-- `intelligence/learning.js`
-- `intelligence/health.js`
+- Completed events remain visible for two hours
+- Older completed timed events disappear from Today
+- Free time becomes a contextual Moment
+- Moments make space useful without creating clutter
+
+## Configuration
+
+Edit:
+
+```text
+settings/moments.js
+```
+
+Default retention:
+
+```js
+completedEventRetentionMinutes: 120
+```
 
 ## GitHub
 Upload everything except `google-apps-script/`.
@@ -23,4 +31,4 @@ No changes.
 No APK update required.
 
 ## Rollback
-Restore `HomeHub-OS-v1.5.0-Aware.zip`.
+Restore `HomeHub-OS-v1.6.0-Learn.zip`.

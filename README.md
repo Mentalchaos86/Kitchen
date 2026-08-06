@@ -152,3 +152,17 @@ Adds change detection, local memory, Daily Pulse, timeline context and pattern f
 This release learns repeated event timing locally and only surfaces meaningful deviations.
 
 No Google Apps Script or Android TV update is required.
+
+
+## HomeHub OS v1.6.5 — Moments
+
+Completed timed events remain visible for two hours and then disappear from
+Today. Meaningful gaps before the next event can become calm contextual Moments.
+
+Configure the behavior in:
+
+```text
+settings/moments.js
+```
+
+No Google Apps Script or Android TV update is required.
