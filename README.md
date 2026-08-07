@@ -164,5 +164,5 @@ Configure the behavior in:
 ```text
 settings/moments.js
 ```
-Deployment refresh
 No Google Apps Script or Android TV update is required.
+Deployment refresh
