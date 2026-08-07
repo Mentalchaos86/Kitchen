@@ -1,34 +1,17 @@
-# HomeHub OS v1.6.5 — Moments
+# HomeHub OS v1.7.0 — Predict, Sprint 1
 
-## Product
+New intelligence files:
+- prediction.js
+- prediction-store.js
+- prediction-context.js
+- prediction-score.js
+- prediction-types.js
+- prediction-api.js
 
-- Completed events remain visible for two hours
-- Older completed timed events disappear from Today
-- Free time becomes a contextual Moment
-- Moments make space useful without creating clutter
+New settings:
+- settings/modes.js
 
-## Configuration
-
-Edit:
-
-```text
-settings/moments.js
-```
-
-Default retention:
-
-```js
-completedEventRetentionMinutes: 120
-```
-
-## GitHub
-Upload everything except `google-apps-script/`.
-
-## Google Apps Script
-No changes.
-
-## Android TV
-No APK update required.
-
-## Rollback
-Restore `HomeHub-OS-v1.6.0-Learn.zip`.
+GitHub: upload everything except `google-apps-script/`.
+Google Apps Script: no changes.
+Android TV: no APK update.
+Rollback: `HomeHub-OS-v1.6.5-Moments.zip`.

@@ -164,5 +164,11 @@ Configure the behavior in:
 ```text
 settings/moments.js
 ```
+
 No Google Apps Script or Android TV update is required.
-Deployment refresh
+
+
+## HomeHub OS v1.7.0 — Predict, Sprint 1
+
+Adds the reusable Prediction Engine and Focus Mode inference.
+No visual redesign, Google Apps Script update or Android TV APK update is required.

@@ -8,6 +8,7 @@ import { buildFocusResult } from "../intelligence/engine.js";
 import { updateAwareState } from "../intelligence/aware.js";
 import { updateLearning } from "../intelligence/learning.js";
 import { visibleTodayEvents, buildMoment } from "../intelligence/moments.js";
+import { buildPrediction } from "../intelligence/prediction.js";
 import { loadCalendarJsonp } from "../services/calendar-api.js";
 
 function agendaTime(event) {
