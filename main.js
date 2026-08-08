@@ -11,6 +11,7 @@ import { initDebug } from "./modules/debug.js";
 import { initFocus } from "./modules/focus.js";
 import { initAware } from "./modules/aware.js";
 import { initLearning } from "./modules/learning.js";
+import { initPredictionTimeline } from "./modules/prediction-timeline.js";
 
 const modules = [
   ["Clock", initClock],
@@ -19,6 +20,7 @@ const modules = [
   ["Focus", initFocus],
   ["Aware", initAware],
   ["Learning", initLearning],
+  ["Prediction Timeline", initPredictionTimeline],
   ["Countdown", initCountdown],
   ["Calendar", initCalendar],
   ["Today", initToday],

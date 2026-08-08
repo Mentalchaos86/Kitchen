@@ -39,7 +39,7 @@
 ## v1.7 — Predict
 
 - Sprint 1: Prediction Engine ✅
-- Sprint 2: NOW / NEXT / LATER
+- Sprint 2: NOW / NEXT / LATER ✅
 - Sprint 3: Preparation Windows
 - Sprint 4: Predictive Moments
 - Sprint 5: Morning Brief

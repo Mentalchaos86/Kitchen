@@ -1518,3 +1518,109 @@ body[data-scene="vacation"] .countdown-phase {
     transform: translateY(0);
   }
 }
+
+
+/* HomeHub OS v1.7.1 — Predict Sprint 2 */
+.prediction-timeline {
+  margin-top: 0.28rem;
+}
+
+.prediction-timeline.is-empty {
+  display: none;
+}
+
+.predict-flow {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0,1fr));
+  gap: 0.34rem;
+}
+
+.predict-card {
+  min-width: 0;
+  padding: 0.34rem 0.42rem;
+  border-radius: 11px;
+  background: rgba(255,255,255,0.022);
+  border: 1px solid rgba(255,255,255,0.055);
+}
+
+.predict-card.is-now {
+  background:
+    linear-gradient(135deg,rgba(255,122,0,0.10),rgba(255,255,255,0.018)),
+    rgba(9,9,9,0.64);
+  border-color: rgba(255,122,0,0.22);
+}
+
+.predict-card.is-next {
+  border-color: rgba(255,255,255,0.09);
+}
+
+.predict-card-label {
+  color: var(--muted);
+  font-size: clamp(6px,0.36vw,8px);
+  font-weight: 950;
+  letter-spacing: 0.10em;
+}
+
+.predict-card.is-now .predict-card-label {
+  color: var(--accent);
+}
+
+.predict-card-main {
+  display: flex;
+  align-items: center;
+  gap: 0.34rem;
+  margin-top: 0.18rem;
+  min-width: 0;
+}
+
+.predict-card-icon {
+  flex: 0 0 auto;
+  font-size: clamp(14px,0.85vw,18px);
+}
+
+.predict-card-title {
+  min-width: 0;
+  color: #f3f3f3;
+  font-size: clamp(9px,0.56vw,12px);
+  font-weight: 850;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.predict-card-meta {
+  margin-top: 0.14rem;
+  color: var(--muted);
+  font-size: clamp(7px,0.43vw,9px);
+  font-weight: 700;
+}
+
+.predict-gap {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.32rem;
+  margin-top: 0.28rem;
+  padding: 0.18rem 0.34rem;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.025);
+  border: 1px solid rgba(255,255,255,0.05);
+}
+
+.predict-gap-label {
+  color: var(--muted);
+  font-size: clamp(6px,0.34vw,8px);
+  font-weight: 900;
+  letter-spacing: 0.08em;
+}
+
+.predict-gap-value {
+  color: #fff;
+  font-size: clamp(7px,0.42vw,9px);
+  font-weight: 850;
+}
+
+@media (max-width: 1100px) {
+  .predict-flow {
+    grid-template-columns: repeat(2,minmax(0,1fr));
+  }
+}

@@ -172,3 +172,10 @@ No Google Apps Script or Android TV update is required.
 
 Adds the reusable Prediction Engine and Focus Mode inference.
 No visual redesign, Google Apps Script update or Android TV APK update is required.
+
+
+## HomeHub OS v1.7.1 — Predict, Sprint 2
+
+Adds a compact NOW / NEXT / LATER timeline powered by the Prediction Store.
+
+No Google Apps Script or Android TV update is required.
