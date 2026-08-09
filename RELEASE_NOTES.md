@@ -1,18 +1,13 @@
-# HomeHub OS v1.7.1 — Predict, Sprint 2
+# HomeHub OS v1.7.2 — Predict, Sprint 3
 
-## Product
-- Adds visible NOW / NEXT / LATER context
-- Uses the Prediction Engine as the single source of truth
-- Shows a small free-window indicator when relevant
+Adds Preparation Windows with separate prep and travel time.
 
-## GitHub
-Upload everything except `google-apps-script/`.
+New:
+- `intelligence/prepare.js`
+- `modules/preparation-window.js`
+- `settings/preparation.js`
 
-## Google Apps Script
-No changes.
-
-## Android TV
-No APK update required.
-
-## Rollback
-Restore `HomeHub-OS-v1.7.0-Predict-Sprint1.zip`.
+GitHub: upload everything except `google-apps-script/`.
+Google Apps Script: no changes.
+Android TV: no APK update.
+Rollback: `HomeHub-OS-v1.7.1-Predict-Sprint2.zip`.

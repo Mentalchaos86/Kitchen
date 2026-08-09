@@ -179,3 +179,10 @@ No visual redesign, Google Apps Script update or Android TV APK update is requir
 Adds a compact NOW / NEXT / LATER timeline powered by the Prediction Store.
 
 No Google Apps Script or Android TV update is required.
+
+
+## HomeHub OS v1.7.2 — Predict, Sprint 3
+
+Adds Preparation Windows with separate preparation and travel time.
+Configure defaults in `settings/preparation.js`.
+No Google Apps Script or Android TV update is required.

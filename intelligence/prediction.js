@@ -3,6 +3,7 @@ import { determineFocusMode } from "./prediction-context.js";
 import { scoreEventPrediction, overallPredictionConfidence } from "./prediction-score.js";
 import { setPrediction } from "./prediction-store.js";
 import { findRoutineFor } from "./routine-engine.js";
+import { buildPreparationWindow } from "./prepare.js";
 
 const normalize = event => event ? ({
   id:event.id || event.title,
@@ -39,10 +40,7 @@ export function buildPrediction(events=[], now=new Date()){
        category:gapMinutes>=180?"long":gapMinutes>=90?"medium":gapMinutes>=45?"short":"none"}
     : null;
 
-  const startsIn = next ? Math.floor((new Date(next.start)-now)/60000) : null;
-  const prepare = (next && !next.allDay && startsIn > 0)
-    ? {startsIn, leaveIn:null, shouldPrepare:startsIn<=60}
-    : null;
+  const prepare = nextRaw ? buildPreparationWindow(nextRaw, now) : null;
 
   const mode = determineFocusMode({current,next,now});
   const routine = nextRaw ? findRoutineFor(nextRaw) : null;
@@ -55,7 +53,8 @@ export function buildPrediction(events=[], now=new Date()){
 
   let predictionType = PREDICTION_TYPES.NONE;
   if (current) predictionType = mode==="travel" ? PREDICTION_TYPES.TRAVEL : PREDICTION_TYPES.FOCUS;
-  else if (prepare?.shouldPrepare) predictionType = PREDICTION_TYPES.PREPARE;
+  else if (prepare?.state === "leave-now") predictionType = PREDICTION_TYPES.LEAVE;
+  else if (prepare?.state === "leave-soon" || prepare?.state === "prepare") predictionType = PREDICTION_TYPES.PREPARE;
   else if (gap?.useful) predictionType = PREDICTION_TYPES.FREE_TIME;
   else if (mode==="recovery") predictionType = PREDICTION_TYPES.RECOVERY;
   else if (next && mode==="travel") predictionType = PREDICTION_TYPES.TRAVEL;

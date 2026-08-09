@@ -5,6 +5,7 @@ import { intelligenceSettings } from "./intelligence.js";
 import { systemSettings } from "./system.js";
 import { momentSettings } from "./moments.js";
 import { modeSettings } from "./modes.js";
+import { preparationSettings } from "./preparation.js";
 
 export const settings = {
   profile: profileSettings,
@@ -13,5 +14,6 @@ export const settings = {
   intelligence: intelligenceSettings,
   system: systemSettings,
   moments: momentSettings,
-  modes: modeSettings
+  modes: modeSettings,
+  preparation: preparationSettings
 };
