@@ -42,4 +42,4 @@
 - Sprint 2: NOW / NEXT / LATER ✅
 - Sprint 3: Preparation Windows ✅
 - Sprint 4: Predictive Moments ✅
-- Sprint 5: Morning Brief
+- Sprint 5: Morning Brief ✅

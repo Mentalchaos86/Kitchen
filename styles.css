@@ -1648,3 +1648,12 @@ body[data-scene="vacation"] .countdown-phase {
 .predictive-moment.is-work{border-color:rgba(94,163,255,.18)}.predictive-moment.is-training{border-color:rgba(255,154,61,.20)}
 .predictive-moment.is-travel{border-color:rgba(142,125,255,.20)}.predictive-moment.is-gaming{border-color:rgba(255,122,0,.20)}
 .predictive-moment.is-recovery{border-color:rgba(74,203,128,.16)}
+
+.morning-brief{margin-top:.30rem;padding:.50rem .56rem;border-radius:13px;background:linear-gradient(135deg,rgba(255,196,92,.07),rgba(255,255,255,.018)),rgba(9,9,9,.64);border:1px solid rgba(255,196,92,.14)}
+.morning-brief.is-empty{display:none}.morning-brief-header{display:flex;align-items:center;gap:.34rem}
+.morning-brief-icon{font-size:clamp(15px,.9vw,19px)}.morning-brief-label{color:#f3c66a;font-size:clamp(7px,.42vw,9px);font-weight:950;letter-spacing:.11em}
+.morning-brief-lines{display:grid;gap:.22rem;margin-top:.30rem}.morning-brief-line{display:grid;grid-template-columns:22px minmax(0,1fr);gap:.30rem;align-items:center}
+.morning-brief-line-icon{display:grid;place-items:center;font-size:clamp(12px,.74vw,16px)}
+.morning-brief-line-text{min-width:0;color:#ededed;font-size:clamp(9px,.56vw,12px);font-weight:740;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.morning-brief.is-work{border-color:rgba(94,163,255,.16)}.morning-brief.is-training{border-color:rgba(255,154,61,.18)}
+.morning-brief.is-travel{border-color:rgba(142,125,255,.18)}.morning-brief.is-gaming{border-color:rgba(255,122,0,.18)}

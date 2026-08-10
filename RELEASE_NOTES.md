@@ -1,13 +1,13 @@
-# HomeHub OS v1.7.3 — Predict, Sprint 4
+# HomeHub OS v1.7.4 — Predict, Sprint 5
 
-Predictive Moments now use Focus Mode, gap size, and next event type.
+Adds a three-line Morning Brief powered by Predict, Aware and Mission data.
 
 New:
-- `intelligence/predictive-moments.js`
-- `modules/predictive-moment.js`
-- `settings/predictive-moments.js`
+- `intelligence/brief.js`
+- `modules/morning-brief.js`
+- `settings/morning-brief.js`
 
 GitHub: upload everything except `google-apps-script/`.
 Google Apps Script: no changes.
 Android TV: no APK update.
-Rollback: `HomeHub-OS-v1.7.2-Predict-Sprint3.zip`.
+Rollback: `HomeHub-OS-v1.7.3-Predict-Sprint4.zip`.

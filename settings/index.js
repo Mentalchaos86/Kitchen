@@ -7,6 +7,7 @@ import { momentSettings } from "./moments.js";
 import { modeSettings } from "./modes.js";
 import { preparationSettings } from "./preparation.js";
 import { predictiveMomentSettings } from "./predictive-moments.js";
+import { morningBriefSettings } from "./morning-brief.js";
 
 export const settings = {
   profile: profileSettings,
@@ -17,5 +18,6 @@ export const settings = {
   moments: momentSettings,
   modes: modeSettings,
   preparation: preparationSettings,
-  predictiveMoments: predictiveMomentSettings
+  predictiveMoments: predictiveMomentSettings,
+  morningBrief: morningBriefSettings
 };

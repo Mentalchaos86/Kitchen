@@ -193,3 +193,10 @@ No Google Apps Script or Android TV update is required.
 Predictive Moments adapt suggestions to the current Focus Mode, gap size, and next event.
 Configure suggestions in `settings/predictive-moments.js`.
 No Google Apps Script or Android TV update is required.
+
+
+## HomeHub OS v1.7.4 — Predict, Sprint 5
+
+Adds a compact Morning Brief between 05:00 and 11:00.
+Configure in `settings/morning-brief.js`.
+No Google Apps Script or Android TV update is required.
