@@ -186,3 +186,10 @@ No Google Apps Script or Android TV update is required.
 Adds Preparation Windows with separate preparation and travel time.
 Configure defaults in `settings/preparation.js`.
 No Google Apps Script or Android TV update is required.
+
+
+## HomeHub OS v1.7.3 — Predict, Sprint 4
+
+Predictive Moments adapt suggestions to the current Focus Mode, gap size, and next event.
+Configure suggestions in `settings/predictive-moments.js`.
+No Google Apps Script or Android TV update is required.

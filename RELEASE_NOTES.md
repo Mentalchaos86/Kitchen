@@ -1,13 +1,13 @@
-# HomeHub OS v1.7.2 — Predict, Sprint 3
+# HomeHub OS v1.7.3 — Predict, Sprint 4
 
-Adds Preparation Windows with separate prep and travel time.
+Predictive Moments now use Focus Mode, gap size, and next event type.
 
 New:
-- `intelligence/prepare.js`
-- `modules/preparation-window.js`
-- `settings/preparation.js`
+- `intelligence/predictive-moments.js`
+- `modules/predictive-moment.js`
+- `settings/predictive-moments.js`
 
 GitHub: upload everything except `google-apps-script/`.
 Google Apps Script: no changes.
 Android TV: no APK update.
-Rollback: `HomeHub-OS-v1.7.1-Predict-Sprint2.zip`.
+Rollback: `HomeHub-OS-v1.7.2-Predict-Sprint3.zip`.

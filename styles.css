@@ -1637,3 +1637,14 @@ body[data-scene="vacation"] .countdown-phase {
 .preparation-window.is-leave-soon{border-color:rgba(255,122,0,.28);background:rgba(255,122,0,.075)}
 .preparation-window.is-leave-now{border-color:rgba(255,77,77,.34);background:rgba(255,77,77,.09)}
 .preparation-window.is-leave-now .prep-window-label{color:#ff6a6a}
+
+.predictive-moment{display:grid;grid-template-columns:36px minmax(0,1fr);gap:.52rem;align-items:start;margin-top:.30rem;padding:.48rem .54rem;border-radius:12px;background:rgba(255,255,255,.024);border:1px solid rgba(255,255,255,.06)}
+.predictive-moment.is-empty{display:none}.predictive-moment-icon{display:grid;place-items:center;font-size:clamp(17px,1.05vw,23px);padding-top:.05rem}
+.predictive-moment-copy{min-width:0}.predictive-moment-label{color:var(--accent);font-size:clamp(7px,.42vw,9px);font-weight:950;letter-spacing:.10em}
+.predictive-moment-title{margin-top:.12rem;color:#fff;font-size:clamp(12px,.78vw,16px);font-weight:900}
+.predictive-moment-subtitle{margin-top:.10rem;color:var(--muted);font-size:clamp(8px,.48vw,10px);font-weight:700}
+.predictive-moment-suggestions{display:flex;flex-wrap:wrap;gap:.26rem;margin-top:.34rem}
+.predictive-moment-suggestion{padding:.18rem .34rem;border-radius:999px;color:#ededed;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);font-size:clamp(7px,.43vw,9px);font-weight:720}
+.predictive-moment.is-work{border-color:rgba(94,163,255,.18)}.predictive-moment.is-training{border-color:rgba(255,154,61,.20)}
+.predictive-moment.is-travel{border-color:rgba(142,125,255,.20)}.predictive-moment.is-gaming{border-color:rgba(255,122,0,.20)}
+.predictive-moment.is-recovery{border-color:rgba(74,203,128,.16)}

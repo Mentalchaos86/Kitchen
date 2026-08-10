@@ -13,6 +13,7 @@ import { initAware } from "./modules/aware.js";
 import { initLearning } from "./modules/learning.js";
 import { initPredictionTimeline } from "./modules/prediction-timeline.js";
 import { initPreparationWindow } from "./modules/preparation-window.js";
+import { initPredictiveMoment } from "./modules/predictive-moment.js";
 
 const modules = [
   ["Clock", initClock],
@@ -23,6 +24,7 @@ const modules = [
   ["Learning", initLearning],
   ["Prediction Timeline", initPredictionTimeline],
   ["Preparation Window", initPreparationWindow],
+  ["Predictive Moment", initPredictiveMoment],
   ["Countdown", initCountdown],
   ["Calendar", initCalendar],
   ["Today", initToday],
