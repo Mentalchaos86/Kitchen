@@ -14,7 +14,6 @@ import { initLearning } from "./modules/learning.js";
 import { initPredictionTimeline } from "./modules/prediction-timeline.js";
 import { initPreparationWindow } from "./modules/preparation-window.js";
 import { initPredictiveMoment } from "./modules/predictive-moment.js";
-import { initMorningBrief } from "./modules/morning-brief.js";
 
 const modules = [
   ["Clock", initClock],
@@ -26,7 +25,6 @@ const modules = [
   ["Prediction Timeline", initPredictionTimeline],
   ["Preparation Window", initPreparationWindow],
   ["Predictive Moment", initPredictiveMoment],
-  ["Morning Brief", initMorningBrief],
   ["Countdown", initCountdown],
   ["Calendar", initCalendar],
   ["Today", initToday],
@@ -43,3 +41,24 @@ for (const [name, initialize] of modules) {
     console.error(`[HomeHub:${name}] Module failed to initialize`, error);
   }
 }
+async function loadOptionalFeatures() {
+  const optionalFeatures = [
+    {
+      name: "Morning Brief",
+      load: () => import("./modules/morning-brief.js?v=20260811-175")
+    }
+  ];
+
+  for (const feature of optionalFeatures) {
+    try {
+      const module = await feature.load();
+      if (typeof module.initMorningBrief === "function") {
+        module.initMorningBrief();
+      }
+    } catch (error) {
+      console.error(`[HomeHub:${feature.name}] Optional feature failed; dashboard remains operational.`, error);
+    }
+  }
+}
+
+loadOptionalFeatures();

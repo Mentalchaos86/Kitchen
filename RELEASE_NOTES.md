@@ -1,11 +1,11 @@
-# HomeHub OS v1.7.4 — Predict, Sprint 5
+# HomeHub OS v1.7.5 — Predict Stability Fix
 
-Adds a three-line Morning Brief powered by Predict, Aware and Mission data.
+This release fixes the all-screen Loading state introduced around Sprint 5.
 
-New:
-- `intelligence/brief.js`
-- `modules/morning-brief.js`
-- `settings/morning-brief.js`
+The key architecture change is a bootstrap failsafe:
+the proven dashboard starts first; Morning Brief loads afterwards as an optional feature.
+
+If Morning Brief ever fails, HomeHub itself keeps running.
 
 GitHub: upload everything except `google-apps-script/`.
 Google Apps Script: no changes.
