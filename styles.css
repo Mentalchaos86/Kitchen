@@ -1657,3 +1657,59 @@ body[data-scene="vacation"] .countdown-phase {
 .morning-brief-line-text{min-width:0;color:#ededed;font-size:clamp(9px,.56vw,12px);font-weight:740;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .morning-brief.is-work{border-color:rgba(94,163,255,.16)}.morning-brief.is-training{border-color:rgba(255,154,61,.18)}
 .morning-brief.is-travel{border-color:rgba(142,125,255,.18)}.morning-brief.is-gaming{border-color:rgba(255,122,0,.18)}
+
+
+/* HomeHub OS v1.8.0 — Polish Sprint 1 */
+:root{
+  --hh-space-1:.22rem;--hh-space-2:.36rem;--hh-space-3:.52rem;
+  --hh-radius-sm:10px;--hh-radius-md:14px;
+  --hh-border:rgba(255,255,255,.065);
+  --hh-surface:rgba(255,255,255,.024);
+  --hh-text-strong:#f7f7f7;--hh-text:#dedede;--hh-text-soft:#a7a7a7;
+}
+
+.focus-hero{
+  margin-top:var(--hh-space-2);
+  padding:.54rem .64rem;
+  border-radius:var(--hh-radius-md);
+  border-color:rgba(255,122,0,.16);
+  background:linear-gradient(135deg,rgba(255,122,0,.055),rgba(255,255,255,.014)),rgba(9,9,9,.69);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.025),0 10px 24px rgba(0,0,0,.14);
+}
+.focus-hero-main{grid-template-columns:50px minmax(0,1fr);gap:.62rem}
+.focus-hero-title{color:var(--hh-text-strong);font-size:clamp(17px,1.08vw,23px);line-height:1.04;letter-spacing:-.03em}
+.focus-hero-reason{color:var(--hh-text);font-size:clamp(9px,.57vw,12px)}
+.focus-hero-action{color:#ffc48f;font-size:clamp(9px,.56vw,11px)}
+
+.morning-brief,.preparation-window,.predictive-moment{
+  margin-top:var(--hh-space-2);border-radius:var(--hh-radius-sm);padding:.42rem .50rem;box-shadow:none
+}
+.morning-brief{background:linear-gradient(135deg,rgba(255,196,92,.045),rgba(255,255,255,.012)),rgba(9,9,9,.54)}
+.morning-brief-lines{gap:.16rem;margin-top:.22rem}
+.morning-brief-line-text{color:var(--hh-text);font-size:clamp(8px,.52vw,11px)}
+
+.prediction-timeline{margin-top:var(--hh-space-2)}
+.predict-flow{gap:.28rem}
+.predict-card{padding:.30rem .36rem;border-radius:9px;background:rgba(255,255,255,.016);border-color:rgba(255,255,255,.045)}
+.predict-card.is-now{background:rgba(255,122,0,.055);border-color:rgba(255,122,0,.14)}
+.predict-card-label{font-size:clamp(6px,.34vw,7px)}
+.predict-card-title{color:var(--hh-text);font-size:clamp(8px,.50vw,10px)}
+.predict-card-meta{color:var(--hh-text-soft)}
+
+.daily-pulse{margin-top:var(--hh-space-1);padding:.26rem .34rem;border-color:rgba(255,255,255,.045);background:rgba(255,255,255,.016)}
+.daily-pulse-label{font-size:clamp(6px,.36vw,8px)}
+.daily-pulse-text{font-size:clamp(8px,.50vw,10px)}
+.aware-timeline{margin-top:.18rem;gap:.28rem}
+.aware-timeline-item{padding:.16rem .24rem;background:rgba(255,255,255,.014);border-color:rgba(255,255,255,.035)}
+.learning-insight{margin-top:.20rem;padding:.24rem .34rem;border-radius:9px;background:rgba(142,125,255,.05);border-color:rgba(142,125,255,.12)}
+
+.preparation-window{grid-template-columns:30px minmax(0,1fr);gap:.40rem;background:rgba(255,255,255,.018);border-color:rgba(255,255,255,.05)}
+.prep-window-headline{font-size:clamp(11px,.72vw,15px)}
+.prep-window-meta{color:var(--hh-text-soft)}
+
+.predictive-moment{grid-template-columns:32px minmax(0,1fr);gap:.42rem;background:rgba(255,255,255,.018);border-color:rgba(255,255,255,.05)}
+.predictive-moment-title{font-size:clamp(11px,.72vw,15px)}
+.predictive-moment-subtitle{color:var(--hh-text-soft)}
+.predictive-moment-suggestion{padding:.16rem .30rem;background:rgba(255,255,255,.028);border-color:rgba(255,255,255,.045)}
+
+body{text-rendering:optimizeLegibility}

@@ -200,3 +200,9 @@ No Google Apps Script or Android TV update is required.
 Adds a compact Morning Brief between 05:00 and 11:00.
 Configure in `settings/morning-brief.js`.
 No Google Apps Script or Android TV update is required.
+
+
+## HomeHub OS v1.8.0 — Polish, Sprint 1
+
+Visual hierarchy overhaul: stronger Mission, calmer secondary intelligence, more consistent spacing, and better TV readability.
+No Google Apps Script or Android TV update is required.

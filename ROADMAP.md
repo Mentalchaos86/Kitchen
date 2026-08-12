@@ -43,3 +43,12 @@
 - Sprint 3: Preparation Windows ✅
 - Sprint 4: Predictive Moments ✅
 - Sprint 5: Morning Brief ✅
+
+## v1.8 — Polish
+
+- Sprint 1: Visual Hierarchy Overhaul ✅
+- Sprint 2: Responsive Layout
+- Sprint 3: Motion & Transitions
+- Sprint 4: Themes v1
+- Sprint 5: Settings UI Foundation
+- Sprint 6: Performance & Resilience
