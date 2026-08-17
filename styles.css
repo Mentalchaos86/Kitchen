@@ -1713,3 +1713,50 @@ body[data-scene="vacation"] .countdown-phase {
 .predictive-moment-suggestion{padding:.16rem .30rem;background:rgba(255,255,255,.028);border-color:rgba(255,255,255,.045)}
 
 body{text-rendering:optimizeLegibility}
+
+/* HomeHub OS v1.8.1 — Responsive Layout */
+*{min-width:0}html,body{width:100%;min-height:100%}body{overflow-x:hidden}
+img,svg,canvas,video{max-width:100%}
+.focus-hero-title,.focus-hero-reason,.focus-hero-action,.morning-brief-line-text,.predictive-moment-title,.predictive-moment-subtitle,.prep-window-event,.prep-window-headline,.daily-pulse-text{overflow-wrap:anywhere}
+
+@media(max-width:1280px){
+ .focus-hero-main{grid-template-columns:42px minmax(0,1fr)}
+ .predict-flow{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .morning-brief-line-text,.predictive-moment-subtitle,.prep-window-meta{white-space:normal}
+}
+@media(max-width:980px){
+ body{overflow-y:auto}
+ .dashboard-grid,.main-grid,.content-grid,.home-grid,.widgets-grid,.lower-grid{grid-template-columns:minmax(0,1fr)!important;height:auto!important}
+ .calendar-card,.weather-card,.today-card,.news-card,.bitcoin-card,.card{min-height:0}
+ .focus-hero{padding:.64rem .72rem}
+ .focus-hero-title{font-size:clamp(18px,2.4vw,25px)}
+ .morning-brief-line-text,.predictive-moment-title,.prep-window-headline{font-size:clamp(11px,1.55vw,15px)}
+}
+@media(max-width:760px){
+ .predict-flow{grid-template-columns:minmax(0,1fr)}
+ .predict-card{padding:.46rem .52rem}
+ .focus-hero-main{grid-template-columns:38px minmax(0,1fr)}
+ .preparation-window,.predictive-moment{grid-template-columns:30px minmax(0,1fr)}
+ .predictive-moment-suggestions{gap:.34rem}
+ .predictive-moment-suggestion{font-size:10px;padding:.22rem .38rem}
+}
+@media(max-width:520px){
+ .focus-hero-main{grid-template-columns:34px minmax(0,1fr);gap:.46rem}
+ .focus-hero-title{font-size:18px}
+ .morning-brief-line{grid-template-columns:20px minmax(0,1fr)}
+ .morning-brief-line-text{white-space:normal}
+ .prep-window-topline{flex-wrap:wrap}
+ .predictive-moment-suggestions{display:grid;grid-template-columns:minmax(0,1fr)}
+ .predictive-moment-suggestion{border-radius:8px}
+}
+@media(min-width:1800px) and (min-aspect-ratio:16/10){
+ .focus-hero-title{font-size:clamp(20px,1.12vw,26px)}
+ .focus-hero{padding:.58rem .70rem}
+ .morning-brief,.preparation-window,.predictive-moment{padding:.44rem .54rem}
+}
+@media(min-aspect-ratio:21/9){
+ .focus-hero,.morning-brief,.prediction-timeline,.preparation-window,.predictive-moment{max-width:1600px}
+}
+@supports(padding:max(0px)){
+ body{padding-left:max(0px,env(safe-area-inset-left));padding-right:max(0px,env(safe-area-inset-right))}
+}
