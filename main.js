@@ -11,7 +11,6 @@ import { initDebug } from "./modules/debug.js";
 import { initFocus } from "./modules/focus.js";
 import { initAware } from "./modules/aware.js";
 import { initLearning } from "./modules/learning.js";
-import { initPredictionTimeline } from "./modules/prediction-timeline.js";
 import { initPreparationWindow } from "./modules/preparation-window.js";
 import { initPredictiveMoment } from "./modules/predictive-moment.js";
 
@@ -22,7 +21,6 @@ const modules = [
   ["Focus", initFocus],
   ["Aware", initAware],
   ["Learning", initLearning],
-  ["Prediction Timeline", initPredictionTimeline],
   ["Preparation Window", initPreparationWindow],
   ["Predictive Moment", initPredictiveMoment],
   ["Countdown", initCountdown],
@@ -43,11 +41,7 @@ for (const [name, initialize] of modules) {
 }
 async function loadOptionalFeatures() {
   const optionalFeatures = [
-    {
-      name: "Morning Brief",
-      load: () => import("./modules/morning-brief.js?v=20260811-175")
-    }
-  ];
+    ];
 
   for (const feature of optionalFeatures) {
     try {

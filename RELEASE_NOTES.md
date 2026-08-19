@@ -1,8 +1,5 @@
-# HomeHub OS v1.8.1 — Polish, Sprint 2
+# HomeHub OS v1.8.3 — Layout Cleanup
 
-Responsive layout pass. No intelligence or Google Calendar logic changed.
-
-GitHub: upload everything except `google-apps-script/`.
-Google Apps Script: no changes.
-Android TV: no APK update.
-Rollback: `HomeHub-OS-v1.8.0-Polish-Sprint1.zip`.
+Simplified top layout and weather.
+No Google Apps Script or Android TV update required.
+Rollback: `HomeHub-OS-v1.8.2-Weather-Polish.zip`.

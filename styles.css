@@ -1760,3 +1760,238 @@ img,svg,canvas,video{max-width:100%}
 @supports(padding:max(0px)){
  body{padding-left:max(0px,env(safe-area-inset-left));padding-right:max(0px,env(safe-area-inset-right))}
 }
+
+
+/* ==========================================================
+   HomeHub OS v1.8.2 — Weather Polish
+   ========================================================== */
+
+.weather-body {
+  height: calc(100% - 46px);
+  display: grid;
+  grid-template-rows: auto minmax(0,1fr);
+  min-height: 0;
+}
+
+.weather-details {
+  padding: 0.48rem 0.58rem 0.38rem;
+  border-bottom: 1px solid rgba(255,255,255,0.055);
+}
+
+.weather-now {
+  display: grid;
+  grid-template-columns: auto minmax(0,1fr) auto;
+  align-items: center;
+  gap: 0.42rem;
+  min-width: 0;
+}
+
+.weather-now-primary {
+  display: flex;
+  align-items: center;
+  gap: 0.22rem;
+}
+
+.weather-now .weather-detail-icon {
+  margin: 0;
+  font-size: clamp(22px,1.55vw,32px);
+  line-height: 1;
+}
+
+.weather-now .weather-current-temp {
+  font-size: clamp(22px,1.58vw,34px);
+  font-weight: 950;
+  line-height: 1;
+  letter-spacing: -0.05em;
+}
+
+.weather-now-copy {
+  min-width: 0;
+}
+
+.weather-now .weather-detail-main {
+  color: #f4f4f4;
+  font-size: clamp(9px,0.58vw,12px);
+  font-weight: 850;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.weather-now .weather-detail-sub {
+  margin-top: 0.08rem;
+  color: var(--muted);
+  font-size: clamp(7px,0.44vw,9px);
+  font-weight: 650;
+}
+
+.weather-now-metrics {
+  display: grid;
+  justify-items: end;
+  gap: 0.08rem;
+  color: var(--muted);
+  font-size: clamp(7px,0.42vw,9px);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.weather-body .forecast {
+  height: auto;
+  min-height: 0;
+  padding: 0.34rem 0.42rem 0.42rem;
+  display: grid;
+  grid-template-columns: repeat(4,minmax(0,1fr));
+  gap: 0.24rem;
+  align-items: stretch;
+}
+
+.forecast-day-compact {
+  min-height: 0;
+  padding: 0.24rem 0.10rem;
+  border-radius: 9px;
+  border-color: rgba(255,255,255,0.045);
+  background: rgba(255,255,255,0.016);
+  justify-content: space-between;
+  animation: weather-card-in .35s ease both;
+}
+
+.forecast-day-compact:nth-child(2) { animation-delay: .04s; }
+.forecast-day-compact:nth-child(3) { animation-delay: .08s; }
+.forecast-day-compact:nth-child(4) { animation-delay: .12s; }
+
+.forecast-day-name {
+  color: var(--muted);
+  font-size: clamp(6px,0.36vw,8px);
+  font-weight: 850;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.forecast-day-compact:first-child .forecast-day-name {
+  color: var(--accent);
+}
+
+.forecast-day-compact .forecast-icon {
+  margin: 0.08rem 0;
+  font-size: clamp(14px,0.90vw,19px);
+  line-height: 1;
+}
+
+.forecast-day-compact .forecast-temp {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0.12rem;
+  font-size: clamp(8px,0.50vw,10px);
+}
+
+.forecast-day-compact .forecast-temp strong {
+  color: #f2f2f2;
+  font-weight: 900;
+}
+
+.forecast-day-compact .forecast-min {
+  font-size: .82em;
+}
+
+.forecast-day-compact .forecast-rain {
+  margin-top: 0.05rem;
+  font-size: clamp(6px,0.36vw,8px);
+}
+
+.forecast-day-compact .forecast-rain::before {
+  content: "🌧 ";
+  opacity: .72;
+}
+
+@keyframes weather-card-in {
+  from {
+    opacity: 0;
+    transform: translateY(2px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width:980px) {
+  .weather-body .forecast {
+    grid-template-columns: repeat(4,minmax(70px,1fr));
+  }
+}
+
+@media (max-width:520px) {
+  .weather-now {
+    grid-template-columns: auto minmax(0,1fr);
+  }
+
+  .weather-now-metrics {
+    display: none;
+  }
+
+  .weather-body .forecast {
+    grid-template-columns: repeat(2,minmax(0,1fr));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .forecast-day-compact {
+    animation: none;
+  }
+}
+
+
+/* HomeHub OS v1.8.3 — Layout Cleanup */
+#morningBrief,
+.morning-brief,
+#predictionTimeline,
+.prediction-timeline {
+  display: none !important;
+}
+
+/* Weather: current/today only. */
+#forecast,
+.weather-body .forecast {
+  display: none !important;
+}
+
+.weather-body {
+  grid-template-rows: minmax(0,1fr) !important;
+}
+
+.weather-details {
+  height: 100%;
+  display: grid;
+  align-items: center;
+  padding: 0.62rem 0.68rem;
+  border-bottom: 0;
+}
+
+.weather-now {
+  grid-template-columns: auto minmax(0,1fr) auto;
+  gap: 0.56rem;
+}
+
+.weather-now .weather-detail-icon {
+  font-size: clamp(28px,1.85vw,40px);
+}
+
+.weather-now .weather-current-temp {
+  font-size: clamp(28px,1.95vw,42px);
+}
+
+.weather-now .weather-detail-main {
+  font-size: clamp(10px,0.64vw,14px);
+}
+
+.weather-now .weather-detail-sub,
+.weather-now-metrics {
+  font-size: clamp(8px,0.48vw,10px);
+}
+
+.focus-hero {
+  margin-top: 0.34rem;
+}

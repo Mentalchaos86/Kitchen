@@ -37,7 +37,7 @@ export async function loadWeather() {
     daily:
       "weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,precipitation_probability_max",
     timezone: weather.timezone || "auto",
-    forecast_days: "3"
+    forecast_days: "1"
   });
 
   try {
@@ -54,48 +54,29 @@ export async function loadWeather() {
     });
 
     $("weatherDetails").innerHTML = `
-      <div class="weather-detail-heading">
-        <span class="weather-detail-icon">${icon}</span>
-        <div class="weather-current-copy">
+      <div class="weather-now">
+        <div class="weather-now-primary">
+          <span class="weather-detail-icon">${icon}</span>
           <div class="weather-current-temp">${Math.round(data.current.temperature_2m)}°</div>
-          <div>
-            <div class="weather-detail-main">${label}</div>
-            <div class="weather-detail-sub">
-              Feels like ${Math.round(data.current.apparent_temperature)}°
-            </div>
+        </div>
+
+        <div class="weather-now-copy">
+          <div class="weather-detail-main">${label}</div>
+          <div class="weather-detail-sub">
+            Feels ${Math.round(data.current.apparent_temperature)}°
           </div>
         </div>
-      </div>
-      <div class="weather-metrics">
-        <span>💧 ${Math.round(data.current.relative_humidity_2m)}%</span>
-        <span>🌧 ${Math.round(data.daily.precipitation_probability_max[0] || 0)}%</span>
-        <span>💨 ${Math.round(data.current.wind_speed_10m)} km/h</span>
-        <span>☀ ${timeFormatter.format(new Date(data.daily.sunrise[0]))}</span>
-        <span>🌙 ${timeFormatter.format(new Date(data.daily.sunset[0]))}</span>
+
+        <div class="weather-now-metrics">
+          <span title="Rain chance">🌧 ${Math.round(data.daily.precipitation_probability_max[0] || 0)}%</span>
+          <span title="Wind">💨 ${Math.round(data.current.wind_speed_10m)} km/h</span>
+        </div>
       </div>`;
 
-    $("forecast").innerHTML = data.daily.time.map((day, index) => {
-      const dayName = new Intl.DateTimeFormat("en-GB", {
-        weekday: "short"
-      }).format(new Date(`${day}T12:00:00`));
-      const [description, dayIcon] =
-        weatherText(data.daily.weather_code[index]);
-
-      return `
-        <div class="forecast-day" title="${description}">
-          <strong>${dayName}</strong>
-          <div class="forecast-icon">${dayIcon}</div>
-          <div class="forecast-temp">
-            ${Math.round(data.daily.temperature_2m_max[index])}°
-            <span class="forecast-min">
-              ${Math.round(data.daily.temperature_2m_min[index])}°
-            </span>
-          </div>
-          <div class="forecast-rain">
-            🌧 ${Math.round(data.daily.precipitation_probability_max[index] || 0)}%
-          </div>
-        </div>`;
-    }).join("");
+    // Today is represented by the large current-weather area above.
+    // The compact strip deliberately starts with tomorrow.
+    const forecast = $("forecast");
+    if (forecast) forecast.innerHTML = "";
 
     markUpdated();
   } catch (error) {
