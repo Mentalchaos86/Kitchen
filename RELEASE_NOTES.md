@@ -1,5 +1,4 @@
-# HomeHub OS v1.8.3 — Layout Cleanup
+# HomeHub OS v1.8.4 — Motion & Transitions
 
-Simplified top layout and weather.
-No Google Apps Script or Android TV update required.
-Rollback: `HomeHub-OS-v1.8.2-Weather-Polish.zip`.
+Presentation-only polish. No new information or intelligence.
+Rollback: v1.8.3.

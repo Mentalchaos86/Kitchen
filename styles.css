@@ -1995,3 +1995,24 @@ img,svg,canvas,video{max-width:100%}
 .focus-hero {
   margin-top: 0.34rem;
 }
+
+/* HomeHub OS v1.8.4 — Motion & Transitions */
+:root{--hh-motion-fast:160ms;--hh-motion-normal:260ms;--hh-motion-slow:420ms;--hh-motion-ease:cubic-bezier(.2,.8,.2,1)}
+.card,.calendar-card,.weather-card,.today-card,.news-card,.bitcoin-card,.focus-hero,.preparation-window,.predictive-moment{
+ transition:opacity var(--hh-motion-normal) var(--hh-motion-ease),transform var(--hh-motion-normal) var(--hh-motion-ease),border-color var(--hh-motion-normal) ease,background-color var(--hh-motion-normal) ease,box-shadow var(--hh-motion-normal) ease
+}
+.focus-hero-title,.focus-hero-reason,.focus-hero-action,.weather-details,.today-list,.calendar-grid,.news-list,.bitcoin-value,.prep-window-headline,.prep-window-meta,.predictive-moment-title,.predictive-moment-subtitle{
+ transition:opacity var(--hh-motion-fast) ease,color var(--hh-motion-normal) ease,transform var(--hh-motion-normal) var(--hh-motion-ease)
+}
+.focus-hero,.predictive-moment{animation:hh-soft-enter var(--hh-motion-slow) var(--hh-motion-ease) both}
+.preparation-window{transition:opacity var(--hh-motion-normal) var(--hh-motion-ease),transform var(--hh-motion-normal) var(--hh-motion-ease),background var(--hh-motion-normal) ease,border-color var(--hh-motion-normal) ease}
+.today-item,.event-item,.agenda-item,.calendar-event{
+ transition:opacity var(--hh-motion-normal) ease,transform var(--hh-motion-normal) var(--hh-motion-ease),max-height var(--hh-motion-slow) var(--hh-motion-ease),margin var(--hh-motion-slow) var(--hh-motion-ease),padding var(--hh-motion-slow) var(--hh-motion-ease),color var(--hh-motion-normal) ease
+}
+.today-item.is-complete,.event-item.is-complete,.agenda-item.is-complete,.calendar-event.is-complete{opacity:.46}
+.predictive-moment-suggestion{transition:opacity var(--hh-motion-fast) ease,transform var(--hh-motion-fast) var(--hh-motion-ease),background-color var(--hh-motion-fast) ease,border-color var(--hh-motion-fast) ease}
+@media(hover:hover) and (pointer:fine){.predictive-moment-suggestion:hover{transform:translateY(-1px);background:rgba(255,255,255,.045)}.card:hover{border-color:rgba(255,255,255,.085)}}
+@keyframes hh-soft-enter{from{opacity:0;transform:translateY(3px)}to{opacity:1;transform:translateY(0)}}
+.loading,.is-loading,.skeleton{animation:hh-loading-pulse 1.8s ease-in-out infinite}
+@keyframes hh-loading-pulse{0%,100%{opacity:.52}50%{opacity:.82}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}}
