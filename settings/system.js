@@ -3,5 +3,5 @@ export const systemSettings = {
   clockRefreshSeconds: 1,
   missionRefreshSeconds: 30,
   weatherRefreshMinutes: 15,
-  dashboardVersion: "1.8.4"
+  dashboardVersion: "1.8.5"
 };

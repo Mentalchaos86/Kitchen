@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Home Hub</title>
-  <link rel="stylesheet" href="styles.css?v=20260922-motion">
+  <link rel="stylesheet" href="styles.css?v=20261108-themes">
 </head>
 <body>
   <main class="dashboard">
@@ -79,6 +79,7 @@
         <button type="button" class="scene-button" data-scene-choice="evening">☾ EVENING</button>
         <button type="button" class="scene-button" data-scene-choice="vacation">✈ VACATION</button>
       </div>
+      <div class="theme-control"><label for="themeSelect">THEME</label><select id="themeSelect" class="theme-select" aria-label="HomeHub theme"><option value="orange">Orange</option><option value="midnight">Midnight</option><option value="forest">Forest</option><option value="amoled">AMOLED</option></select></div>
       <div class="scene-status">
         <span id="activeSceneLabel">AUTO</span>
         <span class="scene-divider">•</span>
@@ -177,7 +178,7 @@
 
   <div id="toast" class="toast"></div>
 
-  <script src="config.js?v=20260922-motion"></script>
-  <script type="module" src="main.js?v=20260922-motion"></script>
+  <script src="config.js?v=20261108-themes"></script>
+  <script type="module" src="main.js?v=20261108-themes"></script>
 </body>
 </html>

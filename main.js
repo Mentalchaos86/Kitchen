@@ -1,3 +1,4 @@
+import { initThemes } from "./modules/themes.js";
 import { initClock } from "./modules/clock.js";
 import { initScenes } from "./modules/scenes.js";
 import { initHeader } from "./modules/header.js";
@@ -15,6 +16,7 @@ import { initPreparationWindow } from "./modules/preparation-window.js";
 import { initPredictiveMoment } from "./modules/predictive-moment.js";
 
 const modules = [
+  ["Themes", initThemes],
   ["Clock", initClock],
   ["Scenes", initScenes],
   ["Header", initHeader],
