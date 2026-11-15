@@ -57,8 +57,29 @@ function spatialTarget(current, direction, list) {
   return best;
 }
 
+function isTextField(element) {
+  return element?.tagName === "TEXTAREA" ||
+    (element?.tagName === "INPUT" && TEXT_TYPES.has(element.type));
+}
+
+// Walking over a text field must not pop up the TV keyboard (it would grab the
+// arrows). The field stays read-only until OK is pressed on it.
+function lockField(element) {
+  if (!isTextField(element) || element.readOnly) return;
+  element.readOnly = true;
+  element.dataset.remoteLock = "1";
+  element.addEventListener("blur", () => unlockField(element), { once: true });
+}
+
+function unlockField(element) {
+  if (element.dataset.remoteLock !== "1") return;
+  element.readOnly = false;
+  delete element.dataset.remoteLock;
+}
+
 function moveFocus(target) {
   if (!target) return false;
+  lockField(target);
   target.focus({ preventScroll: true });
   target.scrollIntoView({ block: "nearest", inline: "nearest" });
   return true;
@@ -76,11 +97,19 @@ function onKeyDown(event) {
     return;
   }
 
+  // OK on a locked text field: unlock it and open the keyboard.
+  if (key === "Enter" && active?.dataset?.remoteLock === "1") {
+    event.preventDefault();
+    unlockField(active);
+    active.blur();
+    active.focus({ preventScroll: true });
+    return;
+  }
+
   if (!["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(key)) return;
 
-  // Let text fields keep Left/Right for moving the cursor.
-  const isText = active?.tagName === "TEXTAREA" ||
-    (active?.tagName === "INPUT" && TEXT_TYPES.has(active.type));
+  // Let text fields being typed in keep Left/Right for moving the cursor.
+  const isText = isTextField(active) && !active.readOnly;
   if (isText && (key === "ArrowLeft" || key === "ArrowRight")) return;
 
   const panel = settingsPanel();

@@ -127,6 +127,18 @@ function bindConnectionSettings() {
     if (haToken.value.trim()) setDeviceSecret("haToken", haToken.value);
     showStored();
   });
+  // On the TV, Back (to close the keyboard) reloads the dashboard before the
+  // field loses focus, so also save shortly after typing stops.
+  [[calendarKey, "calendarKey", true], [haUrl, "haUrl", false], [haToken, "haToken", true]]
+    .forEach(([field, name, requireValue]) => {
+      let timer;
+      field?.addEventListener("input", () => {
+        clearTimeout(timer);
+        timer = setTimeout(() => {
+          if (!requireValue || field.value.trim()) setDeviceSecret(name, field.value);
+        }, 600);
+      });
+    });
   appearance?.addEventListener("change", () => {
     try { localStorage.setItem(APPEARANCE_KEY, appearance.value); } catch {}
     applyTone();
