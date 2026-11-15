@@ -22,6 +22,7 @@ function renderEnergy() {
   if (!root) return;
   const data = getHomeData();
   const energy = data?.energy || {};
+  const month = energy.month || {};
   const batteries = (energy.batteries || []).map(battery => {
     const level = Number.isFinite(battery.level) ? Math.max(0, Math.min(100, battery.level)) : null;
     return `
@@ -37,8 +38,13 @@ function renderEnergy() {
     <div class="os-tiles">
       ${tile("energy", "Verbruik nu", kw(energy.powerW))}
       ${tile("sun", "Zonne-opbrengst", kw(energy.solarW))}
-      ${tile("euro", "Stroomprijs nu", euroPerKwh(energy.priceEur), "Zonneplan")}
-      ${tile("check", "Goedkoopste moment", energy.cheapest ? `${energy.cheapest.from}–${energy.cheapest.to}` : "—", energy.cheapest ? "Ideaal voor wasmachine of vaatwasser" : "Beschikbaar na koppeling")}
+      ${tile("euro", "Stroomprijs nu", euroPerKwh(energy.priceEur), [energy.tariffGroup && `Tarief ${energy.tariffGroup.toLowerCase()}`, Number.isFinite(energy.nextHourPriceEur) && `volgend uur ${euroPerKwh(energy.nextHourPriceEur)}`].filter(Boolean).join(" · ") || "Zonneplan")}
+      ${tile("check", "Goedkoopste moment", energy.cheapest ? `${energy.cheapest.from}–${energy.cheapest.to}` : "—", energy.cheapest ? `${energy.cheapest.day || "vandaag"} · ideaal voor wasmachine of vaatwasser` : "Beschikbaar na koppeling")}
+    </div>
+    <div class="os-tiles">
+      ${tile("energy", "Verbruik deze maand", Number.isFinite(month.usedKwh) ? `${decimal(month.usedKwh, 0)} kWh` : "—", Number.isFinite(month.returnedKwh) ? `${decimal(month.returnedKwh, 1)} kWh teruggeleverd` : "")}
+      ${tile("euro", "Stroomkosten deze maand", Number.isFinite(month.costEur) ? `€ ${decimal(month.costEur, 2)}` : "—", "Zonneplan")}
+      ${tile("sun", "Duurzaamheid nu", Number.isFinite(energy.sustainability) ? `${Math.round(energy.sustainability)}%` : "—", "groen opgewekte stroom")}
     </div>
     <h3 class="os-section-title">Batterijen</h3>
     <div class="os-batteries">${batteries || `<div class="os-empty">Nog geen batterijen gekoppeld.</div>`}</div>`;

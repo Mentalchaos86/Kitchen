@@ -333,3 +333,5 @@ body[data-os-view="agenda"] .dashboard .grid { grid-template-rows: 1fr 0.3fr; }
 @media (prefers-reduced-motion: reduce) {
   .os-app, .os-card, .os-tab, .os-meter span { transition: none; }
 }
+
+.os-tiles + .os-tiles { margin-top: 1vw; }

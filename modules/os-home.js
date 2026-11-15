@@ -94,7 +94,7 @@ function renderEnergy() {
     <div class="os-card-head"><h2>Energy</h2>${demoBadge(data)}</div>
     <div class="os-card-big">${kw(energy.powerW)}</div>
     <div class="os-card-sub">Live verbruik${Number.isFinite(energy.priceEur) ? ` · Stroom nu ${euroPerKwh(energy.priceEur)}` : ""}</div>
-    ${energy.cheapest ? `<div class="os-hint">${icon("euro")}Goedkoopst vandaag ${escapeHtml(energy.cheapest.from)}–${escapeHtml(energy.cheapest.to)}</div>` : ""}
+    ${energy.cheapest ? `<div class="os-hint">${icon("euro")}Goedkoopst ${escapeHtml(energy.cheapest.day || "vandaag")} ${escapeHtml(energy.cheapest.from)}–${escapeHtml(energy.cheapest.to)}</div>` : ""}
     <div class="os-divider"></div>
     <div class="os-card-section">Batterijen</div>
     ${batteries || row("battery", "Anker / Zendure", "na koppeling")}`;
