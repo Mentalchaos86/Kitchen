@@ -3,7 +3,47 @@ import { $, escapeHtml } from "../core/dom.js";
 import { getHomeData, homeAssistantConfigured } from "../services/homeassistant.js";
 import { addHouseholdItem, getHousehold, LISTS, removeHouseholdItem } from "../services/household.js";
 import { icon } from "./os-icons.js";
-import { batteryState, decimal, euroPerKwh, kw } from "./os-format.js";
+import { batteryState, dayLabel, decimal, euro, euroPerKwh, kw, timeNl } from "./os-format.js";
+import { getPriceCurve } from "../services/energy-prices.js";
+import { nextWaste } from "./os-home.js";
+
+const LEVEL_NL = { low: "Laag", normal: "Normaal", high: "Hoog" };
+
+// Hourly price bars for today (and tomorrow once published, around 13:00).
+function priceChart(energy) {
+  const curve = getPriceCurve(energy.priceEur);
+  if (!curve) return `<section class="os-panel os-prices"><h3 class="os-section-title">${icon("euro")}Stroomprijs per uur</h3><div class="os-empty">Uurprijzen laden…</div></section>`;
+  const max = Math.max(...curve.hours.map(hour => hour.price));
+  const min = Math.min(0, ...curve.hours.map(hour => hour.price));
+  const tomorrowIndex = curve.hours.findIndex(hour => dayLabel(hour.start) === "Morgen");
+
+  const bars = curve.hours.map((hour, index) => {
+    const height = Math.max(3, ((hour.price - min) / (max - min || 1)) * 100);
+    const label = `${dayLabel(hour.start)} ${timeNl(hour.start)} · ${euroPerKwh(hour.price)} · ${LEVEL_NL[hour.level]}`;
+    const tick = hour.start.getHours() % 6 === 0 ? `<span class="os-bar-tick">${String(hour.start.getHours()).padStart(2, "0")}</span>` : "";
+    return `<div class="os-bar-slot${index === tomorrowIndex ? " is-day-start" : ""}" title="${escapeHtml(label)}">
+        ${hour.now ? `<span class="os-bar-now">nu</span>` : ""}
+        <span class="os-bar is-${hour.level}${hour.past ? " is-past" : ""}${hour.now ? " is-now" : ""}" style="height:${height.toFixed(1)}%"></span>
+        ${tick}
+      </div>`;
+  }).join("");
+
+  const range = (name, r) => r ? `${name} ${euro(r.min)} – ${euro(r.max)}` : null;
+  const summary = [range("Vandaag", curve.todayRange), range("Morgen", curve.tomorrowRange)].filter(Boolean).join(" · ");
+
+  return `
+    <section class="os-panel os-prices">
+      <div class="os-prices-head">
+        <h3 class="os-section-title">${icon("euro")}Stroomprijs per uur</h3>
+        <div class="os-legend">
+          <span><i class="is-low"></i>Laag</span><span><i class="is-normal"></i>Normaal</span><span><i class="is-high"></i>Hoog</span>
+        </div>
+      </div>
+      <div class="os-tile-sub">${escapeHtml(summary)} · per kWh, inclusief belasting (berekend)</div>
+      <div class="os-bars" role="img" aria-label="Stroomprijs per uur. ${escapeHtml(summary)}">${bars}</div>
+      ${tomorrowIndex > 0 ? `<div class="os-bars-days"><span style="flex:${tomorrowIndex}">Vandaag</span><span style="flex:${curve.hours.length - tomorrowIndex}">Morgen</span></div>` : ""}
+    </section>`;
+}
 
 function notice(data) {
   if (data?.mode === "live") return "";
@@ -23,6 +63,7 @@ function renderEnergy() {
   const data = getHomeData();
   const energy = data?.energy || {};
   const month = energy.month || {};
+  const gas = energy.gas || {};
   const batteries = (energy.batteries || []).map(battery => {
     const level = Number.isFinite(battery.level) ? Math.max(0, Math.min(100, battery.level)) : null;
     return `
@@ -38,13 +79,15 @@ function renderEnergy() {
     <div class="os-tiles">
       ${tile("energy", "Verbruik nu", kw(energy.powerW))}
       ${tile("sun", "Zonne-opbrengst", kw(energy.solarW))}
-      ${tile("euro", "Stroomprijs nu", euroPerKwh(energy.priceEur), [energy.tariffGroup && `Tarief ${energy.tariffGroup.toLowerCase()}`, Number.isFinite(energy.nextHourPriceEur) && `volgend uur ${euroPerKwh(energy.nextHourPriceEur)}`].filter(Boolean).join(" · ") || "Zonneplan")}
+      ${tile("euro", "Stroomprijs nu", euroPerKwh(energy.priceEur), [Number.isFinite(energy.nextHourPriceEur) && `volgend uur ${euroPerKwh(energy.nextHourPriceEur)}`, Number.isFinite(energy.sustainability) && `${Math.round(energy.sustainability)}% duurzaam`].filter(Boolean).join(" · ") || "Zonneplan")}
       ${tile("check", "Goedkoopste moment", energy.cheapest ? `${energy.cheapest.from}–${energy.cheapest.to}` : "—", energy.cheapest ? `${energy.cheapest.day || "vandaag"} · ideaal voor wasmachine of vaatwasser` : "Beschikbaar na koppeling")}
     </div>
+    ${priceChart(energy)}
     <div class="os-tiles">
-      ${tile("energy", "Verbruik deze maand", Number.isFinite(month.usedKwh) ? `${decimal(month.usedKwh, 0)} kWh` : "—", Number.isFinite(month.returnedKwh) ? `${decimal(month.returnedKwh, 1)} kWh teruggeleverd` : "")}
-      ${tile("euro", "Stroomkosten deze maand", Number.isFinite(month.costEur) ? `€ ${decimal(month.costEur, 2)}` : "—", "Zonneplan")}
-      ${tile("sun", "Duurzaamheid nu", Number.isFinite(energy.sustainability) ? `${Math.round(energy.sustainability)}%` : "—", "groen opgewekte stroom")}
+      ${tile("energy", "Stroom deze maand", Number.isFinite(month.usedKwh) ? `${decimal(month.usedKwh, 0)} kWh` : "—", Number.isFinite(month.returnedKwh) ? `${decimal(month.returnedKwh, 1)} kWh teruggeleverd` : "")}
+      ${tile("euro", "Stroomkosten deze maand", euro(month.costEur), "Zonneplan")}
+      ${tile("flame", "Gas deze maand", Number.isFinite(gas.usedM3) ? `${decimal(gas.usedM3, 1)} m³` : "—", Number.isFinite(gas.costEur) ? `${euro(gas.costEur)} kosten` : "")}
+      ${tile("flame", "Gasprijs vandaag", Number.isFinite(gas.priceEur) ? `${euro(gas.priceEur)}/m³` : "—", "Zonneplan")}
     </div>
     <h3 class="os-section-title">Batterijen</h3>
     <div class="os-batteries">${batteries || `<div class="os-empty">Nog geen batterijen gekoppeld.</div>`}</div>`;
@@ -76,7 +119,19 @@ function renderHousehold() {
   const root = $("osViewHousehold");
   if (!root) return;
   const household = getHousehold();
+  const data = getHomeData();
+  const waste = data?.mode === "live" ? (data.waste || []) : [];
+  const upcoming = waste.slice(0, 4).map(item => {
+    const soon = ["Vandaag", "Morgen"].includes(dayLabel(item.date));
+    return `<div class="os-tile${soon ? " is-soon" : ""}">${icon("trash")}<div class="os-tile-label">${escapeHtml(item.name)}</div><div class="os-tile-value">${escapeHtml(dayLabel(item.date))}</div></div>`;
+  }).join("");
   root.innerHTML = `
+    <section>
+      <h3 class="os-section-title">${icon("trash")}Afvalkalender</h3>
+      ${upcoming
+        ? `<div class="os-tiles">${upcoming}</div>`
+        : `<div class="os-notice">Nog geen afvalkalender gekoppeld. Voeg in Home Assistant de koppeling <strong>Afvalwijzer</strong> toe (met je postcode); dan verschijnen de ophaaldagen hier vanzelf.</div>`}
+    </section>
     <div class="os-notice">Lijsten worden voorlopig op dit apparaat bewaard. Samen bewerken vanaf je telefoon volgt in een volgende versie.</div>
     <div class="os-columns">
       ${Object.entries(LISTS).map(([key, meta]) => `
@@ -123,7 +178,20 @@ export function initOsViews() {
   renderSmartHome();
   renderHousehold();
   bindHousehold();
-  window.addEventListener("homehub:home-data-change", () => { renderEnergy(); renderSmartHome(); });
+  // Household only re-renders when the waste dates change, so typing in its
+  // input fields is not interrupted by the 30-second Home Assistant refresh.
+  let wasteKey = "";
+  window.addEventListener("homehub:home-data-change", () => {
+    renderEnergy();
+    renderSmartHome();
+    const data = getHomeData();
+    const key = data?.mode === "live" ? JSON.stringify(data.waste || []) : "";
+    if (key !== wasteKey) {
+      wasteKey = key;
+      renderHousehold();
+    }
+  });
+  window.addEventListener("homehub:prices-change", renderEnergy);
   window.addEventListener("homehub:household-change", renderHousehold);
   if (!homeAssistantConfigured()) console.info("[HomeOS] Home Assistant not configured — showing demo data.");
 }

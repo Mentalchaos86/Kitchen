@@ -38,6 +38,25 @@ export function batteryState(powerW) {
   return powerW < 0 ? "laadt" : "levert";
 }
 
+export function euro(value, digits = 2) {
+  if (value === null || value === undefined || !Number.isFinite(value)) return "—";
+  return `€ ${value.toLocaleString(nl, { minimumFractionDigits: digits, maximumFractionDigits: digits })}`;
+}
+
+// "Vandaag", "Morgen", "Overmorgen" or "Di 18 nov".
+export function dayLabel(date) {
+  const start = new Date();
+  start.setHours(0, 0, 0, 0);
+  const target = new Date(date);
+  target.setHours(0, 0, 0, 0);
+  const days = Math.round((target - start) / 86400000);
+  if (days === 0) return "Vandaag";
+  if (days === 1) return "Morgen";
+  if (days === 2) return "Overmorgen";
+  const text = new Intl.DateTimeFormat(nl, { weekday: "short", day: "numeric", month: "short" }).format(target).replace(/\./g, "");
+  return text.charAt(0).toUpperCase() + text.slice(1);
+}
+
 export function count(value, singular, plural) {
   return `${value} ${value === 1 ? singular : plural}`;
 }

@@ -40,6 +40,7 @@ function demoData() {
       sustainability: 69,
       cheapest: { day: "vandaag", from: "13:00", to: "15:00" },
       month: { usedKwh: 204.4, returnedKwh: 3.6, costEur: 81.05 },
+      gas: { priceEur: 1.89, usedM3: 48.5, costEur: 90.7 },
       batteries: [
         { name: "Anker", level: 78, powerW: -350 },
         { name: "Zendure", level: 64, powerW: 0 }
@@ -57,7 +58,8 @@ function demoData() {
     devices: [
       { id: "demo.vaatwasser", name: "Vaatwasser", on: false },
       { id: "demo.wasmachine", name: "Wasmachine", on: true }
-    ]
+    ],
+    waste: []
   };
 }
 
@@ -74,8 +76,49 @@ const ZONNEPLAN = {
   sustainability: /current sustainability/i,
   usedMonth: /electricity used this month/i,
   returnedMonth: /electricity returned this month/i,
-  costMonth: /electricity cost this month/i
+  costMonth: /electricity cost this month/i,
+  gasPrice: /gas price/i,
+  gasUsedMonth: /gas used this month/i,
+  gasCostMonth: /gas cost this month/i
 };
+
+// Waste collection (e.g. the Afvalwijzer integration): sensors whose state is
+// the next pickup date. Summary sensors ("today", "tomorrow") are skipped.
+const WASTE_NAMES = { gft: "GFT", pmd: "PMD", papier: "Papier", restafval: "Restafval", textiel: "Textiel", kerstbomen: "Kerstbomen", glas: "Glas", kca: "Klein chemisch afval" };
+
+function parseDate(value) {
+  const text = String(value || "").trim();
+  let match = text.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (match) return new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3]));
+  match = text.match(/^(\d{2})-(\d{2})-(\d{4})$/);
+  if (match) return new Date(Number(match[3]), Number(match[2]) - 1, Number(match[1]));
+  return null;
+}
+
+function mapWaste(states) {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  return states
+    .filter(entity => /^sensor\.[a-z]*afval/i.test(entity.entity_id))
+    .filter(entity => !/_(today|tomorrow|day_after_tomorrow|vandaag|morgen|overmorgen|first_next|next|notifications)/i.test(entity.entity_id))
+    .map(entity => {
+      const date = parseDate(entity.state);
+      if (!date || date < today) return null;
+      // IDs look like sensor.afvalwijzer_<postcode>_<huisnummer>_gft; the address
+      // part is dropped so it never appears on screen.
+      const key = entity.entity_id
+        .replace(/^sensor\.[a-z]*afval[a-z]*_/i, "")
+        .replace(/^\d{4}[a-z]{2}_[^_]+_/i, "")
+        .replace(/_/g, "")
+        .toLowerCase();
+      const name = WASTE_NAMES[key] || friendly(entity, key)
+        .replace(/^afvalwijzer\s*/i, "")
+        .replace(/^\d{4}\s?[a-z]{2}\s+\S+\s+/i, "");
+      return { name, date };
+    })
+    .filter(Boolean)
+    .sort((a, b) => a.date - b.date);
+}
 
 const TARIFF_NL = { low: "Laag", normal: "Normaal", high: "Hoog", laag: "Laag", normaal: "Normaal", hoog: "Hoog" };
 
@@ -137,6 +180,11 @@ function mapStates(states) {
         returnedKwh: number(pick(null, ZONNEPLAN.returnedMonth)?.state),
         costEur: number(pick(null, ZONNEPLAN.costMonth)?.state)
       },
+      gas: {
+        priceEur: number(pick(null, ZONNEPLAN.gasPrice)?.state),
+        usedM3: number(pick(null, ZONNEPLAN.gasUsedMonth)?.state),
+        costEur: number(pick(null, ZONNEPLAN.gasCostMonth)?.state)
+      },
       batteries: (energy.batteries || [])
         .filter(battery => battery.level || battery.power)
         .map(battery => ({
@@ -155,7 +203,8 @@ function mapStates(states) {
         value: number(entity.state),
         unit: entity.attributes?.unit_of_measurement || ""
       })),
-    devices: toggles(ha().devices)
+    devices: toggles(ha().devices),
+    waste: mapWaste(states)
   };
 }
 

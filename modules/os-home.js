@@ -4,8 +4,10 @@ import { getAgendaState } from "../core/state.js";
 import { getFocusResult } from "../intelligence/context.js";
 import { getHomeData } from "../services/homeassistant.js";
 import { getHousehold } from "../services/household.js";
+import { getPriceCurve, priceAdvice } from "../services/energy-prices.js";
+import { getRain } from "../services/rain.js";
 import { icon } from "./os-icons.js";
-import { batteryState, count, dayTitle, decimal, euroPerKwh, kw, timeNl } from "./os-format.js";
+import { batteryState, count, dayLabel, dayTitle, decimal, euro, euroPerKwh, kw, timeNl } from "./os-format.js";
 
 let weather = null;
 
@@ -18,6 +20,60 @@ function demoBadge(data) {
 
 function row(iconName, label, value, extraClass = "") {
   return `<div class="os-row ${extraClass}">${icon(iconName)}<span class="os-row-label">${escapeHtml(label)}</span><span class="os-row-value">${escapeHtml(value)}</span></div>`;
+}
+
+// One line about rain in the next two hours (Buienradar).
+export function rainText(rain) {
+  if (!rain) return null;
+  if (rain.state === "dry") return { wet: false, text: "Droog de komende 2 uur" };
+  if (rain.state === "raining") {
+    return { wet: true, text: rain.until ? `Het regent · droog vanaf ${timeNl(rain.until)}` : "Het regent de komende 2 uur" };
+  }
+  const minutes = Math.max(0, Math.round((rain.from.getTime() - Date.now()) / 60000));
+  return { wet: true, soon: minutes <= 60, text: minutes <= 5 ? "Regen begint zo" : `Regen over ${minutes} min (vanaf ${timeNl(rain.from)})` };
+}
+
+// The first upcoming waste pickup, e.g. "Morgen: GFT".
+export function nextWaste(waste) {
+  const first = (waste || [])[0];
+  if (!first) return null;
+  const sameDay = (waste || []).filter(item => item.date.getTime() === first.date.getTime()).map(item => item.name);
+  return { date: first.date, label: dayLabel(first.date), names: sameDay.join(" + ") };
+}
+
+function renderBanners() {
+  const root = $("osBanners");
+  if (!root) return;
+  const data = getHomeData();
+  const items = [];
+
+  if (data?.mode === "live") {
+    const curve = getPriceCurve(data.energy?.priceEur);
+    const advice = priceAdvice(curve);
+    const price = euroPerKwh(curve?.current?.price ?? data.energy?.priceEur);
+    if (advice?.level === "low") {
+      items.push({ tone: "good", icon: "energy", text: `Stroom is nu goedkoop (${price}) · tot ${timeNl(advice.until)}` });
+    } else if (advice?.level === "high") {
+      const when = advice.from ? `${dayLabel(advice.from) === "Vandaag" ? "" : dayLabel(advice.from).toLowerCase() + " "}${timeNl(advice.from)}` : null;
+      items.push({ tone: "bad", icon: "energy", text: `Stroom is nu duur (${price})${when ? ` · goedkoper vanaf ${when}` : ""}` });
+    }
+
+    const waste = nextWaste(data.waste);
+    const hour = new Date().getHours();
+    if (waste && ((waste.label === "Morgen" && hour >= 12) || (waste.label === "Vandaag" && hour < 12))) {
+      items.push({ tone: "info", icon: "trash", text: `${waste.label}: ${waste.names} aan de straat` });
+    }
+  }
+
+  const rain = rainText(getRain());
+  if (rain?.wet && (getRain()?.state === "raining" || rain.soon)) {
+    items.push({ tone: "info", icon: "rain", text: rain.text });
+  }
+
+  root.hidden = !items.length;
+  root.innerHTML = items.map(item =>
+    `<div class="os-banner is-${item.tone}">${icon(item.icon)}<span>${escapeHtml(item.text)}</span></div>`
+  ).join("");
 }
 
 function renderToday() {
@@ -48,6 +104,7 @@ function renderToday() {
     <div class="os-card-head"><h2>Vandaag</h2>${weatherChip}</div>
     <div class="os-card-big">${escapeHtml(dayTitle(now))}</div>
     <div class="os-card-sub">${summary}</div>
+    ${rainLine()}
     ${list ? `<div class="os-events">${list}</div>` : ""}
     <div class="os-divider"></div>
     <div class="os-split">
@@ -57,6 +114,12 @@ function renderToday() {
       </div>
       ${milestone()}
     </div>`;
+}
+
+function rainLine() {
+  const rain = rainText(getRain());
+  if (!rain) return "";
+  return `<div class="os-hint ${rain.wet ? "is-rain" : "is-dry"}">${icon("rain")}${escapeHtml(rain.text)}</div>`;
 }
 
 // Mirrors the existing countdown (Agenda top bar, now hidden there) so the
@@ -93,7 +156,7 @@ function renderEnergy() {
   root.innerHTML = `
     <div class="os-card-head"><h2>Energy</h2>${demoBadge(data)}</div>
     <div class="os-card-big">${kw(energy.powerW)}</div>
-    <div class="os-card-sub">Live verbruik${Number.isFinite(energy.priceEur) ? ` · Stroom nu ${euroPerKwh(energy.priceEur)}` : ""}</div>
+    <div class="os-card-sub">Live verbruik${Number.isFinite(energy.priceEur) ? ` · Stroom nu ${euroPerKwh(energy.priceEur)}` : ""}${Number.isFinite(energy.gas?.priceEur) ? ` · Gas ${euro(energy.gas.priceEur)}/m³` : ""}</div>
     ${energy.cheapest ? `<div class="os-hint">${icon("euro")}Goedkoopst ${escapeHtml(energy.cheapest.day || "vandaag")} ${escapeHtml(energy.cheapest.from)}–${escapeHtml(energy.cheapest.to)}</div>` : ""}
     <div class="os-divider"></div>
     <div class="os-card-section">Batterijen</div>
@@ -126,10 +189,19 @@ function renderHousehold() {
     <div class="os-card-head"><h2>Household</h2></div>
     ${row("cart", "Boodschappen", household.shopping.length ? count(household.shopping.length, "item", "items") : "leeg")}
     ${row("tasks", "Huishoudtaken", household.chores.length ? `${household.chores.length} open` : "alles gedaan")}
-    ${row("wrench", "Onderhoud", household.maintenance.length ? `${household.maintenance.length} gepland` : "niets gepland")}`;
+    ${row("wrench", "Onderhoud", household.maintenance.length ? `${household.maintenance.length} gepland` : "niets gepland")}
+    ${wasteRow()}`;
+}
+
+function wasteRow() {
+  const data = getHomeData();
+  if (data?.mode !== "live") return row("trash", "Afval", "na koppeling");
+  const waste = nextWaste(data.waste);
+  return row("trash", "Afval", waste ? `${waste.label}: ${waste.names}` : "na koppeling", waste && ["Vandaag", "Morgen"].includes(waste.label) ? "is-on" : "");
 }
 
 function renderAll() {
+  renderBanners();
   renderToday();
   renderEnergy();
   renderSmartHome();
@@ -141,9 +213,11 @@ export function initOsHome() {
   window.addEventListener("homehub:agenda-change", renderToday);
   window.addEventListener("homehub:focus-change", renderToday);
   window.addEventListener("homehub:weather-change", event => { weather = event.detail; renderToday(); });
-  window.addEventListener("homehub:home-data-change", () => { renderEnergy(); renderSmartHome(); });
+  window.addEventListener("homehub:home-data-change", () => { renderBanners(); renderEnergy(); renderSmartHome(); renderHousehold(); });
   window.addEventListener("homehub:household-change", renderHousehold);
-  setInterval(renderToday, 60000);
+  window.addEventListener("homehub:prices-change", renderBanners);
+  window.addEventListener("homehub:rain-change", () => { renderBanners(); renderToday(); });
+  setInterval(() => { renderBanners(); renderToday(); }, 60000);
   const countdown = $("countdownValue");
   if (countdown && "MutationObserver" in window) {
     new MutationObserver(renderToday).observe(countdown, { childList: true, characterData: true, subtree: true });

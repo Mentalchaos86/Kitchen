@@ -5,6 +5,8 @@ import { config } from "../core/config.js";
 import { $ } from "../core/dom.js";
 import { getDeviceSecret, setDeviceSecret } from "../core/secrets.js";
 import { getHomeData, homeAssistantConfigured, startHomeData } from "../services/homeassistant.js";
+import { startEnergyPrices } from "../services/energy-prices.js";
+import { startRain } from "../services/rain.js";
 import { icon } from "./os-icons.js";
 import { longDate, timeNl } from "./os-format.js";
 
@@ -203,6 +205,8 @@ export function initOsShell() {
   showView(os().defaultView || "home");
   scheduleIdleReturn();
   startHomeData();
+  startEnergyPrices();
+  startRain();
 
   setInterval(updateClock, 1000);
   setInterval(applyTone, 60000);
