@@ -50,8 +50,35 @@ function renderToday() {
     <div class="os-card-sub">${summary}</div>
     ${list ? `<div class="os-events">${list}</div>` : ""}
     <div class="os-divider"></div>
-    <div class="os-card-section">${focus && ["tomorrow", "future"].includes(focus.state) ? "Volgende missie" : "Missie van vandaag"}</div>
-    <div class="os-mission">${icon("check")}<span>${escapeHtml(focus?.title || "Rustige dag — geen missie nodig")}</span></div>`;
+    <div class="os-split">
+      <div>
+        <div class="os-card-section">${focus && ["tomorrow", "future"].includes(focus.state) ? "Volgende missie" : "Missie van vandaag"}</div>
+        <div class="os-mission">${icon("check")}<span>${escapeHtml(focus?.title || "Rustige dag — geen missie nodig")}</span></div>
+      </div>
+      ${milestone()}
+    </div>`;
+}
+
+// Mirrors the existing countdown (Agenda top bar, now hidden there) so the
+// next milestone stays visible on Home without duplicating its logic.
+function milestone() {
+  const label = $("countdownLabel")?.textContent?.trim();
+  const value = $("countdownValue")?.textContent?.trim().toUpperCase();
+  if (!label || !value || value.startsWith("--") || value === "ALL CLEAR") return "";
+  const iconText = $("countdownIcon")?.textContent?.trim() || "📅";
+  const pretty = label.toLowerCase().replace(/(^|\s)\S/g, letter => letter.toUpperCase());
+  let match;
+  let when = value.toLowerCase();
+  if (value === "HAPPENING NOW") when = "nu bezig";
+  else if (value === "TODAY") when = "vandaag";
+  else if (value === "TOMORROW") when = "morgen";
+  else if ((match = value.match(/^IN (\d+) HOURS?$/))) when = `over ${match[1]} uur`;
+  else if ((match = value.match(/^IN (\d+) DAYS?$/))) when = `over ${match[1]} ${match[1] === "1" ? "dag" : "dagen"}`;
+  return `
+    <div>
+      <div class="os-card-section">Volgende mijlpaal</div>
+      <div class="os-mission"><span>${escapeHtml(iconText)}</span><span>${escapeHtml(pretty)} · ${escapeHtml(when)}</span></div>
+    </div>`;
 }
 
 function renderEnergy() {
@@ -117,4 +144,8 @@ export function initOsHome() {
   window.addEventListener("homehub:home-data-change", () => { renderEnergy(); renderSmartHome(); });
   window.addEventListener("homehub:household-change", renderHousehold);
   setInterval(renderToday, 60000);
+  const countdown = $("countdownValue");
+  if (countdown && "MutationObserver" in window) {
+    new MutationObserver(renderToday).observe(countdown, { childList: true, characterData: true, subtree: true });
+  }
 }

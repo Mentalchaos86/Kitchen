@@ -94,7 +94,7 @@ window.DASHBOARD_CONFIG = {
   homeOs: {
     defaultView: "home",
     returnHomeAfterMinutes: 5,
-    appearance: "auto",      // auto | light | dark
+    appearance: "dark",      // auto | light | dark
     dayStartHour: 7,
     nightStartHour: 20
   },
