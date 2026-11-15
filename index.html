@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Home Hub</title>
-  <link rel="stylesheet" href="styles.css?v=20261108-themes">
+  <link rel="stylesheet" href="styles.css?v=20261115-settings">
 </head>
 <body>
   <main class="dashboard">
@@ -79,6 +79,7 @@
         <button type="button" class="scene-button" data-scene-choice="evening">☾ EVENING</button>
         <button type="button" class="scene-button" data-scene-choice="vacation">✈ VACATION</button>
       </div>
+      <button type="button" id="settingsOpen" class="settings-open" aria-label="Open settings" aria-haspopup="dialog" aria-controls="settingsPanel">⚙ Settings</button>
       <div class="theme-control"><label for="themeSelect">THEME</label><select id="themeSelect" class="theme-select" aria-label="HomeHub theme"><option value="orange">Orange</option><option value="midnight">Midnight</option><option value="forest">Forest</option><option value="amoled">AMOLED</option></select></div>
       <div class="scene-status">
         <span id="activeSceneLabel">AUTO</span>
@@ -176,9 +177,42 @@
     </section>
   </main>
 
+  <div id="settingsBackdrop" class="settings-backdrop" hidden></div>
+  <aside id="settingsPanel" class="settings-panel" role="dialog" aria-modal="true" aria-labelledby="settingsHeading" aria-hidden="true" hidden>
+    <div class="settings-panel-head">
+      <div><div class="settings-eyebrow">HOMEHUB OS · v1.8.6</div><h2 id="settingsHeading">Settings</h2></div>
+      <button type="button" id="settingsClose" class="settings-close" aria-label="Close settings">✕</button>
+    </div>
+    <div class="settings-scroll">
+      <section class="settings-section">
+        <h3>Appearance</h3>
+        <label for="settingsTheme">Theme</label>
+        <select id="settingsTheme">
+          <option value="orange">HomeHub Orange</option><option value="midnight">Midnight</option>
+          <option value="forest">Forest</option><option value="amoled">AMOLED</option>
+        </select>
+      </section>
+      <section class="settings-section">
+        <h3>Dashboard widgets</h3>
+        <p>Choose what appears on your wall dashboard.</p>
+        <label class="settings-toggle"><span>Calendar</span><input type="checkbox" data-widget-setting="calendar" checked></label>
+        <label class="settings-toggle"><span>Today</span><input type="checkbox" data-widget-setting="today" checked></label>
+        <label class="settings-toggle"><span>Weather</span><input type="checkbox" data-widget-setting="weather" checked></label>
+        <label class="settings-toggle"><span>Gaming news</span><input type="checkbox" data-widget-setting="news" checked></label>
+        <label class="settings-toggle"><span>Bitcoin</span><input type="checkbox" data-widget-setting="bitcoin" checked></label>
+      </section>
+      <section class="settings-section">
+        <h3>Personal</h3>
+        <label for="settingsName">Display name</label>
+        <input id="settingsName" type="text" maxlength="40" autocomplete="off" placeholder="Your name">
+        <p>Settings are saved only in this browser or TV. They do not change your GitHub configuration.</p>
+      </section>
+      <button type="button" id="settingsReset" class="settings-reset">Restore default settings</button>
+    </div>
+  </aside>
   <div id="toast" class="toast"></div>
 
-  <script src="config.js?v=20261108-themes"></script>
-  <script type="module" src="main.js?v=20261108-themes"></script>
+  <script src="config.js?v=20261115-settings"></script>
+  <script type="module" src="main.js?v=20261115-settings"></script>
 </body>
 </html>

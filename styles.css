@@ -2110,3 +2110,28 @@ body[data-theme] #chartFill stop { stop-color: var(--accent); }
 .theme-select { color:var(--text); background:var(--panel-strong); border:1px solid var(--border-bright); border-radius:9px; padding:.36rem .5rem; font:inherit; font-size:clamp(10px,.63vw,13px); cursor:pointer; max-width:125px; }
 .theme-select:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
 @media(max-width:760px) { .theme-control label {display:none} .theme-select {max-width:105px} }
+
+/* HomeHub OS 1.8.6 — accessible settings drawer */
+.settings-open,.settings-close,.settings-reset{font:inherit;cursor:pointer;border:1px solid var(--border-bright);color:var(--text);background:var(--panel-strong);border-radius:10px;padding:.45rem .7rem}
+.settings-open{margin-left:auto;font-size:clamp(10px,.63vw,13px);white-space:nowrap}
+.settings-backdrop:not([hidden]){position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:900}
+.settings-panel:not([hidden]){position:fixed;right:0;top:0;bottom:0;width:min(440px,100vw);z-index:901;background:var(--panel-strong);border-left:1px solid var(--border-bright);box-shadow:-20px 0 60px rgba(0,0,0,.45);display:flex;flex-direction:column;color:var(--text)}
+.settings-panel-head{display:flex;justify-content:space-between;align-items:center;padding:24px;border-bottom:1px solid var(--border)}
+.settings-panel-head h2{margin:4px 0 0;font-size:26px}.settings-eyebrow{color:var(--accent);font-size:11px;font-weight:800;letter-spacing:.12em}
+.settings-close{font-size:18px}.settings-scroll{overflow-y:auto;overscroll-behavior:contain;padding:20px 24px 32px}
+.settings-section{padding:0 0 22px;margin-bottom:22px;border-bottom:1px solid var(--border)}
+.settings-section h3{font-size:17px;margin:0 0 13px}.settings-section p{font-size:12px;color:var(--muted);line-height:1.5}
+.settings-section>label:not(.settings-toggle){display:block;font-size:12px;color:var(--muted);margin:0 0 8px}
+.settings-section select,.settings-section input[type=text]{width:100%;font:inherit;color:var(--text);background:var(--bg);border:1px solid var(--border-bright);border-radius:10px;padding:11px}
+.settings-toggle{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);font-size:14px}
+.settings-toggle input{width:20px;height:20px;accent-color:var(--accent)}
+.settings-reset{width:100%;padding:12px}
+.settings-panel button:focus-visible,.settings-panel input:focus-visible,.settings-panel select:focus-visible,.settings-open:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+body.settings-dialog-open{overflow:hidden}
+body[data-widget-calendar="off"] .calendar-panel,
+body[data-widget-today="off"] .today-panel,
+body[data-widget-weather="off"] .weather-panel,
+body[data-widget-news="off"] .news-panel,
+body[data-widget-bitcoin="off"] .bitcoin-panel{display:none!important}
+@media(prefers-reduced-motion:no-preference){.settings-panel:not([hidden]){animation:settings-enter .2s ease-out both}@keyframes settings-enter{from{transform:translateX(18px);opacity:.8}to{transform:translateX(0);opacity:1}}}
+@media(max-width:760px){.settings-open{padding:.38rem .48rem}.settings-panel:not([hidden]){width:min(400px,100vw)}}
