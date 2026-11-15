@@ -73,6 +73,16 @@ export async function loadWeather() {
         </div>
       </div>`;
 
+    window.dispatchEvent(new CustomEvent("homehub:weather-change", {
+      detail: {
+        code: data.current.weather_code,
+        icon,
+        temperature: data.current.temperature_2m,
+        rainChance: data.daily.precipitation_probability_max[0] || 0,
+        location: weather.locationName || ""
+      }
+    }));
+
     // Today is represented by the large current-weather area above.
     // The compact strip deliberately starts with tomorrow.
     const forecast = $("forecast");

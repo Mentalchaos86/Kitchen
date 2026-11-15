@@ -8,9 +8,17 @@
  * Deploy as Web app:
  * Execute as: Me
  * Who has access: Anyone
+ *
+ * Privacy (HomeHub OS v1.9):
+ * - Uses the default calendar of the Google account that owns this script,
+ *   so no e-mail address is stored in the code.
+ * - Optional access key: add a Script Property named HOMEHUB_KEY
+ *   (Project Settings → Script Properties). When it is set, every request must
+ *   send the same value as ?key=… or the script returns no calendar data.
+ *   Enter the same key on the TV under Instellingen → Verbindingen.
  */
 
-const CALENDAR_ID = 'mvtruijen@gmail.com';
+const ACCESS_KEY_PROPERTY = 'HOMEHUB_KEY';
 const TIME_ZONE = 'Europe/Amsterdam';
 const DEFAULT_LOOKAHEAD_DAYS = 45;
 const MAX_LOOKAHEAD_DAYS = 62;
@@ -33,7 +41,11 @@ function doGet(e) {
   const callback = sanitizeCallback_((e && e.parameter && e.parameter.callback) || 'callback');
 
   try {
-    const calendar = CalendarApp.getCalendarById(CALENDAR_ID);
+    if (!isAuthorized_(e)) {
+      return jsonp_(callback, { ok: false, error: 'Unauthorized' });
+    }
+
+    const calendar = CalendarApp.getDefaultCalendar();
     if (!calendar) return jsonp_(callback, { ok: false, error: 'Calendar was not found.' });
 
     const now = new Date();
@@ -85,6 +97,13 @@ function doGet(e) {
       error: String(error && error.message ? error.message : error)
     });
   }
+}
+
+function isAuthorized_(e) {
+  const expected = PropertiesService.getScriptProperties().getProperty(ACCESS_KEY_PROPERTY);
+  if (!expected) return true;
+  const provided = String((e && e.parameter && e.parameter.key) || '');
+  return provided === expected;
 }
 
 function eventToObject_(event) {

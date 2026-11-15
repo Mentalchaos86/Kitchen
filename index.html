@@ -1,12 +1,47 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="nl">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Home Hub</title>
-  <link rel="stylesheet" href="styles.css?v=20261115-settings">
+  <title>Home OS</title>
+  <link rel="stylesheet" href="styles.css?v=20261115-homeos">
+  <link rel="stylesheet" href="home-os.css?v=20261115-homeos">
 </head>
 <body>
+  <div class="os-app">
+  <header class="os-header">
+    <div class="os-brand">
+      <div class="os-title">HOME OS</div>
+      <div class="os-subtitle">Samsung Frame • Kitchen Dashboard</div>
+    </div>
+    <div class="os-header-right">
+      <div class="os-clock">
+        <div id="osTime" class="os-time">--:--</div>
+        <div id="osDate" class="os-date"></div>
+      </div>
+      <span id="osStatus" class="os-status is-demo" data-os-icon="wifi" role="img" aria-label="Verbindingsstatus"></span>
+      <button type="button" id="osSettings" class="os-header-button" data-os-icon="sliders" aria-label="Instellingen openen"></button>
+    </div>
+  </header>
+
+  <nav class="os-tabs" role="tablist" aria-label="Home OS">
+    <button type="button" class="os-tab" role="tab" data-os-view="home" data-os-icon="home"><span>Home</span></button>
+    <button type="button" class="os-tab" role="tab" data-os-view="agenda" data-os-icon="calendar"><span>Agenda</span></button>
+    <button type="button" class="os-tab" role="tab" data-os-view="energy" data-os-icon="energy"><span>Energy</span></button>
+    <button type="button" class="os-tab" role="tab" data-os-view="household" data-os-icon="household"><span>Household</span></button>
+  </nav>
+
+  <div class="os-views">
+  <section class="os-view os-view-home" data-os-panel="home">
+    <div class="os-home-grid">
+      <article id="osCardToday" class="os-card" data-os-open="agenda" role="button" tabindex="0" aria-label="Open Agenda"></article>
+      <article id="osCardEnergy" class="os-card" data-os-open="energy" role="button" tabindex="0" aria-label="Open Energy"></article>
+      <article id="osCardSmartHome" class="os-card" data-os-open="smarthome" role="button" tabindex="0" aria-label="Open Smart Home"></article>
+      <article id="osCardHousehold" class="os-card" data-os-open="household" role="button" tabindex="0" aria-label="Open Household"></article>
+    </div>
+  </section>
+
+  <section class="os-view os-view-agenda" data-os-panel="agenda" hidden>
   <main class="dashboard">
     <header class="topbar">
       <section class="clock-block">
@@ -176,43 +211,79 @@
       </article>
     </section>
   </main>
+  </section>
+
+  <section class="os-view os-detail" data-os-panel="energy" hidden>
+    <h1 class="os-view-title">Energy</h1>
+    <div id="osViewEnergy"></div>
+  </section>
+
+  <section class="os-view os-detail" data-os-panel="household" hidden>
+    <h1 class="os-view-title">Household</h1>
+    <div id="osViewHousehold"></div>
+  </section>
+
+  <section class="os-view os-detail" data-os-panel="smarthome" hidden>
+    <h1 class="os-view-title">Smart Home</h1>
+    <div id="osViewSmartHome"></div>
+  </section>
+  </div>
+  </div>
 
   <div id="settingsBackdrop" class="settings-backdrop" hidden></div>
   <aside id="settingsPanel" class="settings-panel" role="dialog" aria-modal="true" aria-labelledby="settingsHeading" aria-hidden="true" hidden>
     <div class="settings-panel-head">
-      <div><div class="settings-eyebrow">HOMEHUB OS · v1.8.6</div><h2 id="settingsHeading">Settings</h2></div>
-      <button type="button" id="settingsClose" class="settings-close" aria-label="Close settings">✕</button>
+      <div><div class="settings-eyebrow">HOME OS · v1.9.0</div><h2 id="settingsHeading">Instellingen</h2></div>
+      <button type="button" id="settingsClose" class="settings-close" aria-label="Instellingen sluiten">✕</button>
     </div>
     <div class="settings-scroll">
       <section class="settings-section">
-        <h3>Appearance</h3>
-        <label for="settingsTheme">Theme</label>
+        <h3>Weergave</h3>
+        <label for="settingsAppearance">Licht of donker</label>
+        <select id="settingsAppearance">
+          <option value="auto">Automatisch (overdag licht, 's avonds donker)</option>
+          <option value="light">Altijd licht</option>
+          <option value="dark">Altijd donker</option>
+        </select>
+        <label for="settingsTheme" class="settings-spaced">Kleurthema agenda-scherm</label>
         <select id="settingsTheme">
-          <option value="orange">HomeHub Orange</option><option value="midnight">Midnight</option>
+          <option value="orange">HomeHub Oranje</option><option value="midnight">Midnight</option>
           <option value="forest">Forest</option><option value="amoled">AMOLED</option>
         </select>
       </section>
       <section class="settings-section">
-        <h3>Dashboard widgets</h3>
-        <p>Choose what appears on your wall dashboard.</p>
-        <label class="settings-toggle"><span>Calendar</span><input type="checkbox" data-widget-setting="calendar" checked></label>
-        <label class="settings-toggle"><span>Today</span><input type="checkbox" data-widget-setting="today" checked></label>
-        <label class="settings-toggle"><span>Weather</span><input type="checkbox" data-widget-setting="weather" checked></label>
-        <label class="settings-toggle"><span>Gaming news</span><input type="checkbox" data-widget-setting="news" checked></label>
+        <h3>Agenda-scherm</h3>
+        <p>Kies wat er op het Agenda-tabblad staat.</p>
+        <label class="settings-toggle"><span>Kalender</span><input type="checkbox" data-widget-setting="calendar" checked></label>
+        <label class="settings-toggle"><span>Vandaag</span><input type="checkbox" data-widget-setting="today" checked></label>
+        <label class="settings-toggle"><span>Weer</span><input type="checkbox" data-widget-setting="weather" checked></label>
+        <label class="settings-toggle"><span>Gaming-nieuws</span><input type="checkbox" data-widget-setting="news" checked></label>
         <label class="settings-toggle"><span>Bitcoin</span><input type="checkbox" data-widget-setting="bitcoin" checked></label>
       </section>
       <section class="settings-section">
-        <h3>Personal</h3>
-        <label for="settingsName">Display name</label>
-        <input id="settingsName" type="text" maxlength="40" autocomplete="off" placeholder="Your name">
-        <p>Settings are saved only in this browser or TV. They do not change your GitHub configuration.</p>
+        <h3>Persoonlijk</h3>
+        <label for="settingsName">Weergavenaam</label>
+        <input id="settingsName" type="text" maxlength="40" autocomplete="off" placeholder="Je naam">
+        <p>Instellingen worden alleen op deze TV of in deze browser bewaard. Ze veranderen niets in GitHub.</p>
       </section>
-      <button type="button" id="settingsReset" class="settings-reset">Restore default settings</button>
+      <section class="settings-section">
+        <h3>Verbindingen</h3>
+        <p>Sleutels en tokens worden alleen op dit apparaat bewaard en komen nooit in GitHub.</p>
+        <label for="settingsCalendarKey">Agenda-sleutel (HOMEHUB_KEY)</label>
+        <input id="settingsCalendarKey" type="password" autocomplete="off">
+        <label for="settingsHaUrl" class="settings-spaced">Home Assistant-adres</label>
+        <input id="settingsHaUrl" type="url" autocomplete="off" placeholder="http://homeassistant.local:8123">
+        <label for="settingsHaToken" class="settings-spaced">Home Assistant-token</label>
+        <input id="settingsHaToken" type="password" autocomplete="off">
+        <p id="settingsHaStatus" role="status"></p>
+        <button type="button" id="settingsConnectionsClear" class="settings-reset">Verbindingen wissen</button>
+      </section>
+      <button type="button" id="settingsReset" class="settings-reset">Standaardinstellingen herstellen</button>
     </div>
   </aside>
   <div id="toast" class="toast"></div>
 
-  <script src="config.js?v=20261115-settings"></script>
-  <script type="module" src="main.js?v=20261115-settings"></script>
+  <script src="config.js?v=20261115-homeos"></script>
+  <script type="module" src="main.js?v=20261115-homeos"></script>
 </body>
 </html>

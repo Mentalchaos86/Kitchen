@@ -12,11 +12,10 @@ window.DASHBOARD_CONFIG = {
     useMissionLanguage: true
   },
 
-  // Paste the URL found inside the Google Calendar embed code.
-  calendarEmbedUrl: "https://calendar.google.com/calendar/embed?src=mvtruijen%40gmail.com&ctz=Europe%2FAmsterdam",
-
   // Deploy google-apps-script/Code.gs as a Google Apps Script web app,
   // then paste its /exec URL here.
+  // The optional access key is NOT stored here: enter it on the TV under
+  // Instellingen → Verbindingen (saved only on that device).
   agendaApiUrl: "https://script.google.com/macros/s/AKfycbzTh8fGwqTLroyquF4QdJDgZXOoYwkX1a4x-IIvWPxpAKcUJ3DGuJFJO4DR7ggbz8AL/exec",
 
   agenda: {
@@ -88,6 +87,35 @@ window.DASHBOARD_CONFIG = {
   },
 
   refreshMinutes: 15,
+
+  // Home OS (v1.9). The Home Assistant address and token are entered on the TV
+  // under Instellingen → Verbindingen and never stored in this public file.
+  // Until Home Assistant is connected, Energy and Smart Home show demo data.
+  homeOs: {
+    defaultView: "home",
+    returnHomeAfterMinutes: 5,
+    appearance: "auto",      // auto | light | dark
+    dayStartHour: 7,
+    nightStartHour: 20
+  },
+
+  homeAssistant: {
+    refreshSeconds: 30,
+    // Fill in the entity IDs once Home Assistant is running
+    // (Home Assistant → Instellingen → Entiteiten).
+    energy: {
+      power: "",             // e.g. sensor.zendure_p1_power (W)
+      price: "",             // e.g. sensor.zonneplan_current_electricity_tariff (€/kWh)
+      solar: "",             // e.g. sensor.anker_solix_solar_power (W)
+      batteries: [
+        { name: "Anker",   level: "", power: "" },
+        { name: "Zendure", level: "", power: "" }
+      ]
+    },
+    lights: [],              // e.g. ["light.keuken", "light.woonkamer"]
+    climate: [],             // e.g. ["sensor.woonkamer_temperature"]
+    devices: []              // e.g. ["switch.vaatwasser", "switch.wasmachine"]
+  },
 
   defaultShoppingItems: [
     "Milk",

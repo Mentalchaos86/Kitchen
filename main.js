@@ -15,10 +15,16 @@ import { initAware } from "./modules/aware.js";
 import { initLearning } from "./modules/learning.js";
 import { initPreparationWindow } from "./modules/preparation-window.js";
 import { initPredictiveMoment } from "./modules/predictive-moment.js";
+import { initOsShell } from "./modules/os-shell.js";
+import { initOsHome } from "./modules/os-home.js";
+import { initOsViews } from "./modules/os-views.js";
 
 const modules = [
   ["Themes", initThemes],
   ["Settings UI", initSettingsUI],
+  ["Home OS Shell", initOsShell],
+  ["Home OS Home", initOsHome],
+  ["Home OS Views", initOsViews],
   ["Clock", initClock],
   ["Scenes", initScenes],
   ["Header", initHeader],
