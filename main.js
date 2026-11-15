@@ -18,6 +18,7 @@ import { initPredictiveMoment } from "./modules/predictive-moment.js";
 import { initOsShell } from "./modules/os-shell.js";
 import { initOsHome } from "./modules/os-home.js";
 import { initOsViews } from "./modules/os-views.js";
+import { initOsRemote } from "./modules/os-remote.js";
 
 const modules = [
   ["Themes", initThemes],
@@ -25,6 +26,7 @@ const modules = [
   ["Home OS Shell", initOsShell],
   ["Home OS Home", initOsHome],
   ["Home OS Views", initOsViews],
+  ["Home OS Remote", initOsRemote],
   ["Clock", initClock],
   ["Scenes", initScenes],
   ["Header", initHeader],
