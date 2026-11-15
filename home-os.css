@@ -387,7 +387,7 @@ body[data-os-view="agenda"] .os-app { --os-price-low: #4cc38a; --os-price-normal
   display: flex;
   align-items: flex-end;
   gap: 2px;
-  height: 13vw;
+  height: 8vw;
   margin-top: 1.6em;
   padding-bottom: 1.4em;
   border-bottom: 1px solid var(--os-border);
@@ -424,3 +424,15 @@ body[data-os-view="agenda"] .os-app { --os-price-low: #4cc38a; --os-price-normal
 }
 .os-bars-days { display: flex; gap: 0.6vw; margin-top: 0.5em; font-size: 0.75em; color: var(--os-muted); }
 #osViewHousehold > section { margin-bottom: 1em; }
+
+/* Detail views must fit the TV screen (no scrolling with a remote):
+   the tab already names the view, and tile icons sit next to their label. */
+.os-detail > .os-view-title {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+}
+.os-tile > svg { display: inline-block; vertical-align: middle; }
+.os-tile > svg + .os-tile-label { display: inline-block; margin: 0 0 0 0.5em; vertical-align: middle; }
