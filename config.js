@@ -119,7 +119,10 @@ window.DASHBOARD_CONFIG = {
     lights: [],              // e.g. ["light.keuken", "light.woonkamer"]
     climate: [],             // e.g. ["sensor.woonkamer_temperature"]
     devices: [],             // e.g. ["switch.vaatwasser", "switch.wasmachine"]
-    // Hide entities whose ID or name contains one of these words.
+    // Cameras on Home (e.g. Ring). Empty = all, front door first.
+    // Fill in to choose which ones and in what order, e.g. ["camera.voordeur_live_view"].
+    cameras: [],
+    // Hide entities (lights, switches, cameras) whose ID or name contains one of these words.
     exclude: ["zendure_manager", "child_lock", "kinderslot"]
   },
 

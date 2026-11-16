@@ -189,6 +189,24 @@ function discover(states, test) {
     .map(entity => entity.entity_id);
 }
 
+// Cameras (e.g. Ring). Order: config.homeAssistant.cameras if set, otherwise
+// the front door / doorbell first. config exclude words hide a camera.
+function mapCameras(states) {
+  const exclude = (ha().exclude || []).map(item => new RegExp(String(item), "i"));
+  const order = Array.isArray(ha().cameras) ? ha().cameras : [];
+  const rank = entity => {
+    const index = order.indexOf(entity.entity_id);
+    if (index >= 0) return index;
+    return /voordeur|deurbel|doorbell|front/i.test(`${entity.entity_id} ${friendly(entity, "")}`) ? 100 : 200;
+  };
+  return states
+    .filter(entity => entity.entity_id.startsWith("camera.") && entity.state !== "unavailable" && entity.attributes?.entity_picture)
+    .filter(entity => !order.length || order.includes(entity.entity_id))
+    .filter(entity => !exclude.some(pattern => pattern.test(`${entity.entity_id} ${friendly(entity, "")}`)))
+    .sort((a, b) => rank(a) - rank(b) || friendly(a, a.entity_id).localeCompare(friendly(b, b.entity_id), "nl"))
+    .map(entity => ({ id: entity.entity_id, name: friendly(entity, entity.entity_id), picture: entity.attributes.entity_picture }));
+}
+
 // Rooms: Home Assistant areas with their lights and a temperature.
 function mapRooms(states, areas, byId) {
   const exclude = (ha().exclude || []).map(item => new RegExp(String(item), "i"));
@@ -278,9 +296,7 @@ function mapStates(states, areas = []) {
       }),
     devices: toggles(deviceIds),
     rooms: mapRooms(states, areas, byId),
-    cameras: states
-      .filter(entity => entity.entity_id.startsWith("camera.") && entity.state !== "unavailable" && entity.attributes?.entity_picture)
-      .map(entity => ({ id: entity.entity_id, name: friendly(entity, entity.entity_id), picture: entity.attributes.entity_picture })),
+    cameras: mapCameras(states),
     waste: mapWaste(states)
   };
 }
