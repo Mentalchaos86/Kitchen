@@ -88,6 +88,12 @@ const WASTE_NAMES = { gft: "GFT", pmd: "PMD", papier: "Papier", restafval: "Rest
 
 function parseDate(value) {
   const text = String(value || "").trim();
+  // Timestamps (e.g. "2026-11-16T23:00:00+00:00") are UTC: convert to the local
+  // day first, otherwise a pickup on the 17th shows up as the 16th.
+  if (/^\d{4}-\d{2}-\d{2}T/.test(text)) {
+    const stamp = new Date(text);
+    if (!Number.isNaN(stamp.getTime())) return new Date(stamp.getFullYear(), stamp.getMonth(), stamp.getDate());
+  }
   let match = text.match(/^(\d{4})-(\d{2})-(\d{2})/);
   if (match) return new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3]));
   match = text.match(/^(\d{2})-(\d{2})-(\d{4})$/);
@@ -152,6 +158,19 @@ function cheapestWindow(states) {
   return null;
 }
 
+// Live household power from a P1 meter (Zendure P1, HomeWizard, DSMR, ...) when
+// no entity ID is set in config. Only real watt sensors with a number count.
+function findGridPower(states) {
+  return states.find(entity => {
+    const attrs = entity.attributes || {};
+    const label = `${entity.entity_id} ${attrs.friendly_name || ""}`;
+    return entity.entity_id.startsWith("sensor.")
+      && (attrs.unit_of_measurement === "W" || attrs.device_class === "power")
+      && /p1|homewizard|dsmr|active.?power|power.?consumption|net.?power|grid/i.test(label)
+      && Number.isFinite(Number.parseFloat(entity.state));
+  }) || null;
+}
+
 function mapStates(states) {
   const byId = new Map(states.map(entity => [entity.entity_id, entity]));
   const value = id => (id && byId.has(id) ? byId.get(id) : null);
@@ -168,7 +187,7 @@ function mapStates(states) {
     mode: "live",
     updatedAt: new Date().toISOString(),
     energy: {
-      powerW: number(value(energy.power)?.state),
+      powerW: number((value(energy.power) || findGridPower(states))?.state),
       priceEur: number(pick(energy.price, ZONNEPLAN.price)?.state),
       nextHourPriceEur: number(pick(energy.nextHourPrice, ZONNEPLAN.nextHourPrice)?.state),
       tariffGroup: TARIFF_NL[tariffRaw] || null,

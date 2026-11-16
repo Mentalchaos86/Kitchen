@@ -155,8 +155,11 @@ function renderEnergy() {
 
   root.innerHTML = `
     <div class="os-card-head"><h2>Energy</h2>${demoBadge(data)}</div>
-    <div class="os-card-big">${kw(energy.powerW)}</div>
-    <div class="os-card-sub">Live verbruik${Number.isFinite(energy.priceEur) ? ` · Stroom nu ${euroPerKwh(energy.priceEur)}` : ""}${Number.isFinite(energy.gas?.priceEur) ? ` · Gas ${euro(energy.gas.priceEur)}/m³` : ""}</div>
+    ${Number.isFinite(energy.powerW) || !Number.isFinite(energy.priceEur)
+      ? `<div class="os-card-big">${kw(energy.powerW)}</div>
+    <div class="os-card-sub">Live verbruik${Number.isFinite(energy.priceEur) ? ` · Stroom nu ${euroPerKwh(energy.priceEur)}` : ""}${Number.isFinite(energy.gas?.priceEur) ? ` · Gas ${euro(energy.gas.priceEur)}/m³` : ""}</div>`
+      : `<div class="os-card-big">${euroPerKwh(energy.priceEur)}</div>
+    <div class="os-card-sub">Stroom nu${Number.isFinite(energy.gas?.priceEur) ? ` · Gas ${euro(energy.gas.priceEur)}/m³` : ""} · Live verbruik volgt na koppeling P1-meter</div>`}
     ${energy.cheapest ? `<div class="os-hint">${icon("euro")}Goedkoopst ${escapeHtml(energy.cheapest.day || "vandaag")} ${escapeHtml(energy.cheapest.from)}–${escapeHtml(energy.cheapest.to)}</div>` : ""}
     <div class="os-divider"></div>
     <div class="os-card-section">Batterijen</div>
