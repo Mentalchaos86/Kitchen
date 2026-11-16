@@ -1,6 +1,6 @@
 // Home OS — detail views: Energy, Smart Home and Household.
 import { $, escapeHtml } from "../core/dom.js";
-import { getHomeData, homeAssistantConfigured } from "../services/homeassistant.js";
+import { getHomeData, homeAssistantConfigured, homeAssistantUrl } from "../services/homeassistant.js";
 import { addHouseholdItem, getHousehold, LISTS, removeHouseholdItem } from "../services/household.js";
 import { icon } from "./os-icons.js";
 import { batteryState, dayLabel, decimal, euro, euroPerKwh, kw, timeNl } from "./os-format.js";
@@ -113,6 +113,84 @@ function renderSmartHome() {
     </div>`;
 }
 
+// ---------- Camera tab ----------
+// Images only load while the Camera tab is open; leaving it stops them.
+let selectedCamera = null;
+let cameraTimer = null;
+let cameraKey = "";
+
+const cameraOpen = () => document.body.dataset.osView === "camera";
+const cameraList = () => (getHomeData()?.mode === "live" ? getHomeData().cameras || [] : []);
+
+function cameraSrc(camera) {
+  return `${homeAssistantUrl()}${camera.picture}${camera.picture.includes("?") ? "&" : "?"}t=${Date.now()}`;
+}
+
+function renderCamera() {
+  const root = $("osViewCamera");
+  if (!root) return;
+  if (!cameraOpen()) {
+    root.innerHTML = "";
+    cameraKey = "";
+    return;
+  }
+  const cameras = cameraList();
+  cameraKey = cameras.map(camera => camera.id).join("|");
+  if (!cameras.length) {
+    root.innerHTML = `<div class="os-notice">Nog geen camera's gevonden. Koppel in Home Assistant de integratie <strong>Ring</strong>; dan verschijnen de camera's hier vanzelf.</div>`;
+    return;
+  }
+  const camera = cameras.find(item => item.id === selectedCamera) || cameras[0];
+  selectedCamera = camera.id;
+  root.innerHTML = `
+    <div class="os-glass os-camera-main">
+      <img id="osCameraImage" src="${escapeHtml(cameraSrc(camera))}" alt="${escapeHtml(camera.name)}">
+      <div class="os-camera-caption">${icon("camera")}<span>${escapeHtml(camera.name)}</span><small id="osCameraTime">${timeNl(new Date())}</small></div>
+    </div>
+    <div class="os-camera-list">
+      ${cameras.map(item => `<button type="button" class="os-glass-button${item.id === camera.id ? " is-active" : ""}" data-camera="${escapeHtml(item.id)}">${icon("camera")}<span>${escapeHtml(item.name)}</span></button>`).join("")}
+    </div>`;
+}
+
+function refreshCameraImage() {
+  if (!cameraOpen()) return;
+  const image = $("osCameraImage");
+  const camera = cameraList().find(item => item.id === selectedCamera);
+  if (!image || !camera) return;
+  // Load off-screen first so the picture never flashes empty.
+  const next = new Image();
+  next.onload = () => {
+    image.src = next.src;
+    const time = $("osCameraTime");
+    if (time) time.textContent = timeNl(new Date());
+  };
+  next.src = cameraSrc(camera);
+}
+
+function bindCamera() {
+  const root = $("osViewCamera");
+  if (!root) return;
+  root.addEventListener("click", event => {
+    const button = event.target.closest("[data-camera]");
+    if (!button) return;
+    selectedCamera = button.dataset.camera;
+    renderCamera();
+    root.querySelector(`[data-camera="${CSS.escape(selectedCamera)}"]`)?.focus();
+  });
+  window.addEventListener("homehub:view-change", () => {
+    clearInterval(cameraTimer);
+    cameraTimer = null;
+    renderCamera();
+    if (cameraOpen()) {
+      cameraTimer = setInterval(refreshCameraImage, 5000);
+      root.querySelector(".os-camera-list .is-active")?.focus();
+    }
+  });
+  window.addEventListener("homehub:home-data-change", () => {
+    if (cameraOpen() && cameraList().map(camera => camera.id).join("|") !== cameraKey) renderCamera();
+  });
+}
+
 const LIST_ICONS = { shopping: "cart", chores: "tasks", maintenance: "wrench" };
 
 function renderHousehold() {
@@ -178,6 +256,7 @@ export function initOsViews() {
   renderSmartHome();
   renderHousehold();
   bindHousehold();
+  bindCamera();
   // Household only re-renders when the waste dates change, so typing in its
   // input fields is not interrupted by the 30-second Home Assistant refresh.
   let wasteKey = "";

@@ -3,7 +3,7 @@
 import { $, escapeHtml } from "../core/dom.js";
 import { getAgendaState } from "../core/state.js";
 import { getFocusResult } from "../intelligence/context.js";
-import { getHomeData, homeAssistantUrl } from "../services/homeassistant.js";
+import { getHomeData } from "../services/homeassistant.js";
 import { getHousehold } from "../services/household.js";
 import { getPriceCurve, priceAdvice } from "../services/energy-prices.js";
 import { getRain } from "../services/rain.js";
@@ -13,7 +13,6 @@ import { priceChart } from "./os-views.js";
 import { batteryState, count, dayLabel, decimal, euro, euroPerKwh, kw, timeNl } from "./os-format.js";
 
 let monthEvents = null;
-let selectedCamera = null;
 const LEVEL_NL = { low: "Laag", normal: "Normaal", high: "Hoog" };
 
 // ---------- Shared helpers (also used by os-views.js) ----------
@@ -125,44 +124,12 @@ function renderChips() {
     </div>`).join("");
 }
 
-// ---------- Hero: doorbell camera, otherwise the hourly price chart ----------
-
-function cameraUrl(camera) {
-  return `${homeAssistantUrl()}${camera.picture}${camera.picture.includes("?") ? "&" : "?"}t=${Date.now()}`;
-}
+// ---------- Hero: hourly price chart (cameras have their own tab) ----------
 
 function renderHero() {
   const root = $("osCardHero");
   if (!root) return;
-  const data = getHomeData();
-  const cameras = live()?.cameras || [];
-
-  if (cameras.length) {
-    const camera = cameras.find(item => item.id === selectedCamera) || cameras[0];
-    selectedCamera = camera.id;
-    root.removeAttribute("data-os-open");
-    root.removeAttribute("role");
-    root.removeAttribute("tabindex");
-    root.classList.add("has-camera");
-    root.innerHTML = `
-      <div class="os-camera"><img id="osCameraImage" src="${escapeHtml(cameraUrl(camera))}" alt="${escapeHtml(camera.name)}"></div>
-      <div class="os-camera-list">
-        ${cameras.slice(0, 5).map(item => `<button type="button" class="os-glass-button${item.id === camera.id ? " is-active" : ""}" data-camera="${escapeHtml(item.id)}">${escapeHtml(item.name)}</button>`).join("")}
-      </div>`;
-    return;
-  }
-
-  root.setAttribute("data-os-open", "energy");
-  root.setAttribute("role", "button");
-  root.setAttribute("tabindex", "0");
-  root.classList.remove("has-camera");
-  root.innerHTML = priceChart(data?.energy || {});
-}
-
-function refreshCamera() {
-  const image = $("osCameraImage");
-  const camera = (live()?.cameras || []).find(item => item.id === selectedCamera);
-  if (image && camera) image.src = cameraUrl(camera);
+  root.innerHTML = priceChart(getHomeData()?.energy || {});
 }
 
 // ---------- Weather ----------
@@ -439,22 +406,15 @@ function renderAll() {
 
 export function initOsHome() {
   renderAll();
-  $("osCardHero")?.addEventListener("click", event => {
-    const button = event.target.closest("[data-camera]");
-    if (!button) return;
-    selectedCamera = button.dataset.camera;
-    renderHero();
-    document.querySelector(`[data-camera="${CSS.escape(selectedCamera)}"]`)?.focus();
-  });
   window.addEventListener("homehub:home-data-change", () => {
     renderChips();
-    if (!$("osCameraImage")) renderHero();
+    renderHero();
     renderEnergy();
     renderRooms();
     renderShortcuts();
     renderDock();
   });
-  window.addEventListener("homehub:prices-change", () => { renderChips(); renderEnergy(); if (!$("osCameraImage")) renderHero(); });
+  window.addEventListener("homehub:prices-change", () => { renderChips(); renderEnergy(); renderHero(); });
   window.addEventListener("homehub:forecast-change", renderWeather);
   window.addEventListener("homehub:rain-change", () => { renderChips(); renderWeather(); });
   window.addEventListener("homehub:agenda-change", () => { renderChips(); renderAgenda(); });
@@ -462,7 +422,6 @@ export function initOsHome() {
   window.addEventListener("homehub:focus-change", renderChips);
   window.addEventListener("homehub:household-change", renderDock);
   setInterval(() => { renderChips(); renderAgenda(); }, 60000);
-  setInterval(refreshCamera, 10000);
   const countdown = $("countdownValue");
   if (countdown && "MutationObserver" in window) {
     new MutationObserver(renderChips).observe(countdown, { childList: true, characterData: true, subtree: true });

@@ -4,9 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Home OS</title>
-  <link rel="stylesheet" href="styles.css?v=20261116-homeos8">
-  <link rel="stylesheet" href="home-os.css?v=20261116-homeos8">
-  <link rel="stylesheet" href="home-os-glass.css?v=20261116-homeos8">
+  <link rel="stylesheet" href="styles.css?v=20261116-homeos9">
+  <link rel="stylesheet" href="home-os.css?v=20261116-homeos9">
+  <link rel="stylesheet" href="home-os-glass.css?v=20261116-homeos9">
 </head>
 <body>
   <div class="os-app">
@@ -20,6 +20,7 @@
       <button type="button" class="os-tab" role="tab" data-os-view="agenda" data-os-icon="calendar"><span>Agenda</span></button>
       <button type="button" class="os-tab" role="tab" data-os-view="energy" data-os-icon="energy"><span>Energy</span></button>
       <button type="button" class="os-tab" role="tab" data-os-view="household" data-os-icon="household"><span>Household</span></button>
+      <button type="button" class="os-tab" role="tab" data-os-view="camera" data-os-icon="camera"><span>Camera</span></button>
     </nav>
     <div class="os-header-right">
       <span id="osStatus" class="os-status is-demo" data-os-icon="wifi" role="img" aria-label="Verbindingsstatus"></span>
@@ -231,6 +232,11 @@
     <h1 class="os-view-title">Smart Home</h1>
     <div id="osViewSmartHome"></div>
   </section>
+
+  <section class="os-view os-detail os-view-camera" data-os-panel="camera" hidden>
+    <h1 class="os-view-title">Camera</h1>
+    <div id="osViewCamera" class="os-camera-view"></div>
+  </section>
   </div>
   </div>
 
@@ -287,7 +293,7 @@
   </aside>
   <div id="toast" class="toast"></div>
 
-  <script src="config.js?v=20261116-homeos8"></script>
-  <script type="module" src="main.js?v=20261116-homeos8"></script>
+  <script src="config.js?v=20261116-homeos9"></script>
+  <script type="module" src="main.js?v=20261116-homeos9"></script>
 </body>
 </html>

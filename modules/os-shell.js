@@ -11,7 +11,7 @@ import { startForecast } from "../services/forecast.js";
 import { icon } from "./os-icons.js";
 import { longDate, timeNl } from "./os-format.js";
 
-const VIEWS = ["home", "agenda", "energy", "household", "smarthome"];
+const VIEWS = ["home", "agenda", "energy", "household", "smarthome", "camera"];
 const APPEARANCE_KEY = "homehub-os-appearance-v1";
 const os = () => config.homeOs || {};
 

@@ -144,10 +144,30 @@ body[data-os-view="agenda"] .os-time { font-size: 1.5em; font-weight: 600; }
 .os-hero .os-prices { display: flex; flex-direction: column; flex: 1; min-height: 0; margin: 0; padding: 0; background: none; border: 0; }
 .os-hero .os-bars { flex: 1; height: auto; min-height: 0; }
 .os-hero .os-bar.is-now { box-shadow: 0 0 0 2px #15161a, 0 0 0 4px var(--os-text); }
-.os-hero.has-camera { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 1em; }
-.os-camera { min-height: 0; overflow: hidden; border-radius: 1em; background: #000; }
-.os-camera img { display: block; width: 100%; height: 100%; object-fit: cover; }
-.os-camera-list { display: flex; flex-direction: column; gap: 0.6em; }
+
+/* ---------- Camera tab ---------- */
+.os-view-camera { overflow: hidden; }
+.os-camera-view { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 1fr) 15em; gap: 1vw; }
+.os-camera-view > .os-notice { grid-column: 1 / -1; align-self: start; }
+.os-camera-main { display: flex; padding: 0; background: #000; }
+.os-camera-main img { display: block; width: 100%; height: 100%; object-fit: contain; }
+.os-camera-caption {
+  position: absolute;
+  left: 1em;
+  bottom: 1em;
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  padding: 0.45em 1em;
+  font-weight: 600;
+  background: rgba(0, 0, 0, 0.55);
+  border: 1px solid var(--os-border);
+  border-radius: 999px;
+}
+.os-camera-caption .os-icon { color: var(--os-accent); }
+.os-camera-caption small { font-weight: 400; color: var(--os-muted); }
+.os-camera-list { display: flex; flex-direction: column; gap: 0.7em; }
+.os-camera-list .os-glass-button { display: flex; align-items: center; gap: 0.6em; text-align: left; font-size: 1em; }
 .os-glass-button {
   padding: 0.8em 1.3em;
   font: inherit;
