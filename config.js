@@ -104,12 +104,14 @@ window.DASHBOARD_CONFIG = {
     // Fill in the entity IDs once Home Assistant is running
     // (Home Assistant → Instellingen → Entiteiten).
     energy: {
-      power: "",             // e.g. sensor.zendure_p1_power (W)
-      price: "",             // e.g. sensor.zonneplan_current_electricity_tariff (€/kWh)
-      solar: "",             // e.g. sensor.anker_solix_solar_power (W)
+      // Zendure P1 meter + SolarFlow 4000 Mix, read locally via REST sensors
+      // in Home Assistant (see docs/zendure-local.yaml).
+      power: "sensor.zendure_p1_power",          // W, + = afname, - = teruglevering
+      price: "",             // empty = Zonneplan detected automatically
+      solar: "sensor.solarflow_zonne_opbrengst", // W
       batteries: [
         { name: "Anker",   level: "", power: "" },
-        { name: "Zendure", level: "", power: "" }
+        { name: "Zendure", level: "sensor.solarflow_batterij", power: "sensor.solarflow_batterij_vermogen" }
       ]
     },
     lights: [],              // e.g. ["light.keuken", "light.woonkamer"]
