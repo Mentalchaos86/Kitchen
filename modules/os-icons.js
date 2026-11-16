@@ -20,7 +20,14 @@ const paths = {
   rain: '<path d="M7 15.5a4.5 4.5 0 1 1 1.3-8.8A5.5 5.5 0 0 1 19 9a3.5 3.5 0 0 1-1 6.5"/><path d="M8.5 18.5 7.5 21M12.5 18.5l-1 2.5M16.5 18.5l-1 2.5"/>',
   trash: '<path d="M4 6.5h16M9.5 6.5V4h5v2.5"/><path d="M6 6.5l1 14h10l1-14"/><path d="M10 10.5v6M14 10.5v6"/>',
   flame: '<path d="M12 21.5a6.5 6.5 0 0 0 6.5-6.5c0-4-3-6-4-9.5-2 1.5-3 3.5-3 5.5-1.5-.5-2.5-2-2.5-3.5C7 9.5 5.5 12 5.5 15a6.5 6.5 0 0 0 6.5 6.5Z"/>',
-  close: '<path d="M6 6l12 12M18 6 6 18"/>'
+  close: '<path d="M6 6l12 12M18 6 6 18"/>',
+  sofa: '<path d="M4 11V8.5A2.5 2.5 0 0 1 6.5 6h11A2.5 2.5 0 0 1 20 8.5V11"/><path d="M2.5 13a2 2 0 0 1 4 0v1.5h11V13a2 2 0 0 1 4 0v4.5h-19z"/><path d="M5 17.5V20M19 17.5V20"/>',
+  bed: '<path d="M3 19V6M3 15h18v4M21 15v-3a3 3 0 0 0-3-3h-7v6"/><circle cx="7" cy="11" r="2"/>',
+  utensils: '<path d="M6 3v7a2 2 0 0 0 4 0V3M8 3v18"/><path d="M17 21V3c-2 1.5-3 4-3 7v3h3"/>',
+  bath: '<path d="M3 12h18v2a5 5 0 0 1-5 5H8a5 5 0 0 1-5-5z"/><path d="M6 12V5.5A2 2 0 0 1 9.5 4.3"/><path d="M7 19l-1 2M17 19l1 2"/>',
+  desk: '<rect x="3" y="4" width="18" height="11" rx="1.5"/><path d="M9 20h6M12 15v5"/>',
+  camera: '<rect x="2.5" y="6" width="14" height="12" rx="2"/><path d="m16.5 10.5 5-3v9l-5-3"/>',
+  door: '<path d="M5 21V4.5A1.5 1.5 0 0 1 6.5 3h11A1.5 1.5 0 0 1 19 4.5V21M3 21h18"/><path d="M15 12h.01"/>'
 };
 
 export function icon(name, className = "os-icon") {

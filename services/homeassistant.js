@@ -59,6 +59,12 @@ function demoData() {
       { id: "demo.vaatwasser", name: "Vaatwasser", on: false },
       { id: "demo.wasmachine", name: "Wasmachine", on: true }
     ],
+    rooms: [
+      { name: "Woonkamer", lightsOn: 2, lights: 3, temperature: 20.5 },
+      { name: "Keuken", lightsOn: 1, lights: 2, temperature: 19.8 },
+      { name: "Slaapkamer", lightsOn: 0, lights: 2, temperature: 18.2 }
+    ],
+    cameras: [],
     waste: []
   };
 }
@@ -171,17 +177,62 @@ function findGridPower(states) {
   }) || null;
 }
 
-function mapStates(states) {
+// Automatic discovery for the Smart Home lists. Unavailable entities and
+// anything matching config.homeAssistant.exclude (text or regex) are skipped.
+function discover(states, test) {
+  const exclude = (ha().exclude || []).map(item => item instanceof RegExp ? item : new RegExp(String(item), "i"));
+  return states
+    .filter(entity => !["unavailable", "unknown"].includes(entity.state))
+    .filter(test)
+    .filter(entity => !exclude.some(pattern => pattern.test(`${entity.entity_id} ${friendly(entity, "")}`)))
+    .sort((a, b) => friendly(a, a.entity_id).localeCompare(friendly(b, b.entity_id), "nl"))
+    .map(entity => entity.entity_id);
+}
+
+// Rooms: Home Assistant areas with their lights and a temperature.
+function mapRooms(states, areas, byId) {
+  const exclude = (ha().exclude || []).map(item => new RegExp(String(item), "i"));
+  const usable = id => {
+    const entity = byId.get(id);
+    return entity && !["unavailable", "unknown"].includes(entity.state)
+      && !exclude.some(pattern => pattern.test(`${id} ${friendly(entity, "")}`));
+  };
+  return (areas || []).map(area => {
+    const ids = (area.entities || []).filter(usable);
+    const lights = ids.filter(id => id.startsWith("light."));
+    const tempId = ids.find(id => id.startsWith("climate."))
+      || ids.find(id => byId.get(id).attributes?.device_class === "temperature" && Number.isFinite(Number.parseFloat(byId.get(id).state)));
+    const tempEntity = tempId ? byId.get(tempId) : null;
+    return {
+      name: area.name,
+      lightsOn: lights.filter(id => byId.get(id).state === "on").length,
+      lights: lights.length,
+      temperature: tempEntity ? number(tempId.startsWith("climate.") ? tempEntity.attributes?.current_temperature : tempEntity.state) : null
+    };
+  }).filter(room => room.lights || Number.isFinite(room.temperature));
+}
+
+function mapStates(states, areas = []) {
   const byId = new Map(states.map(entity => [entity.entity_id, entity]));
   const value = id => (id && byId.has(id) ? byId.get(id) : null);
   const energy = ha().energy || {};
   const pick = (configId, pattern) => value(configId) || (pattern ? findByName(states, pattern) : null);
   const tariffRaw = String(pick(energy.tariffGroup, ZONNEPLAN.tariffGroup)?.state || "").toLowerCase();
 
-  const toggles = ids => (ids || [])
+  const toggles = ids => ids
     .map(id => ({ id, entity: value(id) }))
     .filter(item => item.entity)
     .map(({ id, entity }) => ({ id, name: friendly(entity, id), on: entity.state === "on" }));
+
+  // Empty lists in config.js mean "show everything Home Assistant has".
+  const configured = list => Array.isArray(list) && list.length ? list : null;
+  const lightIds = configured(ha().lights) || discover(states, entity => entity.entity_id.startsWith("light."));
+  const deviceIds = configured(ha().devices) || discover(states, entity => /^(switch|fan)\./.test(entity.entity_id));
+  const climateIds = configured(ha().climate) || discover(states, entity =>
+    entity.entity_id.startsWith("climate.")
+    || (entity.entity_id.startsWith("sensor.")
+      && entity.attributes?.device_class === "temperature"
+      && Number.isFinite(Number.parseFloat(entity.state))));
 
   return {
     mode: "live",
@@ -212,23 +263,57 @@ function mapStates(states) {
           powerW: number(value(battery.power)?.state)
         }))
     },
-    lights: toggles(ha().lights),
-    climate: (ha().climate || [])
+    lights: toggles(lightIds),
+    climate: climateIds
       .map(id => ({ id, entity: value(id) }))
       .filter(item => item.entity)
-      .map(({ id, entity }) => ({
-        id,
-        name: friendly(entity, id),
-        value: number(entity.state),
-        unit: entity.attributes?.unit_of_measurement || ""
-      })),
-    devices: toggles(ha().devices),
+      .map(({ id, entity }) => {
+        const isClimate = id.startsWith("climate.");
+        return {
+          id,
+          name: friendly(entity, id),
+          value: number(isClimate ? entity.attributes?.current_temperature : entity.state),
+          unit: isClimate ? "°C" : entity.attributes?.unit_of_measurement || ""
+        };
+      }),
+    devices: toggles(deviceIds),
+    rooms: mapRooms(states, areas, byId),
+    cameras: states
+      .filter(entity => entity.entity_id.startsWith("camera.") && entity.state !== "unavailable" && entity.attributes?.entity_picture)
+      .map(entity => ({ id: entity.entity_id, name: friendly(entity, entity.entity_id), picture: entity.attributes.entity_picture })),
     waste: mapWaste(states)
   };
 }
 
+// Base URL for images served by Home Assistant (camera snapshots).
+export function homeAssistantUrl() {
+  return getDeviceSecret("haUrl").replace(/\/+$/, "");
+}
+
+// Areas (rooms) are not part of /api/states; a template lists them with their
+// entities. Refreshed every 5 minutes; failures just mean "no rooms".
+const AREA_TEMPLATE = '[{% for a in areas() %}{"name": {{ area_name(a) | tojson }}, "entities": {{ area_entities(a) | tojson }}}{{ "," if not loop.last }}{% endfor %}]';
+let areaCache = { at: 0, list: [] };
+
+async function fetchAreas(url, token) {
+  if (Date.now() - areaCache.at < 5 * 60000) return areaCache.list;
+  let list = areaCache.list;
+  try {
+    const response = await fetch(`${url}/api/template`, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ template: AREA_TEMPLATE })
+    });
+    if (response.ok) list = JSON.parse(await response.text());
+  } catch (error) {
+    console.warn("[HomeAssistant] areas", error);
+  }
+  areaCache = { at: Date.now(), list };
+  return list;
+}
+
 async function fetchLive() {
-  const url = getDeviceSecret("haUrl").replace(/\/+$/, "");
+  const url = homeAssistantUrl();
   const token = getDeviceSecret("haToken");
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 10000);
@@ -238,7 +323,8 @@ async function fetchLive() {
       signal: controller.signal
     });
     if (!response.ok) throw new Error(`Home Assistant antwoordde ${response.status}`);
-    return mapStates(await response.json());
+    const states = await response.json();
+    return mapStates(states, await fetchAreas(url, token));
   } finally {
     clearTimeout(timeout);
   }

@@ -146,6 +146,8 @@ export async function loadCalendar() {
     }
 
     render(data.events || []);
+    // Home OS shows the month and the next days from the same events.
+    window.dispatchEvent(new CustomEvent("homehub:month-events", { detail: data.events || [] }));
     const intelligence = analyzeEvents(data.events || []);
     buildFocusResult(intelligence.analyzedEvents || data.events || []);
     markUpdated();

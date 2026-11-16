@@ -10,7 +10,7 @@ import { nextWaste } from "./os-home.js";
 const LEVEL_NL = { low: "Laag", normal: "Normaal", high: "Hoog" };
 
 // Hourly price bars for today (and tomorrow once published, around 13:00).
-function priceChart(energy) {
+export function priceChart(energy) {
   const curve = getPriceCurve(energy.priceEur);
   if (!curve) return `<section class="os-panel os-prices"><h3 class="os-section-title">${icon("euro")}Stroomprijs per uur</h3><div class="os-empty">Uurprijzen laden…</div></section>`;
   const max = Math.max(...curve.hours.map(hour => hour.price));

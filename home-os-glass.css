@@ -1,0 +1,322 @@
+/* Home OS v1.11 — Glass design: black + orange, Home as a 4-column board.
+   Loaded after home-os.css and overrides its tokens and Home layout. */
+
+/* ---------- Tokens ---------- */
+body:not([data-os-view="agenda"]) .os-app,
+body[data-os-tone] .os-app {
+  --os-bg: #08090b;
+  --os-card: rgba(255, 255, 255, 0.055);
+  --os-card-hover: rgba(255, 255, 255, 0.09);
+  --os-text: #f5f2ee;
+  --os-muted: #a7a19b;
+  --os-border: rgba(255, 255, 255, 0.09);
+  --os-accent: #ff7a1a;
+  --os-accent-ink: #1a1009;
+  --os-warn: #ffb020;
+  --os-error: #ff5a52;
+  --os-focus: #ff7a1a;
+  --os-info: #4a9df8;
+  --os-price-low: #4cc38a;
+  --os-price-normal: #6b7480;
+  --os-price-high: #f2555a;
+}
+body:not([data-os-view="agenda"]) .os-app {
+  background:
+    radial-gradient(ellipse 60% 55% at 92% 108%, rgba(255, 110, 20, 0.42), transparent 70%),
+    radial-gradient(ellipse 45% 40% at 4% -6%, rgba(255, 140, 50, 0.20), transparent 70%),
+    radial-gradient(ellipse 40% 35% at 55% 45%, rgba(255, 90, 0, 0.07), transparent 70%),
+    linear-gradient(160deg, #141518 0%, #08090b 55%, #100a06 100%);
+  padding: 2vh 2vw;
+  gap: 1.4vh;
+}
+
+/* ---------- Header: tab pills left, big clock right ---------- */
+.os-brand { display: none; }
+.os-header { gap: 1.5vw; }
+.os-tabs { display: flex; gap: 0.6vw; margin-right: auto; }
+.os-tab {
+  flex-direction: row;
+  gap: 0.5em;
+  padding: 0.6em 1.2em;
+  font-size: 0.9em;
+  background: var(--os-card);
+  border: 1px solid var(--os-border);
+  border-radius: 999px;
+}
+.os-tab.is-active {
+  color: var(--os-accent-ink);
+  background: var(--os-accent);
+  border-color: var(--os-accent);
+  box-shadow: 0 0 24px rgba(255, 122, 26, 0.35);
+}
+.os-header-right { gap: 1em; }
+.os-time { font-size: 2.6em; font-weight: 300; letter-spacing: 0.01em; }
+.os-date { text-align: right; }
+body[data-os-view="agenda"] .os-clock { display: block; }
+body[data-os-view="agenda"] .os-time { font-size: 1.5em; font-weight: 600; }
+
+/* ---------- Glass surfaces ---------- */
+.os-glass {
+  position: relative;
+  min-height: 0;
+  overflow: hidden;
+  padding: 1.1em 1.3em;
+  background: var(--os-card);
+  border: 1px solid var(--os-border);
+  border-radius: 1.4em;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07), 0 12px 32px rgba(0, 0, 0, 0.28);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  backdrop-filter: blur(18px) saturate(140%);
+}
+.os-glass[data-os-open] { cursor: pointer; transition: background-color 0.2s ease; }
+.os-glass[data-os-open]:hover { background: var(--os-card-hover); }
+.os-glass:focus-visible,
+.os-dock:focus-visible { outline: 3px solid var(--os-focus); outline-offset: 3px; }
+.os-glass .os-card-head { margin-bottom: 0.6em; }
+.os-glass .os-card-head h2 { font-size: 1.05em; font-weight: 600; color: var(--os-text); }
+
+/* ---------- Home board ---------- */
+.os-view-home { display: flex; flex-direction: column; gap: 1.4vh; }
+.os-view-home .os-home-grid {
+  flex: 1;
+  min-height: 0;
+  height: auto;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
+  grid-template-areas:
+    "hero hero weather energy"
+    "rooms shortcuts agenda agenda";
+  gap: 1vw;
+}
+.os-hero { grid-area: hero; }
+.os-weather { grid-area: weather; }
+.os-energy { grid-area: energy; }
+.os-rooms { grid-area: rooms; }
+.os-shortcuts { grid-area: shortcuts; }
+.os-agenda { grid-area: agenda; }
+
+/* ---------- Status chips (top) and dock (bottom) ---------- */
+.os-chips { display: flex; gap: 0.8vw; min-height: 2.9em; overflow: hidden; }
+.os-chip-status,
+.os-dock-item {
+  display: flex;
+  align-items: center;
+  gap: 0.65em;
+  min-width: 0;
+  padding: 0.4em 1.1em 0.4em 0.45em;
+  background: var(--os-card);
+  border: 1px solid var(--os-border);
+  border-radius: 999px;
+  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(18px);
+}
+.os-chip-icon {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 2.1em;
+  height: 2.1em;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.14);
+  border-radius: 50%;
+}
+.os-chip-icon .os-icon { width: 1.1em; height: 1.1em; }
+.is-accent > .os-chip-icon,
+.os-chip-icon.is-accent { background: var(--os-accent); color: var(--os-accent-ink); }
+.is-good > .os-chip-icon { background: #2f9e64; }
+.is-bad > .os-chip-icon { background: #e0473f; }
+.is-warn > .os-chip-icon,
+.os-chip-icon.is-warn { background: var(--os-warn); color: #1a1205; }
+.is-info > .os-chip-icon { background: var(--os-info); }
+.os-chip-icon.is-muted { background: rgba(255, 255, 255, 0.12); color: var(--os-muted); }
+.os-chip-text { min-width: 0; line-height: 1.2; }
+.os-chip-text strong,
+.os-chip-text small { display: block; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.os-chip-text strong { font-size: 0.88em; font-weight: 600; }
+.os-chip-text small { font-size: 0.74em; color: var(--os-muted); }
+
+.os-dock { display: flex; gap: 0.8vw; cursor: pointer; border-radius: 999px; }
+.os-dock-item { flex: 1; padding-top: 0.5em; padding-bottom: 0.5em; }
+
+/* ---------- Hero: price chart, or the doorbell camera ---------- */
+.os-hero { display: flex; flex-direction: column; }
+.os-hero .os-prices { display: flex; flex-direction: column; flex: 1; min-height: 0; margin: 0; padding: 0; background: none; border: 0; }
+.os-hero .os-bars { flex: 1; height: auto; min-height: 0; }
+.os-hero .os-bar.is-now { box-shadow: 0 0 0 2px #15161a, 0 0 0 4px var(--os-text); }
+.os-hero.has-camera { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 1em; }
+.os-camera { min-height: 0; overflow: hidden; border-radius: 1em; background: #000; }
+.os-camera img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.os-camera-list { display: flex; flex-direction: column; gap: 0.6em; }
+.os-glass-button {
+  padding: 0.8em 1.3em;
+  font: inherit;
+  font-size: 0.85em;
+  color: var(--os-text);
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid var(--os-border);
+  border-radius: 0.9em;
+  cursor: pointer;
+}
+.os-glass-button.is-active { color: var(--os-accent); border-color: var(--os-accent); }
+
+/* ---------- Weather ---------- */
+.os-weather { display: flex; flex-direction: column; align-items: center; text-align: center; }
+.os-weather-now { display: flex; align-items: center; justify-content: center; gap: 0.3em; margin-top: 0.3em; }
+.os-weather-emoji { font-size: 2.6em; line-height: 1; }
+.os-weather-temp { font-size: 3.4em; font-weight: 300; line-height: 1; }
+.os-weather-label { margin-top: 0.4em; font-size: 1.25em; font-weight: 600; }
+.os-weather-range { margin-top: 0.2em; font-size: 0.78em; letter-spacing: 0.06em; text-transform: uppercase; color: var(--os-muted); }
+.os-weather-rain { display: flex; align-items: center; gap: 0.4em; margin-top: 0.6em; font-size: 0.78em; color: var(--os-muted); }
+.os-weather-rain.is-wet { color: var(--os-info); }
+.os-weather-rain .os-icon { width: 1.1em; height: 1.1em; }
+.os-weather-days { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.4em; width: 100%; margin-top: auto; padding-top: 0.6em; }
+.os-weather-day { display: flex; flex-direction: column; align-items: center; gap: 0.15em; font-size: 0.8em; }
+.os-weather-day > span:first-child { color: var(--os-muted); text-transform: capitalize; }
+.os-weather-day-emoji { font-size: 1.4em; }
+.os-weather-day small { color: var(--os-muted); }
+
+/* ---------- Energy ring ---------- */
+.os-energy { display: flex; flex-direction: column; }
+.os-ring { position: relative; flex: 1; min-height: 0; display: grid; place-items: center; }
+.os-ring svg { width: 100%; height: 100%; }
+.os-ring circle { fill: none; stroke-width: 11; stroke-linecap: round; }
+.os-ring-track { stroke: rgba(255, 255, 255, 0.12); }
+.os-ring-fill { stroke: var(--os-accent); filter: drop-shadow(0 0 6px rgba(255, 122, 26, 0.55)); transition: stroke-dasharray 0.8s ease; }
+.os-ring circle.os-ring-knob { fill: #fff; stroke: var(--os-accent); stroke-width: 3; }
+.os-ring.is-export .os-ring-fill { stroke: var(--os-price-low); filter: drop-shadow(0 0 6px rgba(76, 195, 138, 0.5)); }
+.os-ring.is-export circle.os-ring-knob { stroke: var(--os-price-low); }
+.os-ring-centre { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+.os-ring-label { font-size: 0.72em; color: var(--os-muted); }
+.os-ring-value { font-size: 1.85em; font-weight: 600; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.os-ring-value small { margin-left: 0.15em; font-size: 0.42em; font-weight: 500; color: var(--os-muted); }
+.os-ring-sub { display: flex; align-items: center; margin-top: 0.2em; font-size: 0.66em; color: var(--os-muted); }
+.os-dot { display: inline-block; width: 0.6em; height: 0.6em; margin-right: 0.4em; border-radius: 50%; }
+.os-dot.is-low { background: var(--os-price-low); }
+.os-dot.is-normal { background: var(--os-price-normal); }
+.os-dot.is-high { background: var(--os-price-high); }
+.os-energy-pills { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5em; margin-top: 0.5em; }
+.os-energy-pill {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.1em;
+  min-width: 0;
+  padding: 0.45em 0.2em;
+  background: rgba(255, 255, 255, 0.07);
+  border-radius: 0.9em;
+}
+.os-energy-pill .os-icon { width: 1.1em; height: 1.1em; color: var(--os-muted); }
+.os-energy-pill.is-active .os-icon { color: var(--os-accent); }
+.os-energy-pill strong { font-size: 0.85em; white-space: nowrap; }
+.os-energy-pill small { max-width: 100%; overflow: hidden; font-size: 0.65em; white-space: nowrap; text-overflow: ellipsis; color: var(--os-muted); }
+
+/* ---------- Rooms ---------- */
+.os-room { display: flex; align-items: center; gap: 0.7em; padding: 0.42em 0; border-bottom: 1px solid var(--os-border); }
+.os-room:last-child { border-bottom: 0; }
+.os-room-icon { display: grid; place-items: center; flex: none; width: 1.9em; height: 1.9em; color: #fff; border-radius: 0.55em; }
+.os-room-icon .os-icon { width: 1.05em; height: 1.05em; }
+.os-room-icon.is-green { background: #2fa866; }
+.os-room-icon.is-red { background: #e5484d; }
+.os-room-icon.is-purple { background: #8e5cf0; }
+.os-room-icon.is-blue { background: #3b82f6; }
+.os-room-icon.is-yellow { background: #e8a317; }
+.os-room-icon.is-teal { background: #14a3a3; }
+.os-room-icon.is-orange { background: var(--os-accent); }
+.os-room-name { flex: 1; min-width: 0; overflow: hidden; font-size: 0.92em; font-weight: 600; white-space: nowrap; text-overflow: ellipsis; }
+.os-room-lights {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2em;
+  padding: 0.12em 0.55em;
+  font-size: 0.78em;
+  font-weight: 700;
+  color: var(--os-muted);
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+}
+.os-room-lights .os-icon { width: 1em; height: 1em; }
+.os-room-lights.is-on { color: var(--os-accent-ink); background: var(--os-accent); }
+.os-room-temp { min-width: 2.8em; padding: 0.15em 0.5em; font-size: 0.82em; text-align: center; background: rgba(255, 255, 255, 0.08); border-radius: 0.5em; font-variant-numeric: tabular-nums; }
+
+/* ---------- Shortcuts ---------- */
+.os-shortcuts { display: flex; flex-direction: column; }
+.os-shortcut-grid { flex: 1; min-height: 0; display: grid; grid-template-columns: 1fr 1fr; grid-auto-rows: minmax(0, 1fr); gap: 0.6em; }
+.os-shortcut {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 0.3em;
+  min-height: 0;
+  padding: 0.7em 0.8em;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid var(--os-border);
+  border-radius: 1em;
+}
+.os-shortcut .os-icon { width: 1.4em; height: 1.4em; color: var(--os-muted); }
+.os-shortcut span { overflow: hidden; font-size: 0.85em; font-weight: 600; white-space: nowrap; text-overflow: ellipsis; }
+.os-shortcut.is-on { color: #17120d; background: #f7f3ee; border-color: #f7f3ee; box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25); }
+.os-shortcut.is-on .os-icon { color: var(--os-accent); }
+
+/* ---------- Agenda + month ---------- */
+.os-agenda { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 1.5em; }
+.os-agenda-list { min-width: 0; overflow: hidden; }
+.os-agenda-title { margin: 0 0 0.3em; font-size: 1.1em; font-weight: 600; }
+.os-agenda-day { margin: 0.65em 0 0.3em; font-size: 0.68em; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--os-muted); }
+.os-agenda-item { margin: 0.3em 0; padding-left: 0.65em; border-left: 3px solid var(--event-color, var(--os-accent)); }
+.os-agenda-item strong,
+.os-agenda-item small { display: block; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.os-agenda-item strong { font-size: 0.88em; font-weight: 600; }
+.os-agenda-item small { font-size: 0.74em; color: var(--os-muted); }
+.os-month { display: flex; flex-direction: column; min-width: 0; padding-left: 1.2em; border-left: 1px solid var(--os-border); }
+.os-month-title { margin-bottom: 0.4em; font-size: 0.95em; font-weight: 600; text-align: center; color: var(--os-accent); }
+.os-month-grid { flex: 1; min-height: 0; display: grid; grid-template-columns: repeat(7, 1fr); grid-auto-rows: minmax(0, 1fr); gap: 0.15em; font-size: 0.82em; text-align: center; }
+.os-month-grid b { align-self: center; font-size: 0.78em; font-weight: 600; text-transform: uppercase; color: var(--os-muted); }
+.os-month-grid span { position: relative; z-index: 0; display: grid; place-items: center; font-variant-numeric: tabular-nums; }
+.os-month-grid span.is-outside { opacity: 0.3; }
+.os-month-grid span.is-today { color: var(--os-accent-ink); font-weight: 700; }
+.os-month-grid span.is-today::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  width: 1.9em;
+  height: 1.9em;
+  background: var(--os-accent);
+  border-radius: 50%;
+  box-shadow: 0 0 14px rgba(255, 122, 26, 0.5);
+}
+.os-month-grid span.is-busy::after {
+  content: "";
+  position: absolute;
+  bottom: 0.05em;
+  width: 0.3em;
+  height: 0.3em;
+  background: var(--os-accent);
+  border-radius: 50%;
+}
+.os-month-grid span.is-today.is-busy::after { bottom: 0.3em; background: var(--os-accent-ink); }
+
+/* ---------- Detail views in the glass theme ---------- */
+body:not([data-os-view="agenda"]) .os-tile,
+body:not([data-os-view="agenda"]) .os-panel,
+body:not([data-os-view="agenda"]) .os-battery,
+body:not([data-os-view="agenda"]) .os-detail .os-prices { border: 1px solid var(--os-border); border-radius: 1.2em; }
+.os-tile > svg,
+.os-battery-head svg,
+.os-mission svg { color: var(--os-accent); }
+.os-meter span { background: var(--os-accent); }
+
+/* ---------- Phones / narrow windows: stack everything ---------- */
+@media (max-width: 760px) {
+  .os-header { flex-wrap: wrap; }
+  .os-tabs { order: 2; width: 100%; overflow-x: auto; }
+  .os-view-home .os-home-grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: none;
+    grid-template-areas: "energy" "weather" "hero" "agenda" "rooms" "shortcuts";
+  }
+  .os-hero, .os-energy, .os-agenda { min-height: 300px; }
+  .os-agenda { grid-template-columns: 1fr; }
+  .os-month { padding-left: 0; border-left: 0; }
+  .os-chips, .os-dock { flex-wrap: wrap; }
+}

@@ -114,9 +114,13 @@ window.DASHBOARD_CONFIG = {
         { name: "Zendure", level: "sensor.solarflow_batterij", power: "sensor.solarflow_batterij_vermogen" }
       ]
     },
+    // Empty = show everything Home Assistant has (lights, temperature sensors,
+    // switches). Fill in entity IDs to show only those, in that order.
     lights: [],              // e.g. ["light.keuken", "light.woonkamer"]
     climate: [],             // e.g. ["sensor.woonkamer_temperature"]
-    devices: []              // e.g. ["switch.vaatwasser", "switch.wasmachine"]
+    devices: [],             // e.g. ["switch.vaatwasser", "switch.wasmachine"]
+    // Hide entities whose ID or name contains one of these words.
+    exclude: ["zendure_manager", "child_lock", "kinderslot"]
   },
 
   defaultShoppingItems: [

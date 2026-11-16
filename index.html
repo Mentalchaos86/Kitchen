@@ -4,8 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Home OS</title>
-  <link rel="stylesheet" href="styles.css?v=20261115-homeos6">
-  <link rel="stylesheet" href="home-os.css?v=20261115-homeos6">
+  <link rel="stylesheet" href="styles.css?v=20261116-homeos8">
+  <link rel="stylesheet" href="home-os.css?v=20261116-homeos8">
+  <link rel="stylesheet" href="home-os-glass.css?v=20261116-homeos8">
 </head>
 <body>
   <div class="os-app">
@@ -14,32 +15,34 @@
       <div class="os-title">HOME OS</div>
       <div class="os-subtitle">Samsung Frame • Kitchen Dashboard</div>
     </div>
+    <nav class="os-tabs" role="tablist" aria-label="Home OS">
+      <button type="button" class="os-tab" role="tab" data-os-view="home" data-os-icon="home"><span>Home</span></button>
+      <button type="button" class="os-tab" role="tab" data-os-view="agenda" data-os-icon="calendar"><span>Agenda</span></button>
+      <button type="button" class="os-tab" role="tab" data-os-view="energy" data-os-icon="energy"><span>Energy</span></button>
+      <button type="button" class="os-tab" role="tab" data-os-view="household" data-os-icon="household"><span>Household</span></button>
+    </nav>
     <div class="os-header-right">
+      <span id="osStatus" class="os-status is-demo" data-os-icon="wifi" role="img" aria-label="Verbindingsstatus"></span>
+      <button type="button" id="osSettings" class="os-header-button" data-os-icon="sliders" aria-label="Instellingen openen"></button>
       <div class="os-clock">
         <div id="osTime" class="os-time">--:--</div>
         <div id="osDate" class="os-date"></div>
       </div>
-      <span id="osStatus" class="os-status is-demo" data-os-icon="wifi" role="img" aria-label="Verbindingsstatus"></span>
-      <button type="button" id="osSettings" class="os-header-button" data-os-icon="sliders" aria-label="Instellingen openen"></button>
     </div>
   </header>
 
-  <nav class="os-tabs" role="tablist" aria-label="Home OS">
-    <button type="button" class="os-tab" role="tab" data-os-view="home" data-os-icon="home"><span>Home</span></button>
-    <button type="button" class="os-tab" role="tab" data-os-view="agenda" data-os-icon="calendar"><span>Agenda</span></button>
-    <button type="button" class="os-tab" role="tab" data-os-view="energy" data-os-icon="energy"><span>Energy</span></button>
-    <button type="button" class="os-tab" role="tab" data-os-view="household" data-os-icon="household"><span>Household</span></button>
-  </nav>
-
   <div class="os-views">
   <section class="os-view os-view-home" data-os-panel="home">
-    <div id="osBanners" class="os-banners" aria-live="polite" hidden></div>
+    <div id="osBanners" class="os-chips" aria-live="polite"></div>
     <div class="os-home-grid">
-      <article id="osCardToday" class="os-card" data-os-open="agenda" role="button" tabindex="0" aria-label="Open Agenda"></article>
-      <article id="osCardEnergy" class="os-card" data-os-open="energy" role="button" tabindex="0" aria-label="Open Energy"></article>
-      <article id="osCardSmartHome" class="os-card" data-os-open="smarthome" role="button" tabindex="0" aria-label="Open Smart Home"></article>
-      <article id="osCardHousehold" class="os-card" data-os-open="household" role="button" tabindex="0" aria-label="Open Household"></article>
+      <article id="osCardHero" class="os-glass os-hero" data-os-open="energy" role="button" tabindex="0" aria-label="Open Energy"></article>
+      <article id="osCardWeather" class="os-glass os-weather" role="group" aria-label="Weer"></article>
+      <article id="osCardEnergy" class="os-glass os-energy" data-os-open="energy" role="button" tabindex="0" aria-label="Open Energy"></article>
+      <article id="osCardRooms" class="os-glass os-rooms" data-os-open="smarthome" role="button" tabindex="0" aria-label="Open Smart Home"></article>
+      <article id="osCardShortcuts" class="os-glass os-shortcuts" data-os-open="smarthome" role="button" tabindex="0" aria-label="Open Smart Home"></article>
+      <article id="osCardAgenda" class="os-glass os-agenda" data-os-open="agenda" role="button" tabindex="0" aria-label="Open Agenda"></article>
     </div>
+    <div id="osDock" class="os-dock" data-os-open="household" role="button" tabindex="0" aria-label="Open Household"></div>
   </section>
 
   <section class="os-view os-view-agenda" data-os-panel="agenda" hidden>
@@ -234,7 +237,7 @@
   <div id="settingsBackdrop" class="settings-backdrop" hidden></div>
   <aside id="settingsPanel" class="settings-panel" role="dialog" aria-modal="true" aria-labelledby="settingsHeading" aria-hidden="true" hidden>
     <div class="settings-panel-head">
-      <div><div class="settings-eyebrow">HOME OS · v1.10.0</div><h2 id="settingsHeading">Instellingen</h2></div>
+      <div><div class="settings-eyebrow">HOME OS · v1.11.0</div><h2 id="settingsHeading">Instellingen</h2></div>
       <button type="button" id="settingsClose" class="settings-close" aria-label="Instellingen sluiten">✕</button>
     </div>
     <div class="settings-scroll">
@@ -284,7 +287,7 @@
   </aside>
   <div id="toast" class="toast"></div>
 
-  <script src="config.js?v=20261115-homeos6"></script>
-  <script type="module" src="main.js?v=20261115-homeos6"></script>
+  <script src="config.js?v=20261116-homeos8"></script>
+  <script type="module" src="main.js?v=20261116-homeos8"></script>
 </body>
 </html>
