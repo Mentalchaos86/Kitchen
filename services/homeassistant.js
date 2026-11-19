@@ -175,7 +175,7 @@ const labelOf = entity => `${entity.entity_id} ${entity.attributes?.friendly_nam
 function findGridPower(states) {
   const watts = states.filter(isWatt);
   const anker = watts.filter(entity => /solarbank|solix|anker|smart.?meter/i.test(labelOf(entity)));
-  const imported = anker.find(entity => /grid.?to.?home|grid.?import|import.?power/i.test(labelOf(entity)));
+  const imported = anker.find(entity => /grid.?usage|grid.?to.?home|grid.?import|import.?power/i.test(labelOf(entity)));
   if (imported) {
     const exported = anker.find(entity => /grid.?export|export.?power|(pv|solar|photovoltaic).?to.?grid/i.test(labelOf(entity)));
     return number(imported.state) - (exported ? number(exported.state) || 0 : 0);
@@ -188,33 +188,40 @@ function findGridPower(states) {
   return p1 ? number(p1.state) : null;
 }
 
-// Anker Solarbanks when config.energy.batteries is empty: one entry per device
-// with a state-of-charge sensor, plus its battery/charging power sensor (same
-// entity ID prefix). Anker "charging power" is + while charging, so it is
-// flipped to the dashboard convention (- = laden, + = levert).
+// Anker Solarbanks (Anker Solix integration) when config.energy.batteries is
+// empty: one entry per device with a "<base>_state_of_charge<tail>" sensor.
+// Same-named devices get a "_2" tail, so power sensors are looked up as
+// "<base>_discharge_power<tail>" - "<base>_charge_power<tail>"
+// (dashboard convention: - = laden, + = levert).
 function findBatteries(states) {
+  const byId = new Map(states.map(entity => [entity.entity_id, entity]));
+  const watt = id => (byId.has(id) && isWatt(byId.get(id)) ? number(byId.get(id).state) : null);
   const socs = states.filter(entity => entity.entity_id.startsWith("sensor.")
     && /solarbank|solix/i.test(labelOf(entity))
-    && /state.?of.?charge|_soc\b|battery.?level/i.test(labelOf(entity))
-    && (entity.attributes?.unit_of_measurement === "%" || entity.attributes?.device_class === "battery")
+    && /_state_of_charge(_\d+)?$/i.test(entity.entity_id)
     && Number.isFinite(Number.parseFloat(entity.state)));
-  // Prefer the individual devices over the system total when both exist.
-  const devices = socs.filter(entity => !/system/i.test(entity.entity_id));
-  return (devices.length ? devices : socs).map(entity => {
-    const prefix = entity.entity_id.replace(/_(state_of_charge|soc|battery_level).*$/i, "");
-    // Same device only: "<prefix>_charging_power", not "<prefix>_2_charging_power".
-    const own = pattern => states.find(other => isWatt(other)
-      && other.entity_id.startsWith(prefix) && pattern.test(other.entity_id.slice(prefix.length)));
-    const power = own(/^_battery_?power/i) || own(/^_charging_?power/i);
-    const watts = power ? number(power.state) : null;
-    const name = String(entity.attributes?.friendly_name || entity.entity_id)
-      .replace(/\s*(state of charge|soc|battery level)\s*$/i, "").trim();
-    return {
-      name: name || "Solarbank",
-      level: number(entity.state),
-      powerW: watts === null ? null : (/charging/i.test(power.entity_id) ? -watts : watts)
-    };
-  }).sort((a, b) => a.name.localeCompare(b.name, "nl"));
+  // Individual devices, not the system total ("system_..._sb_state_of_charge").
+  const devices = socs.filter(entity => !/system|_sb_state/i.test(entity.entity_id));
+  const list = (devices.length ? devices : socs).map(entity => {
+    const [, base, tail = ""] = entity.entity_id.match(/^(.*)_state_of_charge(_\d+)?$/i);
+    const charge = watt(`${base}_charge_power${tail}`);
+    const discharge = watt(`${base}_discharge_power${tail}`);
+    const battery = watt(`${base}_battery_power${tail}`);
+    const powerW = charge !== null || discharge !== null
+      ? (discharge || 0) - (charge || 0)
+      : battery === null ? null : -battery; // Anker battery power: + = laden
+    const name = String(entity.attributes?.friendly_name || "Solarbank")
+      .replace(/\s*state of charge\s*$/i, "").trim();
+    return { id: entity.entity_id, name, level: number(entity.state), powerW };
+  }).sort((a, b) => a.id.localeCompare(b.id, "nl", { numeric: true }));
+  // Identical models (2x Solarbank 3 E2700 Pro) become "Solarbank 1", "Solarbank 2".
+  const counts = list.reduce((map, item) => map.set(item.name, (map.get(item.name) || 0) + 1), new Map());
+  const seen = new Map();
+  return list.map(({ name, level, powerW }) => {
+    if (counts.get(name) < 2) return { name, level, powerW };
+    seen.set(name, (seen.get(name) || 0) + 1);
+    return { name: `Solarbank ${seen.get(name)}`, level, powerW };
+  });
 }
 
 // Automatic discovery for the Smart Home lists. Unavailable entities and
