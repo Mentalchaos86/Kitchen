@@ -180,6 +180,11 @@ function findGridPower(states) {
     const exported = anker.find(entity => /grid.?export|export.?power|(pv|solar|photovoltaic).?to.?grid/i.test(labelOf(entity)));
     return number(imported.state) - (exported ? number(exported.state) || 0 : 0);
   }
+  // Meter device temporarily missing (e.g. after a firmware update): the Anker
+  // system still knows home demand and what the Solarbanks deliver.
+  const demand = watts.find(entity => /system.*_home_demand$/i.test(entity.entity_id));
+  const delivered = watts.find(entity => /system.*_sb_home_power$/i.test(entity.entity_id));
+  if (demand && delivered) return number(demand.state) - number(delivered.state);
   const p1 = watts.find(entity => {
     const text = labelOf(entity);
     return /p1|homewizard|dsmr|active.?power|power.?consumption|net.?power|grid/i.test(text)
