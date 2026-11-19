@@ -363,6 +363,18 @@ export function homeAssistantUrl() {
   return getDeviceSecret("haUrl").replace(/\/+$/, "");
 }
 
+// Camera snapshot as a Blob, fetched with the token exactly like the API calls
+// (an <img src="http://..."> on the https page can be blocked or upgraded by
+// the browser/WebView, fetch is not). Ring snapshots can take a few seconds.
+export async function fetchCameraImage(entityId) {
+  const response = await fetch(`${homeAssistantUrl()}/api/camera_proxy/${encodeURIComponent(entityId)}?t=${Date.now()}`, {
+    headers: { Authorization: `Bearer ${getDeviceSecret("haToken")}` },
+    cache: "no-store"
+  });
+  if (!response.ok) throw new Error(`HTTP ${response.status}`);
+  return response.blob();
+}
+
 // Areas (rooms) are not part of /api/states; a template lists them with their
 // entities. Refreshed every 5 minutes; failures just mean "no rooms".
 const AREA_TEMPLATE = '[{% for a in areas() %}{"name": {{ area_name(a) | tojson }}, "entities": {{ area_entities(a) | tojson }}}{{ "," if not loop.last }}{% endfor %}]';

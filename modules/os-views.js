@@ -1,6 +1,6 @@
 // Home OS — detail views: Energy, Smart Home and Household.
 import { $, escapeHtml } from "../core/dom.js";
-import { getHomeData, homeAssistantConfigured, homeAssistantUrl } from "../services/homeassistant.js";
+import { fetchCameraImage, getHomeData, homeAssistantConfigured } from "../services/homeassistant.js";
 import { addHouseholdItem, getHousehold, LISTS, removeHouseholdItem } from "../services/household.js";
 import { icon } from "./os-icons.js";
 import { batteryState, dayLabel, decimal, euro, euroPerKwh, kw, timeNl } from "./os-format.js";
@@ -122,8 +122,38 @@ let cameraKey = "";
 const cameraOpen = () => document.body.dataset.osView === "camera";
 const cameraList = () => (getHomeData()?.mode === "live" ? getHomeData().cameras || [] : []);
 
-function cameraSrc(camera) {
-  return `${homeAssistantUrl()}${camera.picture}${camera.picture.includes("?") ? "&" : "?"}t=${Date.now()}`;
+let cameraBusy = false;
+let cameraBlobUrl = "";
+let cameraFails = 0;
+
+// Fetch the selected camera's snapshot and swap it in once loaded, so the
+// picture never flashes empty. One request at a time (Ring can be slow).
+async function loadCameraImage() {
+  if (cameraBusy || !cameraOpen()) return;
+  const camera = cameraList().find(item => item.id === selectedCamera);
+  if (!camera) return;
+  cameraBusy = true;
+  try {
+    const url = URL.createObjectURL(await fetchCameraImage(camera.id));
+    const image = $("osCameraImage");
+    if (!image || camera.id !== selectedCamera) { URL.revokeObjectURL(url); return; }
+    image.src = url;
+    if (cameraBlobUrl) URL.revokeObjectURL(cameraBlobUrl);
+    cameraBlobUrl = url;
+    cameraFails = 0;
+    $("osCameraStatus")?.setAttribute("hidden", "");
+    const time = $("osCameraTime");
+    if (time) time.textContent = timeNl(new Date());
+  } catch (error) {
+    cameraFails += 1;
+    const status = $("osCameraStatus");
+    if (status && (cameraFails >= 2 || !cameraBlobUrl)) {
+      status.textContent = `Geen beeld van ${camera.name} (${error.message || "fout"}), opnieuw proberen…`;
+      status.removeAttribute("hidden");
+    }
+  } finally {
+    cameraBusy = false;
+  }
 }
 
 function renderCamera() {
@@ -144,27 +174,21 @@ function renderCamera() {
   selectedCamera = camera.id;
   root.innerHTML = `
     <div class="os-glass os-camera-main">
-      <img id="osCameraImage" src="${escapeHtml(cameraSrc(camera))}" alt="${escapeHtml(camera.name)}">
+      <img id="osCameraImage" alt="${escapeHtml(camera.name)}">
+      <div id="osCameraStatus" class="os-camera-status">Beeld van ${escapeHtml(camera.name)} laden…</div>
       <div class="os-camera-caption">${icon("camera")}<span>${escapeHtml(camera.name)}</span><small id="osCameraTime">${timeNl(new Date())}</small></div>
     </div>
     <div class="os-camera-list">
       ${cameras.map(item => `<button type="button" class="os-glass-button${item.id === camera.id ? " is-active" : ""}" data-camera="${escapeHtml(item.id)}">${icon("camera")}<span>${escapeHtml(item.name)}</span></button>`).join("")}
     </div>`;
+  if (cameraBlobUrl) URL.revokeObjectURL(cameraBlobUrl);
+  cameraBlobUrl = "";
+  cameraFails = 0;
+  loadCameraImage();
 }
 
 function refreshCameraImage() {
-  if (!cameraOpen()) return;
-  const image = $("osCameraImage");
-  const camera = cameraList().find(item => item.id === selectedCamera);
-  if (!image || !camera) return;
-  // Load off-screen first so the picture never flashes empty.
-  const next = new Image();
-  next.onload = () => {
-    image.src = next.src;
-    const time = $("osCameraTime");
-    if (time) time.textContent = timeNl(new Date());
-  };
-  next.src = cameraSrc(camera);
+  loadCameraImage();
 }
 
 function bindCamera() {
