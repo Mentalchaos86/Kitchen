@@ -49,8 +49,16 @@ function demoBadge() {
     : `<span class="os-badge">DEMO</span>`;
 }
 
+// One battery: that one. Several (e.g. 3 Solarbanks): average level, total power.
 function mainBattery(energy) {
-  return (energy?.batteries || []).find(battery => Number.isFinite(battery.level)) || null;
+  const list = (energy?.batteries || []).filter(battery => Number.isFinite(battery.level));
+  if (list.length <= 1) return list[0] || null;
+  const powers = list.map(battery => battery.powerW).filter(Number.isFinite);
+  return {
+    name: "Batterijen",
+    level: list.reduce((sum, battery) => sum + battery.level, 0) / list.length,
+    powerW: powers.length ? powers.reduce((sum, watts) => sum + watts, 0) : null
+  };
 }
 
 // ---------- Status chips (top row) ----------

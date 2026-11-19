@@ -42,8 +42,8 @@ function demoData() {
       month: { usedKwh: 204.4, returnedKwh: 3.6, costEur: 81.05 },
       gas: { priceEur: 1.89, usedM3: 48.5, costEur: 90.7 },
       batteries: [
-        { name: "Anker", level: 78, powerW: -350 },
-        { name: "Zendure", level: 64, powerW: 0 }
+        { name: "Solarbank 1", level: 78, powerW: -350 },
+        { name: "Solarbank 2", level: 74, powerW: -330 }
       ]
     },
     lights: [
@@ -164,17 +164,57 @@ function cheapestWindow(states) {
   return null;
 }
 
-// Live household power from a P1 meter (Zendure P1, HomeWizard, DSMR, ...) when
-// no entity ID is set in config. Only real watt sensors with a number count.
+const isWatt = entity => entity.entity_id.startsWith("sensor.")
+  && (entity.attributes?.unit_of_measurement === "W" || entity.attributes?.device_class === "power")
+  && Number.isFinite(Number.parseFloat(entity.state));
+const labelOf = entity => `${entity.entity_id} ${entity.attributes?.friendly_name || ""}`;
+
+// Live household power (+ = afname, - = teruglevering) when no entity ID is set:
+// 1. Anker Smart Meter (Anker Solix integration): grid import minus grid export.
+// 2. Any other P1 meter (HomeWizard, DSMR, ...) with a signed watt sensor.
 function findGridPower(states) {
-  return states.find(entity => {
-    const attrs = entity.attributes || {};
-    const label = `${entity.entity_id} ${attrs.friendly_name || ""}`;
-    return entity.entity_id.startsWith("sensor.")
-      && (attrs.unit_of_measurement === "W" || attrs.device_class === "power")
-      && /p1|homewizard|dsmr|active.?power|power.?consumption|net.?power|grid/i.test(label)
-      && Number.isFinite(Number.parseFloat(entity.state));
-  }) || null;
+  const watts = states.filter(isWatt);
+  const anker = watts.filter(entity => /solarbank|solix|anker|smart.?meter/i.test(labelOf(entity)));
+  const imported = anker.find(entity => /grid.?to.?home|grid.?import|import.?power/i.test(labelOf(entity)));
+  if (imported) {
+    const exported = anker.find(entity => /grid.?export|export.?power|(pv|solar|photovoltaic).?to.?grid/i.test(labelOf(entity)));
+    return number(imported.state) - (exported ? number(exported.state) || 0 : 0);
+  }
+  const p1 = watts.find(entity => {
+    const text = labelOf(entity);
+    return /p1|homewizard|dsmr|active.?power|power.?consumption|net.?power|grid/i.test(text)
+      && !/solarbank|solix|batter|to.?grid|grid.?to/i.test(text);
+  });
+  return p1 ? number(p1.state) : null;
+}
+
+// Anker Solarbanks when config.energy.batteries is empty: one entry per device
+// with a state-of-charge sensor, plus its battery/charging power sensor (same
+// entity ID prefix). Anker "charging power" is + while charging, so it is
+// flipped to the dashboard convention (- = laden, + = levert).
+function findBatteries(states) {
+  const socs = states.filter(entity => entity.entity_id.startsWith("sensor.")
+    && /solarbank|solix/i.test(labelOf(entity))
+    && /state.?of.?charge|_soc\b|battery.?level/i.test(labelOf(entity))
+    && (entity.attributes?.unit_of_measurement === "%" || entity.attributes?.device_class === "battery")
+    && Number.isFinite(Number.parseFloat(entity.state)));
+  // Prefer the individual devices over the system total when both exist.
+  const devices = socs.filter(entity => !/system/i.test(entity.entity_id));
+  return (devices.length ? devices : socs).map(entity => {
+    const prefix = entity.entity_id.replace(/_(state_of_charge|soc|battery_level).*$/i, "");
+    // Same device only: "<prefix>_charging_power", not "<prefix>_2_charging_power".
+    const own = pattern => states.find(other => isWatt(other)
+      && other.entity_id.startsWith(prefix) && pattern.test(other.entity_id.slice(prefix.length)));
+    const power = own(/^_battery_?power/i) || own(/^_charging_?power/i);
+    const watts = power ? number(power.state) : null;
+    const name = String(entity.attributes?.friendly_name || entity.entity_id)
+      .replace(/\s*(state of charge|soc|battery level)\s*$/i, "").trim();
+    return {
+      name: name || "Solarbank",
+      level: number(entity.state),
+      powerW: watts === null ? null : (/charging/i.test(power.entity_id) ? -watts : watts)
+    };
+  }).sort((a, b) => a.name.localeCompare(b.name, "nl"));
 }
 
 // Automatic discovery for the Smart Home lists. Unavailable entities and
@@ -256,7 +296,7 @@ function mapStates(states, areas = []) {
     mode: "live",
     updatedAt: new Date().toISOString(),
     energy: {
-      powerW: number((value(energy.power) || findGridPower(states))?.state),
+      powerW: value(energy.power) ? number(value(energy.power).state) : findGridPower(states),
       priceEur: number(pick(energy.price, ZONNEPLAN.price)?.state),
       nextHourPriceEur: number(pick(energy.nextHourPrice, ZONNEPLAN.nextHourPrice)?.state),
       tariffGroup: TARIFF_NL[tariffRaw] || null,
@@ -273,13 +313,18 @@ function mapStates(states, areas = []) {
         usedM3: number(pick(null, ZONNEPLAN.gasUsedMonth)?.state),
         costEur: number(pick(null, ZONNEPLAN.gasCostMonth)?.state)
       },
-      batteries: (energy.batteries || [])
-        .filter(battery => battery.level || battery.power)
-        .map(battery => ({
-          name: battery.name,
-          level: number(value(battery.level)?.state),
-          powerW: number(value(battery.power)?.state)
-        }))
+      batteries: configured(energy.batteries)
+        ? energy.batteries
+          .filter(battery => battery.level || battery.power)
+          .map(battery => {
+            const watts = number(value(battery.power)?.state);
+            return {
+              name: battery.name,
+              level: number(value(battery.level)?.state),
+              powerW: watts === null ? null : (battery.invert ? -watts : watts)
+            };
+          })
+        : findBatteries(states)
     },
     lights: toggles(lightIds),
     climate: climateIds

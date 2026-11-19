@@ -104,15 +104,17 @@ window.DASHBOARD_CONFIG = {
     // Fill in the entity IDs once Home Assistant is running
     // (Home Assistant → Instellingen → Entiteiten).
     energy: {
-      // Zendure P1 meter + SolarFlow 4000 Mix, read locally via REST sensors
-      // in Home Assistant (see docs/zendure-local.yaml).
-      power: "sensor.zendure_p1_power",          // W, + = afname, - = teruglevering
+      // Anker Solix (2x Solarbank 3 E2700 + Solarbank Max AC + Anker Smart Meter)
+      // via the "Anker Solix" HACS integration. Empty = found automatically;
+      // fill in an entity ID only when the automatic choice is wrong.
+      power: "",             // W, + = afname, - = teruglevering (empty = Anker Smart Meter / P1 auto)
       price: "",             // empty = Zonneplan detected automatically
-      solar: "sensor.solarflow_zonne_opbrengst", // W
-      batteries: [
-        { name: "Anker",   level: "", power: "" },
-        { name: "Zendure", level: "sensor.solarflow_batterij", power: "sensor.solarflow_batterij_vermogen" }
-      ]
+      solar: "",             // W, e.g. the solar inverter on the house (empty = not shown)
+      // Empty = every Anker Solarbank is shown automatically. Or list them, e.g.
+      // { name: "Solarbank 1", level: "sensor.xxx_state_of_charge", power: "sensor.xxx_charging_power", invert: true }
+      // Dashboard convention: power negative = laden, positive = levert;
+      // invert: true flips a sensor that reports charging as positive.
+      batteries: []
     },
     // Empty = show everything Home Assistant has (lights, temperature sensors,
     // switches). Fill in entity IDs to show only those, in that order.
@@ -123,7 +125,8 @@ window.DASHBOARD_CONFIG = {
     // Fill in to choose which ones and in what order, e.g. ["camera.voordeur_live_view"].
     cameras: [],
     // Hide entities (lights, switches, cameras) whose ID or name contains one of these words.
-    exclude: ["zendure_manager", "child_lock", "kinderslot"]
+    // Anker/Solarbank switches stay hidden so the batteries can't be switched from the dashboard.
+    exclude: ["zendure", "solarbank", "solix", "anker", "child_lock", "kinderslot"]
   },
 
   defaultShoppingItems: [
