@@ -5,7 +5,7 @@ import { getAgendaState } from "../core/state.js";
 import { getFocusResult } from "../intelligence/context.js";
 import { getHomeData } from "../services/homeassistant.js";
 import { getHousehold } from "../services/household.js";
-import { getPriceCurve, priceAdvice } from "../services/energy-prices.js";
+import { cheapestUpcoming, getPriceCurve, priceAdvice } from "../services/energy-prices.js";
 import { getRain } from "../services/rain.js";
 import { getForecast, weatherLabel } from "../services/forecast.js";
 import { icon } from "./os-icons.js";
@@ -194,6 +194,7 @@ function renderEnergy() {
   const knobX = 100 + RING_R * Math.cos(angle);
   const knobY = 100 + RING_R * Math.sin(angle);
   const battery = mainBattery(energy);
+  const cheapest = energy.cheapest || cheapestUpcoming(energy.priceEur);
 
   const centre = hasPower
     ? `<div class="os-ring-label">${exporting ? "Teruglevering" : "Verbruik nu"}</div>
@@ -219,7 +220,7 @@ function renderEnergy() {
     <div class="os-energy-pills">
       ${pill("battery", battery ? `${Math.round(battery.level)}%` : "—", battery ? batteryState(battery.powerW) : "batterij", battery && Math.abs(battery.powerW || 0) >= 20 ? "is-active" : "")}
       ${pill("sun", Number.isFinite(energy.solarW) ? kw(energy.solarW) : "—", "zon", energy.solarW > 20 ? "is-active" : "")}
-      ${pill("euro", energy.cheapest ? energy.cheapest.from : "—", "goedkoopst")}
+      ${pill("euro", cheapest ? cheapest.from : "—", cheapest?.day === "morgen" ? "goedkoopst morgen" : "goedkoopst")}
     </div>`;
 }
 

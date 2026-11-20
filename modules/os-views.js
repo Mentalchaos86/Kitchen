@@ -4,7 +4,7 @@ import { fetchCameraImage, getHomeData, homeAssistantConfigured } from "../servi
 import { addHouseholdItem, getHousehold, LISTS, removeHouseholdItem } from "../services/household.js";
 import { icon } from "./os-icons.js";
 import { batteryState, dayLabel, decimal, euro, euroPerKwh, kw, timeNl } from "./os-format.js";
-import { getPriceCurve } from "../services/energy-prices.js";
+import { cheapestUpcoming, getPriceCurve } from "../services/energy-prices.js";
 import { nextWaste } from "./os-home.js";
 
 const LEVEL_NL = { low: "Laag", normal: "Normaal", high: "Hoog" };
@@ -64,6 +64,7 @@ function renderEnergy() {
   const energy = data?.energy || {};
   const month = energy.month || {};
   const gas = energy.gas || {};
+  const cheapest = energy.cheapest || cheapestUpcoming(energy.priceEur);
   const batteries = (energy.batteries || []).map(battery => {
     const level = Number.isFinite(battery.level) ? Math.max(0, Math.min(100, battery.level)) : null;
     return `
@@ -78,9 +79,9 @@ function renderEnergy() {
     ${notice(data)}
     <div class="os-tiles">
       ${tile("energy", "Verbruik nu", kw(energy.powerW))}
-      ${tile("sun", "Zonne-opbrengst", kw(energy.solarW))}
+      ${tile("sun", "Zonne-opbrengst", Number.isFinite(energy.solarW) ? kw(energy.solarW) : "—", Number.isFinite(energy.solarW) ? "" : "Omvormer nog niet gekoppeld")}
       ${tile("euro", "Stroomprijs nu", euroPerKwh(energy.priceEur), [Number.isFinite(energy.nextHourPriceEur) && `volgend uur ${euroPerKwh(energy.nextHourPriceEur)}`, Number.isFinite(energy.sustainability) && `${Math.round(energy.sustainability)}% duurzaam`].filter(Boolean).join(" · ") || "Zonneplan")}
-      ${tile("check", "Goedkoopste moment", energy.cheapest ? `${energy.cheapest.from}–${energy.cheapest.to}` : "—", energy.cheapest ? `${energy.cheapest.day || "vandaag"} · ideaal voor wasmachine of vaatwasser` : "Beschikbaar na koppeling")}
+      ${tile("check", "Goedkoopste moment", cheapest ? `${cheapest.from}–${cheapest.to}` : "—", cheapest ? `${cheapest.day || "vandaag"} · ideaal voor wasmachine of vaatwasser` : "Uurprijzen laden…")}
     </div>
     ${priceChart(energy)}
     <div class="os-tiles">

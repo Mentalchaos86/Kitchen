@@ -193,6 +193,17 @@ function findGridPower(states) {
   return p1 ? number(p1.state) : null;
 }
 
+// Solar production when config.energy.solar is empty: the Enphase Envoy
+// "current power production" sensor (W, or kW → converted to W).
+function findSolarPower(states) {
+  const sensor = states.find(entity => entity.entity_id.startsWith("sensor.")
+    && /current_power_production$/i.test(entity.entity_id)
+    && Number.isFinite(Number.parseFloat(entity.state)));
+  if (!sensor) return null;
+  const value = number(sensor.state);
+  return sensor.attributes?.unit_of_measurement === "kW" ? value * 1000 : value;
+}
+
 // Anker Solarbanks (Anker Solix integration) when config.energy.batteries is
 // empty: one entry per device with a "<base>_state_of_charge<tail>" sensor.
 // Same-named devices get a "_2" tail, so power sensors are looked up as
@@ -313,7 +324,7 @@ function mapStates(states, areas = []) {
       nextHourPriceEur: number(pick(energy.nextHourPrice, ZONNEPLAN.nextHourPrice)?.state),
       tariffGroup: TARIFF_NL[tariffRaw] || null,
       sustainability: number(pick(null, ZONNEPLAN.sustainability)?.state),
-      solarW: number(value(energy.solar)?.state),
+      solarW: value(energy.solar) ? number(value(energy.solar).state) : findSolarPower(states),
       cheapest: cheapestWindow(states),
       month: {
         usedKwh: number(pick(null, ZONNEPLAN.usedMonth)?.state),

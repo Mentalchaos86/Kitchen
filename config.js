@@ -109,7 +109,7 @@ window.DASHBOARD_CONFIG = {
       // fill in an entity ID only when the automatic choice is wrong.
       power: "",             // W, + = afname, - = teruglevering (empty = Anker Smart Meter / P1 auto)
       price: "",             // empty = Zonneplan detected automatically
-      solar: "",             // W, e.g. the solar inverter on the house (empty = not shown)
+      solar: "",             // W, empty = Enphase Envoy "current power production" found automatically
       // Empty = every Anker Solarbank is shown automatically. Or list them, e.g.
       // { name: "Solarbank 1", level: "sensor.xxx_state_of_charge", power: "sensor.xxx_charging_power", invert: true }
       // Dashboard convention: power negative = laden, positive = levert;
@@ -126,7 +126,8 @@ window.DASHBOARD_CONFIG = {
     cameras: [],
     // Hide entities (lights, switches, cameras) whose ID or name contains one of these words.
     // Anker/Solarbank switches stay hidden so the batteries can't be switched from the dashboard.
-    exclude: ["zendure", "solarbank", "solix", "anker", "child_lock", "kinderslot"]
+    // "api_usage" is the Anker Solix account switch (turning it off stops all Anker data).
+    exclude: ["zendure", "solarbank", "solix", "anker", "api_usage", "envoy", "child_lock", "kinderslot"]
   },
 
   defaultShoppingItems: [

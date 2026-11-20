@@ -89,6 +89,30 @@ export function getPriceCurve(livePrice) {
   };
 }
 
+// Cheapest upcoming block of `length` consecutive hours (from the current hour
+// on), as { day: "vandaag" | "morgen", from: "HH:MM", to: "HH:MM" } or null.
+// Used when Zonneplan's own "price low" block has already passed today and
+// tomorrow's is not published yet.
+export function cheapestUpcoming(livePrice, length = 2) {
+  const curve = getPriceCurve(livePrice);
+  if (!curve) return null;
+  const ahead = curve.hours.filter(hour => !hour.past);
+  let best = null;
+  for (let index = 0; index + length <= ahead.length; index += 1) {
+    const block = ahead.slice(index, index + length);
+    const contiguous = block.every((hour, offset) => offset === 0
+      || hour.start.getTime() - block[offset - 1].start.getTime() === 3600000);
+    if (!contiguous) continue;
+    const average = block.reduce((sum, hour) => sum + hour.price, 0) / length;
+    if (!best || average < best.average) best = { average, start: block[0].start };
+  }
+  if (!best) return null;
+  const hhmm = date => new Intl.DateTimeFormat("nl-NL", { hour: "2-digit", minute: "2-digit", hour12: false }).format(date);
+  const end = new Date(best.start.getTime() + length * 3600000);
+  const day = best.start.getTime() >= localMidnight(1).getTime() ? "morgen" : "vandaag";
+  return { day, from: hhmm(best.start), to: hhmm(end) };
+}
+
 // Short advice for the banner on Home: cheap now / expensive now / nothing.
 export function priceAdvice(curve) {
   if (!curve?.current) return null;
